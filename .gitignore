@@ -1,0 +1,30 @@
+# ── Python ──────────────────────────────────────────────
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# ── Node ────────────────────────────────────────────────
+node_modules/
+
+# ── Environment / secrets ───────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Editors / IDEs ──────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS noise ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Local dev artifacts ─────────────────────────────────
+*.log
+dist/
+build/

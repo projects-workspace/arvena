@@ -214,355 +214,355 @@ const translations = {
     },
 
     // ════════════ SCIENCE (PANEL 0) ════════════
-    "sc_badge": {
+    "micro_badge": {
         "ru": "Фундаментальные знания",
         "ua": "Фундаментальні знання",
         "cz": "Základní znalosti",
         "en": "Fundamental Knowledge"
     },
-    "sc_title": {
+    "micro_title": {
         "ru": "Вселенная внутри нас",
         "ua": "Всесвіт всередині нас",
         "cz": "Vesmír uvnitř nás",
         "en": "The Universe Within Us"
     },
-    "sc_sub": {
+    "micro_sub": {
         "ru": "Наука о Микробиоме — фундамент здоровья, доказательная база и исследования",
         "ua": "Наука про Мікробіом — фундамент здоров'я, доказова база та дослідження",
         "cz": "Věda o Mikrobiomu – základ zdraví, důkazní báze a výzkum",
         "en": "Microbiome Science — the foundation of health, evidence base, and research"
     },
-    "sc_btn_pdf1": {
+    "btn_bioflora_pdf_top": {
         "ru": "Скачать полное руководство «Биофлора» (PDF)",
         "ua": "Завантажити повний посібник «Біофлора» (PDF)",
         "cz": "Stáhnout kompletního průvodce „Bioflóra“ (PDF)",
         "en": "Download the Complete 'Bioflora' Guide (PDF)"
     },
-    "sc_h2_1": {
+    "micro_h2_1": {
         "ru": "Вы не одни. Познакомьтесь с триллионами своих союзников.",
         "ua": "Ви не самі. Познайомтеся з трильйонами своїх союзників.",
         "cz": "Nejste sami. Seznamte se s biliony vašich spojenců.",
         "en": "You are not alone. Meet your trillions of allies."
     },
-    "sc_p_1": {
+    "micro_p_1": {
         "ru": "Мы привыкли воспринимать свое тело как единый механизм, но наука говорит о другом. Мы разберем основы нашей внутренней экологии. Здесь мы раскрываем понятие «голобионта» — как человек и триллионы бактерий, грибов и вирусов живут в симбиозе. От баланса этой системы зависит ваш иммунитет, энергия и даже настроение.",
         "ua": "Ми звикли сприймати своє тіло як єдиний механізм, але наука говорить про інше. Ми розберемо основи нашої внутрішньої екології. Тут ми розкриваємо поняття «голобіонта» — як людина і трильйони бактерій, грибів і вірусів живуть у симбіозі. Від балансу цієї системи залежить ваш імунітет, енергія і навіть настрій.",
         "cz": "Jsme zvyklí vnímat své tělo jako jeden mechanismus, ale věda říká něco jiného. Rozebereme si základy naší vnitřní ekologie. Zde vysvětlujeme koncept „holobionta“ — jak lidé a biliony bakterií, hub a virů žijí v symbióze. Od rovnováhy tohoto systému se odvíjí vaše imunita, energie a dokonce i nálada.",
         "en": "We are used to perceiving our body as a single mechanism, but science says otherwise. We will explore the basics of our internal ecology. Here we unpack the concept of the 'holobiont' — how humans and trillions of bacteria, fungi, and viruses live in symbiosis. Your immunity, energy, and even your mood depend on the balance of this system."
     },
-    "sc_h2_2": {
+    "micro_h2_2": {
         "ru": "Война миров: Симбионты против Патогенов",
         "ua": "Війна світів: Симбіонти проти Патогенів",
         "cz": "Válka světů: Symbionti proti Patogenům",
         "en": "War of the Worlds: Symbionts vs. Pathogens"
     },
-    "sc_good_guys": {
+    "micro_good_h": {
         "ru": "Хорошие парни",
         "ua": "Хороші хлопці",
         "cz": "Ti dobří",
         "en": "The Good Guys"
     },
-    "sc_good_p": {
+    "micro_good_p": {
         "ru": "Такие симбионты, как Treponema, Prevotella и Bifidobacterium, критически важны для переваривания пищи и обучения нашего иммунитета.",
         "ua": "Такі симбіонти, як Treponema, Prevotella та Bifidobacterium, критично важливі для перетравлення їжі та навчання нашого імунітету.",
         "cz": "Takoví symbionti jako Treponema, Prevotella a Bifidobacterium jsou kriticky důležití pro trávení potravy a trénink naší imunity.",
         "en": "Symbionts such as Treponema, Prevotella, and Bifidobacterium are critical for digesting food and training our immune system."
     },
-    "sc_bad_guys": {
+    "micro_bad_h": {
         "ru": "Плохие парни",
         "ua": "Погані хлопці",
         "cz": "Ti špatní",
         "en": "The Bad Guys"
     },
-    "sc_bad_p": {
+    "micro_bad_p": {
         "ru": "Влияние антибиотиков, стерильных городских условий, стресса и западного стиля питания ведет к вымиранию полезных видов. В результате появляются патогенные грибки (кандида), паразиты и бактерии.",
         "ua": "Вплив антибіотиків, стерильних міських умов, стресу та західного стилю харчування веде до вимирання корисних видів. У результаті з'являються патогенні грибки (кандида), паразити та бактерії.",
         "cz": "Vliv antibiotik, sterilního městského prostředí, stresu a západního stylu stravování vede k vymírání prospěšných druhů. Výsledkem je vznik patogenních plísní (kandida), parazitů a bakterií.",
         "en": "The impact of antibiotics, sterile urban conditions, stress, and the Western diet leads to the extinction of beneficial species. As a result, pathogenic fungi (candida), parasites, and harmful bacteria emerge."
     },
-    "sc_h2_3": {
+    "micro_h2_3": {
         "ru": "Как ваш живот управляет вашей головой",
         "ua": "Як ваш живіт керує вашою головою",
         "cz": "Jak vaše břicho řídí vaši hlavu",
         "en": "How Your Gut Controls Your Brain"
     },
-    "sc_p_3": {
+    "micro_p_3": {
         "ru": "Это самый захватывающий блок о том, как пищеварение диктует правила нашему мозгу.",
         "ua": "Це найбільш захоплюючий блок про те, як травлення диктує правила нашому мозку.",
         "cz": "Toto je nejvíce fascinující část o tom, jak trávení diktuje pravidla našemu mozku.",
         "en": "This is the most fascinating section on how digestion dictates the rules to our brain."
     },
-    "sc_feat_1_h": {
+    "micro_vagus_h": {
         "ru": "Блуждающий нерв (Vagus Nerve)",
         "ua": "Блукаючий нерв (Vagus Nerve)",
         "cz": "Bloudivý nerv (Nervus Vagus)",
         "en": "The Vagus Nerve"
     },
-    "sc_feat_1_p": {
+    "micro_vagus_p": {
         "ru": "Главная информационная магистраль, которая передает сигналы от бактерий напрямую в мозг.",
         "ua": "Головна інформаційна магістраль, яка передає сигнали від бактерій безпосередньо в мозок.",
         "cz": "Hlavní informační dálnice, která přenáší signály od bakterií přímo do mozku.",
         "en": "The main information highway that transmits signals from bacteria directly to the brain."
     },
-    "sc_feat_2_h": {
+    "micro_happy_h": {
         "ru": "Фабрика счастья",
         "ua": "Фабрика щастя",
         "cz": "Továrna na štěstí",
         "en": "The Happiness Factory"
     },
-    "sc_feat_2_p": {
+    "micro_happy_p": {
         "ru": "90-95% гормона счастья (серотонина) производится в кишечнике при помощи бактерий.",
         "ua": "90-95% гормону щастя (серотоніну) виробляється в кишечнику за допомогою бактерій.",
         "cz": "90-95 % hormonu štěstí (serotoninu) se produkuje ve střevech pomocí bakterií.",
         "en": "90-95% of the happiness hormone (serotonin) is produced in the gut with the help of bacteria."
     },
-    "sc_feat_3_h": {
+    "micro_circle_h": {
         "ru": "Замкнутый круг",
         "ua": "Замкнене коло",
         "cz": "Začarovaný kruh",
         "en": "The Vicious Cycle"
     },
-    "sc_feat_3_p": {
+    "micro_circle_p": {
         "ru": "Хронический стресс «парализует» пищеварение и разрушает микрофлору. Воспаление в кишечнике вызывает нейровоспаление, тревожность, депрессию и «туман в голове».",
         "ua": "Хронічний стрес «паралізує» травлення і руйнує мікрофлору. Запалення в кишечнику викликає нейрозапалення, тривожність, депресію та «туман в голові».",
         "cz": "Chronický stres „ochromuje“ trávení a ničí mikroflóru. Zánět ve střevech způsobuje neurozánět, úzkost, deprese a „mlhu v hlavě“.",
         "en": "Chronic stress 'paralyzes' digestion and destroys microflora. Gut inflammation causes neuroinflammation, anxiety, depression, and 'brain fog'."
     },
-    "sc_h2_4": {
+    "micro_h2_4": {
         "ru": "Мы — то, что едят наши бактерии",
         "ua": "Ми — те, що їдять наші бактерії",
         "cz": "Jsme to, co jedí naše bakterie",
         "en": "We Are What Our Bacteria Eat"
     },
-    "sc_p_4": {
+    "micro_p_4": {
         "ru": "Здесь мы обсуждаем, как пища формирует наш внутренний мир.",
         "ua": "Тут ми обговорюємо, як їжа формує наш внутрішній світ.",
         "cz": "Zde probíráme, jak strava formuje náš vnitřní svět.",
         "en": "Here we discuss how food shapes our inner world."
     },
-    "sc_food_bad_h": {
+    "micro_food_bad_h": {
         "ru": "Что разрушает флору",
         "ua": "Що руйнує флору",
         "cz": "Co ničí flóru",
         "en": "What Destroys the Flora"
     },
-    "sc_food_bad_p": {
+    "micro_food_bad_p": {
         "ru": "Избыток рафинированного сахара, животных жиров и отсутствие клетчатки убивает разнообразие флоры и кормит патогенов.",
         "ua": "Надлишок рафінованого цукру, тваринних жирів і відсутність клітковини вбиває різноманітність флори та годує патогенів.",
         "cz": "Nadbytek rafinovaného cukru, živočišných tuků a nedostatek vlákniny zabíjí rozmanitost flóry a krmí patogeny.",
         "en": "An excess of refined sugar, animal fats, and a lack of fiber kills the diversity of the flora and feeds pathogens."
     },
-    "sc_food_good_h": {
+    "micro_food_good_h": {
         "ru": "Что лечит",
         "ua": "Що лікує",
         "cz": "Co léčí",
         "en": "What Heals"
     },
-    "sc_food_good_p": {
+    "micro_food_good_p": {
         "ru": "Сложные углеводы, пищевые волокна и растительная пища. Особенно мощно работают ферментированные продукты: кефир, квашеная капуста, комбуча и сыворотка.",
         "ua": "Складні вуглеводи, харчові волокна та рослинна їжа. Особливо потужно працюють ферментовані продукти: кефір, квашена капуста, комбуча та сироватка.",
         "cz": "Komplexní sacharidy, dietní vláknina a rostlinná strava. Obzvláště silně fungují fermentované potraviny: kefír, kysané zelí, kombucha a syrovátka.",
         "en": "Complex carbohydrates, dietary fiber, and plant-based foods. Fermented foods work particularly well: kefir, sauerkraut, kombucha, and whey."
     },
-    "sc_h2_5": {
+    "micro_h2_5": {
         "ru": "Как вернуть порядок? Клинический подход к очищению.",
         "ua": "Як повернути порядок? Клінічний підхід до очищення.",
         "cz": "Jak obnovit řád? Klinický přístup k čištění.",
         "en": "How to Restore Order? The Clinical Approach to Cleansing."
     },
-    "sc_p_5": {
+    "micro_p_5": {
         "ru": "В медицине это называется не просто «чисткой», а строгим клиническим протоколом восстановления среды. Мы используем концепцию «5R»:",
         "ua": "У медицині це називається не просто «чисткою», а суворим клінічним протоколом відновлення середовища. Ми використовуємо концепцію «5R»:",
         "cz": "V medicíně se to nenazývá jen „čištěním“, ale přísným klinickým protokolem obnovy prostředí. Využíváme koncept „5R“:",
         "en": "In medicine, this isn't just called a 'cleanse', but a strict clinical protocol for environmental restoration. We utilize the '5R' framework:"
     },
-    "sc_5r_1_h": {
+    "micro_5r_1_h": {
         "ru": "Remove (Прополка)",
         "ua": "Remove (Прополка)",
         "cz": "Remove (Odstranění)",
         "en": "Remove"
     },
-    "sc_5r_1_p": {
+    "micro_5r_1_p": {
         "ru": "Убрать пищевой мусор и патогенов с помощью растительных антимикробных средств (полынь, гвоздика, черный орех).",
         "ua": "Прибрати харчове сміття та патогенів за допомогою рослинних антимікробних засобів (полин, гвоздика, чорний горіх).",
         "cz": "Odstranění potravinového odpadu a patogenů pomocí rostlinných antimikrobiálních látek (pelyněk, hřebíček, ořešák černý).",
         "en": "Eliminate junk food and pathogens using plant-based antimicrobials (wormwood, cloves, black walnut)."
     },
-    "sc_5r_2_h": {
+    "micro_5r_2_h": {
         "ru": "Replace (Замещение)",
         "ua": "Replace (Заміщення)",
         "cz": "Replace (Nahrazení)",
         "en": "Replace"
     },
-    "sc_5r_2_p": {
+    "micro_5r_2_p": {
         "ru": "Помощь желудку через ферменты и горечи для нормального переваривания.",
         "ua": "Допомога шлунку через ферменти та гіркоти для нормального перетравлення.",
         "cz": "Podpora žaludku pomocí enzymů a hořčin pro normální trávení.",
         "en": "Supporting the stomach with enzymes and bitters for proper digestion."
     },
-    "sc_5r_3_h": {
+    "micro_5r_3_h": {
         "ru": "Reinoculate (Заселение)",
         "ua": "Reinoculate (Заселення)",
         "cz": "Reinoculate (Znovuosídlení)",
         "en": "Reinoculate"
     },
-    "sc_5r_3_p": {
+    "micro_5r_3_p": {
         "ru": "Правильно ввести пробиотики, чтобы они прижились в среде.",
         "ua": "Правильно ввести пробіотики, щоб вони прижилися в середовищі.",
         "cz": "Správné zavedení probiotik, aby se v prostředí uchytila.",
         "en": "Properly introducing probiotics so they can colonize the environment."
     },
-    "sc_5r_4_h": {
+    "micro_5r_4_h": {
         "ru": "Repair (Заживление)",
         "ua": "Repair (Загоєння)",
         "cz": "Repair (Zhojení)",
         "en": "Repair"
     },
-    "sc_5r_4_p": {
+    "micro_5r_4_p": {
         "ru": "Восстановление слизистой кишечника с помощью костного бульона, витаминов и L-глютамина.",
         "ua": "Відновлення слизової кишечника за допомогою кісткового бульйону, вітамінів та L-глютаміну.",
         "cz": "Obnova střevní sliznice pomocí vývaru z kostí, vitamínů a L-glutaminu.",
         "en": "Healing the gut lining with bone broth, vitamins, and L-glutamine."
     },
-    "sc_h2_6": {
+    "micro_h2_6": {
         "ru": "Экология повседневности: Сохраняем результат",
         "ua": "Екологія повсякденності: Зберігаємо результат",
         "cz": "Ekologie všedního dne: Udržujeme výsledky",
         "en": "Everyday Ecology: Maintaining the Results"
     },
-    "sc_p_6": {
+    "micro_p_6": {
         "ru": "Практические привычки для поддержания достигнутого результата.",
         "ua": "Практичні звички для підтримання досягнутого результату.",
         "cz": "Praktické návyky pro udržení dosaženého výsledku.",
         "en": "Practical habits to sustain the achieved results."
     },
-    "sc_feat_4_h": {
+    "micro_life_1_h": {
         "ru": "Циркадное голодание",
         "ua": "Циркадне голодування",
         "cz": "Cirkadiánní půst",
         "en": "Circadian Fasting"
     },
-    "sc_feat_4_p": {
+    "micro_life_1_p": {
         "ru": "Почему нужно не есть минимум 12 часов ночью? Это включает «внутреннего дворника», который выметает остатки пищи и бактерий.",
         "ua": "Чому потрібно не їсти мінімум 12 годин вночі? Це включає «внутрішнього двірника», який вимітає залишки їжі та бактерій.",
         "cz": "Proč je potřeba nejíst v noci minimálně 12 hodin? Zapíná to „vnitřního uklízeče“, který vymetá zbytky potravy a bakterií.",
         "en": "Why should you fast for at least 12 hours overnight? It activates the 'internal sweeper' that clears out food debris and bacteria."
     },
-    "sc_feat_5_h": {
+    "micro_life_2_h": {
         "ru": "Стимуляция блуждающего нерва",
         "ua": "Стимуляція блукаючого нерва",
         "cz": "Stimulace bloudivého nervu",
         "en": "Vagus Nerve Stimulation"
     },
-    "sc_feat_5_p": {
+    "micro_life_2_p": {
         "ru": "Дыхательные практики, йога и работа с парасимпатической нервной системой позволяют включить режим «отдыхай и переваривай».",
         "ua": "Дихальні практики, йога та робота з парасимпатичною нервовою системою дозволяють включити режим «відпочивай і перетравлюй».",
         "cz": "Dechová cvičení, jóga a práce s parasympatickým nervovým systémem umožňují zapnout režim „odpočívej a trav“.",
         "en": "Breathwork, yoga, and engaging the parasympathetic nervous system activate the 'rest and digest' mode."
     },
-    "sc_cta_h2": {
+    "micro_h2_7": {
         "ru": "Изучите свой микромир в деталях",
         "ua": "Вивчіть свій мікросвіт у деталях",
         "cz": "Prozkoumejte svůj mikrosvět v detailech",
         "en": "Explore Your Microworld in Detail"
     },
-    "sc_cta_p": {
+    "micro_p_7": {
         "ru": "Эта страница — лишь верхушка айсберга. Мы собрали всю фундаментальную информацию о пробиотиках, питании, протоколе восстановления и работе блуждающего нерва в один красивый и понятный документ.",
         "ua": "Ця сторінка — лише верхівка айсберга. Ми зібрали всю фундаментальну інформацію про пробіотики, харчування, протокол відновлення та роботу блукаючого нерва в один красивий і зрозумілий документ.",
         "cz": "Tato stránka je jen špičkou ledovce. Shromáždili jsme všechny základní informace o probiotikách, výživě, protokolu obnovy a fungování bloudivého nervu do jednoho krásného a srozumitelného dokumentu.",
         "en": "This page is just the tip of the iceberg. We have compiled all the fundamental information on probiotics, nutrition, the recovery protocol, and the vagus nerve into one beautiful, easy-to-read document."
     },
-    "sc_btn_pdf2": {
+    "btn_bioflora_pdf_bot": {
         "ru": "Скачать полное руководство по Биофлоре (PDF)",
         "ua": "Завантажити повний посібник з Біофлори (PDF)",
         "cz": "Stáhnout kompletního průvodce Bioflórou (PDF)",
         "en": "Download the Complete Bioflora Guide (PDF)"
     },
-    "sc_hint": {
+    "micro_hint": {
         "ru": "Сохраните на телефон, изучите в удобное время и обязательно поделитесь этим файлом с близкими — эти знания меняют качество жизни.",
         "ua": "Збережіть на телефон, вивчіть у зручний час і обов'язково поділіться цим файлом з близькими — ці знання змінюють якість життя.",
         "cz": "Uložte si ho do telefonu, nastudujte si ho ve vhodnou dobu a určitě ho sdílejte se svými blízkými — tyto znalosti mění kvalitu života.",
         "en": "Save it to your phone, study it at your convenience, and be sure to share this file with your loved ones — this knowledge is life-changing."
     },
-    "sc_base_h2": {
+    "micro_art_h2": {
         "ru": "Научная база: Исследования и статьи",
         "ua": "Наукова база: Дослідження та статті",
         "cz": "Vědecká základna: Výzkum a články",
         "en": "Scientific Base: Research & Articles"
     },
-    "sc_base_p": {
+    "micro_art_p": {
         "ru": "Доказательный фундамент проекта — подробные описания экспериментов, ссылки на международные научные исследования и разбор биохимии компонентов.",
         "ua": "Доказовий фундамент проєкту — докладні описи експериментів, посилання на міжнародні наукові дослідження та розбір біохімії компонентів.",
         "cz": "Důkazní základ projektu — podrobné popisy experimentů, odkazy na mezinárodní vědecký výzkum a analýza biochemie komponent.",
         "en": "The evidence-based foundation of the project — detailed descriptions of experiments, links to international scientific studies, and biochemistry breakdowns."
     },
-    "art_1_h": {
+    "art_microbiome_h": {
         "ru": "Влияние микробиома на нейротрансмиттеры",
         "ua": "Вплив мікробіома на нейротрансмітери",
         "cz": "Vliv mikrobiomu na neurotransmitery",
         "en": "Microbiome Influence on Neurotransmitters"
     },
-    "art_1_p": {
+    "art_microbiome_p": {
         "ru": "Как кишечные бактерии производят 90-95% серотонина и управляют нашим настроением через ось «кишечник-мозг».",
         "ua": "Як кишкові бактерії виробляють 90-95% серотоніну і керують нашим настроєм через вісь «кишечник-мозок».",
         "cz": "Jak střevní bakterie produkují 90-95 % serotoninu a řídí naši náladu prostřednictvím osy „střevo-mozek“.",
         "en": "How gut bacteria produce 90-95% of serotonin and control our mood via the gut-brain axis."
     },
-    "art_2_h": {
+    "art_parasites_h": {
         "ru": "Биохимия антипаразитарных трав",
         "ua": "Біохімія антипаразитарних трав",
         "cz": "Biochemie antiparazitárních bylin",
         "en": "Biochemistry of Anti-Parasitic Herbs"
     },
-    "art_2_p": {
+    "art_parasites_p": {
         "ru": "Научный разбор механизмов действия полыни, пижмы и черного ореха на патогенные организмы.",
         "ua": "Науковий розбір механізмів дії полину, пижма та чорного горіха на патогенні організми.",
         "cz": "Vědecký rozbor mechanismů účinku pelyňku, vratiče a ořešáku černého na patogenní organismy.",
         "en": "A scientific breakdown of how wormwood, tansy, and black walnut act against pathogenic organisms."
     },
-    "art_3_h": {
+    "art_vagus_h": {
         "ru": "Блуждающий нерв и пищеварение",
         "ua": "Блукаючий нерв і травлення",
         "cz": "Bloudivý nerv a trávení",
         "en": "The Vagus Nerve and Digestion"
     },
-    "art_3_p": {
+    "art_vagus_p": {
         "ru": "Vagus Nerve — главная информационная магистраль между кишечником и мозгом. Как его стимуляция улучшает здоровье.",
         "ua": "Vagus Nerve — головна інформаційна магістраль між кишечником і мозком. Як його стимуляція покращує здоров'я.",
         "cz": "Vagus Nerve — hlavní informační dálnice mezi střevem a mozkem. Jak jeho stimulace zlepšuje zdraví.",
         "en": "The Vagus Nerve is the main information highway between the gut and the brain. How stimulating it improves health."
     },
-    "art_4_h": {
+    "art_fermented_h": {
         "ru": "Ферментированные продукты и флора",
         "ua": "Ферментовані продукти та флора",
         "cz": "Fermentované potraviny a flóra",
         "en": "Fermented Foods and Flora"
     },
-    "art_4_p": {
+    "art_fermented_p": {
         "ru": "Почему кефир, квашеная капуста и комбуча работают лучше многих таблеток — роль диких дрожжей и лактобактерий.",
         "ua": "Чому кефір, квашена капуста і комбуча працюють краще за багато пігулок — роль диких дріжджів і лактобактерій.",
         "cz": "Proč kefír, kysané zelí a kombucha fungují lépe než mnoho pilulek — role divokých kvasinek a laktobacilů.",
         "en": "Why kefir, sauerkraut, and kombucha often work better than pills — the role of wild yeast and lactobacilli."
     },
-    "art_5_h": {
+    "art_protocol5r_h": {
         "ru": "Клинический протокол 5R",
         "ua": "Клінічний протокол 5R",
         "cz": "Klinický protokol 5R",
         "en": "The 5R Clinical Protocol"
     },
-    "art_5_p": {
+    "art_protocol5r_p": {
         "ru": "Remove, Replace, Reinoculate, Repair — научный подход к восстановлению внутренней среды. Подробный разбор каждого этапа.",
         "ua": "Remove, Replace, Reinoculate, Repair — науковий підхід до відновлення внутрішнього середовища. Докладний розбір кожного етапу.",
         "cz": "Remove, Replace, Reinoculate, Repair — vědecký přístup k obnově vnitřního prostředí. Podrobný rozbor každé fáze.",
         "en": "Remove, Replace, Reinoculate, Repair — the scientific approach to restoring the internal environment. A detailed breakdown of each stage."
     },
-    "art_6_h": {
+    "art_sorbents_h": {
         "ru": "Сорбенты: механизм действия",
         "ua": "Сорбенти: механізм дії",
         "cz": "Sorbenty: mechanismus účinku",
         "en": "Sorbents: Mechanism of Action"
     },
-    "art_6_p": {
+    "art_sorbents_p": {
         "ru": "Как активированный уголь, глина и лен работают как природная губка, связывая и выводя токсины мертвых бактерий.",
         "ua": "Як активоване вугілля, глина та льон працюють як природна губка, зв'язуючи та виводячи токсини мертвих бактерій.",
         "cz": "Jak aktivní uhlí, jíl a len fungují jako přírodní houba, která váže a odstraňuje toxiny mrtvých bakterií.",
@@ -570,208 +570,208 @@ const translations = {
     },
 
     // ════════════ NATUROPATHY (PANEL 1) ════════════
-    "nat_badge": {
+    "naturo_badge": {
         "ru": "Древняя мудрость + Современная наука",
         "ua": "Стародавня мудрість + Сучасна наука",
         "cz": "Starověká moudrost + Moderní věda",
         "en": "Ancient Wisdom + Modern Science"
     },
-    "nat_title": {
+    "naturo_title": {
         "ru": "Натуропатия и Аюрведа",
         "ua": "Натуропатія та Аюрведа",
         "cz": "Naturopatie a Ájurvéda",
         "en": "Naturopathy and Ayurveda"
     },
-    "nat_sub": {
+    "naturo_sub": {
         "ru": "Тысячелетние знания о гармонии тела и разума, подкрепленные современными исследованиями. Мы берем лучшее из обеих традиций.",
         "ua": "Тисячолітні знання про гармонію тіла і розуму, підкріплені сучасними дослідженнями. Ми беремо найкраще з обох традицій.",
         "cz": "Tisícileté poznatky o harmonii těla a mysli, podložené moderními výzkumy. Bereme to nejlepší z obou tradic.",
         "en": "Millennia of knowledge on body-mind harmony, backed by modern research. We take the best from both traditions."
     },
-    "nat_h2_1": {
+    "naturo_h2_1": {
         "ru": "Что такое натуропатия?",
         "ua": "Що таке натуропатія?",
         "cz": "Co je to naturopatie?",
         "en": "What is Naturopathy?"
     },
-    "nat_p_1": {
+    "naturo_p_1": {
         "ru": "Натуропатия — это система оздоровления, основанная на вере в целительную силу природы (Vis Medicatrix Naturae). Она не борется с симптомами, а ищет и устраняет первопричину дисбаланса. Организм обладает врожденной способностью к самоисцелению — задача натуропата состоит в том, чтобы создать для этого правильные условия.",
         "ua": "Натуропатія — це система оздоровлення, заснована на вірі в цілющу силу природи (Vis Medicatrix Naturae). Вона не бореться з симптомами, а шукає і усуває першопричину дисбалансу. Організм має вроджену здатність до самозцілення — завдання натуропата полягає в тому, щоб створити для цього правильні умови.",
         "cz": "Naturopatie je systém péče o zdraví založený na víře v léčivou sílu přírody (Vis Medicatrix Naturae). Nebojuje s příznaky, ale hledá a odstraňuje hlavní příčinu nerovnováhy. Tělo má vrozenou schopnost sebeuzdravování — úkolem naturopata je vytvořit k tomu správné podmínky.",
         "en": "Naturopathy is a healing system based on the belief in the healing power of nature (Vis Medicatrix Naturae). It does not suppress symptoms; rather, it seeks to eliminate the root cause of imbalance. The body has an innate ability to heal itself — the naturopath's job is to create the right conditions for this to happen."
     },
-    "nat_feat_1_h": {
+    "naturo_feat_1_h": {
         "ru": "Принцип «Не навреди»",
         "ua": "Принцип «Не нашкодь»",
         "cz": "Princip „Především neškodit“",
         "en": "The 'Do No Harm' Principle"
     },
-    "nat_feat_1_p": {
+    "naturo_feat_1_p": {
         "ru": "Использование мягких, неинвазивных методов. Приоритет натуральных средств перед синтетическими.",
         "ua": "Використання м'яких, неінвазивних методів. Пріоритет натуральних засобів перед синтетичними.",
         "cz": "Použití šetrných, neinvazivních metod. Upřednostňování přírodních prostředků před syntetickými.",
         "en": "Using gentle, non-invasive methods. Prioritizing natural remedies over synthetic ones."
     },
-    "nat_feat_2_h": {
+    "naturo_feat_2_h": {
         "ru": "Лечение причины, а не симптома",
         "ua": "Лікування причини, а не симптому",
         "cz": "Léčba příčiny, nikoli příznaku",
         "en": "Treating the Cause, Not the Symptom"
     },
-    "nat_feat_2_p": {
+    "naturo_feat_2_p": {
         "ru": "Головная боль — это не дефицит обезболивающего. Натуропатия ищет корень: обезвоживание, токсины, стресс или дефицит нутриентов.",
         "ua": "Головний біль — це не дефіцит знеболювального. Натуропатія шукає корінь: зневоднення, токсини, стрес або дефіцит нутрієнтів.",
         "cz": "Bolest hlavy není nedostatkem léků proti bolesti. Naturopatie hledá kořen: dehydratace, toxiny, stres nebo nedostatek živin.",
         "en": "A headache is not a deficiency of painkillers. Naturopathy looks for the root: dehydration, toxins, stress, or nutrient deficiencies."
     },
-    "nat_feat_3_h": {
+    "naturo_feat_3_h": {
         "ru": "Человек как целостная система",
         "ua": "Людина як цілісна система",
         "cz": "Člověk jako celostní systém",
         "en": "Holistic Approach"
     },
-    "nat_feat_3_p": {
+    "naturo_feat_3_p": {
         "ru": "Тело, разум и дух — единое целое. Нельзя лечить желудок, игнорируя состояние психики и образ жизни.",
         "ua": "Тіло, розум і дух — єдине ціле. Не можна лікувати шлунок, ігноруючи стан психіки та спосіб життя.",
         "cz": "Tělo, mysl a duch tvoří jeden celek. Nelze léčit žaludek a ignorovat duševní stav a životní styl.",
         "en": "Mind, body, and spirit are one entity. You cannot treat the stomach while ignoring mental health and lifestyle."
     },
-    "nat_h2_2": {
+    "naturo_h2_2": {
         "ru": "Аюрведа: наука о жизни",
         "ua": "Аюрведа: наука про життя",
         "cz": "Ájurvéda: věda o životě",
         "en": "Ayurveda: The Science of Life"
     },
-    "nat_p_2": {
+    "naturo_p_2": {
         "ru": "Аюрведа (санскр. «знание жизни») — одна из древнейших медицинских систем мира, зародившаяся более 5000 лет назад в Индии. Она рассматривает здоровье как баланс трех фундаментальных энергий — дош.",
         "ua": "Аюрведа (санскр. «знання життя») — одна з найдавніших медичних систем світу, що зародилася понад 5000 років тому в Індії. Вона розглядає здоров'я як баланс трьох фундаментальних енергій — дош.",
         "cz": "Ájurvéda (sanskrt. „věda o životě“) je jedním z nejstarších lékařských systémů na světě, který vznikl v Indii před více než 5000 lety. Zdraví vnímá jako rovnováhu tří základních energií — dóš.",
         "en": "Ayurveda (Sanskrit for 'knowledge of life') is one of the world's oldest medical systems, originating over 5,000 years ago in India. It views health as the balance of three fundamental energies — doshas."
     },
-    "nat_dosha_vata_h": { "ru": "Вата", "ua": "Вата", "cz": "Váta", "en": "Vata" },
-    "nat_dosha_vata_p": {
+    "naturo_vata_h": { "ru": "Вата", "ua": "Вата", "cz": "Váta", "en": "Vata" },
+    "naturo_vata_p": {
         "ru": "Воздух и эфир. Движение, дыхание, нервная система. Дисбаланс → тревожность, сухость, бессонница.",
         "ua": "Повітря та ефір. Рух, дихання, нервова система. Дисбаланс → тривожність, сухість, безсоння.",
         "cz": "Vzduch a éter. Pohyb, dýchání, nervový systém. Nerovnováha → úzkost, suchost, nespavost.",
         "en": "Air and ether. Movement, breath, nervous system. Imbalance → anxiety, dryness, insomnia."
     },
-    "nat_dosha_pitta_h": { "ru": "Питта", "ua": "Пітта", "cz": "Pitta", "en": "Pitta" },
-    "nat_dosha_pitta_p": {
+    "naturo_pitta_h": { "ru": "Питта", "ua": "Пітта", "cz": "Pitta", "en": "Pitta" },
+    "naturo_pitta_p": {
         "ru": "Огонь и вода. Пищеварение, метаболизм, интеллект. Дисбаланс → воспаления, раздражительность, кожные проблемы.",
         "ua": "Вогонь і вода. Травлення, метаболізм, інтелект. Дисбаланс → запалення, дратівливість, шкірні проблеми.",
         "cz": "Oheň a voda. Trávení, metabolismus, intelekt. Nerovnováha → záněty, podrážděnost, kožní problémy.",
         "en": "Fire and water. Digestion, metabolism, intellect. Imbalance → inflammation, irritability, skin issues."
     },
-    "nat_dosha_kapha_h": { "ru": "Капха", "ua": "Капха", "cz": "Kapha", "en": "Kapha" },
-    "nat_dosha_kapha_p": {
+    "naturo_kapha_h": { "ru": "Капха", "ua": "Капха", "cz": "Kapha", "en": "Kapha" },
+    "naturo_kapha_p": {
         "ru": "Земля и вода. Структура, стабильность, иммунитет. Дисбаланс → вялость, набор веса, застойные процессы.",
         "ua": "Земля і вода. Структура, стабільність, імунітет. Дисбаланс → млявість, набір ваги, застійні процеси.",
         "cz": "Země a voda. Struktura, stabilita, imunita. Nerovnováha → letargie, přibírání na váze, stagnující procesy.",
         "en": "Earth and water. Structure, stability, immunity. Imbalance → lethargy, weight gain, congestion."
     },
-    "nat_h2_3": {
+    "naturo_h2_3": {
         "ru": "Детокс в традиционных системах",
         "ua": "Детокс у традиційних системах",
         "cz": "Detox v tradičních systémech",
         "en": "Detox in Traditional Systems"
     },
-    "nat_p_3": {
+    "naturo_p_3": {
         "ru": "Очищение тела — центральная практика во всех древних медицинских традициях. В аюрведе это называется Панчакарма (пять действий очищения), в натуропатии — элиминационная диета с последующим восстановлением.",
         "ua": "Очищення тіла — центральна практика у всіх стародавніх медичних традиціях. В аюрведі це називається Панчакарма (п'ять дій очищення), у натуропатії — елімінаційна дієта з подальшим відновленням.",
         "cz": "Očista těla je ústřední praxí ve všech starověkých lékařských tradicích. V ájurvédě se tomu říká Pančakarma (pět očistných akcí), v naturopatii — eliminační dieta s následnou rekonvalescencí.",
         "en": "Cleansing the body is a central practice in all ancient medical traditions. In Ayurveda, this is called Panchakarma (five cleansing actions); in naturopathy, it is an elimination diet followed by restoration."
     },
-    "nat_insight": {
+    "naturo_insight": {
         "ru": "Наш протокол Santiago объединяет эти подходы: мягкая элиминация патогенов (натуропатия) + восстановление баланса дош через питание и травы (аюрведа) + научно обоснованный протокол 5R (доказательная медицина).",
         "ua": "Наш протокол Santiago об'єднує ці підходи: м'яка елімінація патогенів (натуропатія) + відновлення балансу дош через харчування і трави (аюрведа) + науково обґрунтований протокол 5R (доказова медицина).",
         "cz": "Náš protokol Santiago spojuje tyto přístupy: jemná eliminace patogenů (naturopatie) + obnova rovnováhy dóš pomocí stravy a bylin (ájurvéda) + vědecky podložený protokol 5R (medicína založená na důkazech).",
         "en": "Our Santiago Protocol integrates these approaches: gentle pathogen elimination (naturopathy) + restoring dosha balance through diet and herbs (Ayurveda) + the scientifically validated 5R protocol (evidence-based medicine)."
     },
-    "nat_h2_4": {
+    "naturo_h2_4": {
         "ru": "Ключевые практики оздоровления",
         "ua": "Ключові практики оздоровлення",
         "cz": "Klíčové postupy ozdravění",
         "en": "Key Healing Practices"
     },
-    "nat_prac_1_h": {
+    "naturo_prac_1_h": {
         "ru": "Диначарья (Режим дня)",
         "ua": "Діначар'я (Режим дня)",
         "cz": "Dinacharya (Denní režim)",
         "en": "Dinacharya (Daily Routine)"
     },
-    "nat_prac_1_p": {
+    "naturo_prac_1_p": {
         "ru": "Просыпаться с рассветом, есть основной приём пищи в полдень (когда огонь пищеварения максимален), засыпать до 22:00.",
         "ua": "Прокидатися зі світанком, їсти основний прийом їжі опівдні (коли вогонь травлення максимальний), засинати до 22:00.",
         "cz": "Probouzet se za úsvitu, mít hlavní jídlo v poledne (kdy je trávicí oheň maximální), usínat před 22:00.",
         "en": "Waking up with the dawn, having the main meal at noon (when the digestive fire is strongest), and sleeping before 10 PM."
     },
-    "nat_prac_2_h": {
+    "naturo_prac_2_h": {
         "ru": "Агни (Пищеварительный огонь)",
         "ua": "Агні (Травний вогонь)",
         "cz": "Agni (Trávicí oheň)",
         "en": "Agni (Digestive Fire)"
     },
-    "nat_prac_2_p": {
+    "naturo_prac_2_p": {
         "ru": "Здоровье начинается с пищеварения. Слабый агни = непереваренная пища (ама) = токсины. Специи, тёплая вода и правильный режим усиливают агни.",
         "ua": "Здоров'я починається з травлення. Слабкий агні = неперетравлена їжа (ама) = токсини. Спеції, тепла вода та правильний режим посилюють агні.",
         "cz": "Zdraví začíná trávením. Slabé agni = nestrávená potrava (ama) = toxiny. Koření, teplá voda a správný režim posilují agni.",
         "en": "Health begins with digestion. Weak Agni = undigested food (Ama) = toxins. Spices, warm water, and a proper routine strengthen Agni."
     },
-    "nat_prac_3_h": {
+    "naturo_prac_3_h": {
         "ru": "Расаяна (Омоложение)",
         "ua": "Расаяна (Омолодження)",
         "cz": "Rasajana (Omlazení)",
         "en": "Rasayana (Rejuvenation)"
     },
-    "nat_prac_3_p": {
+    "naturo_prac_3_p": {
         "ru": "После очищения тело готово к восстановлению. Адаптогены (ашваганда, шатавари), питательные масла и регенеративные практики.",
         "ua": "Після очищення тіло готове до відновлення. Адаптогени (ашваганда, шатаварі), живильні масла та регенеративні практики.",
         "cz": "Po vyčištění je tělo připraveno k regeneraci. Adaptogeny (ašvaganda, šatavari), výživné oleje a regenerační praktiky.",
         "en": "After cleansing, the body is ready for restoration. Adaptogens (ashwagandha, shatavari), nourishing oils, and regenerative practices."
     },
-    "nat_prac_4_h": {
+    "naturo_prac_4_h": {
         "ru": "Пранаяма (Дыхание)",
         "ua": "Пранаяма (Дихання)",
         "cz": "Pránájáma (Dýchání)",
         "en": "Pranayama (Breathwork)"
     },
-    "nat_prac_4_p": {
+    "naturo_prac_4_p": {
         "ru": "Контролируемое дыхание стимулирует блуждающий нерв, снижает кортизол и активирует парасимпатическую нервную систему.",
         "ua": "Контрольоване дихання стимулює блукаючий нерв, знижує кортизол і активує парасимпатичну нервову систему.",
         "cz": "Kontrolované dýchání stimuluje bloudivý nerv, snižuje kortizol a aktivuje parasympatický nervový systém.",
         "en": "Controlled breathing stimulates the vagus nerve, lowers cortisol, and activates the parasympathetic nervous system."
     },
-    "nat_h2_5": {
+    "naturo_h2_5": {
         "ru": "Почему это работает сегодня",
         "ua": "Чому це працює сьогодні",
         "cz": "Proč to dnes funguje",
         "en": "Why It Works Today"
     },
-    "nat_p_5": {
+    "naturo_p_5": {
         "ru": "Современная наука подтверждает то, что аюрведа знала тысячелетиями: хронический стресс разрушает пищеварение, токсическая нагрузка подавляет иммунитет, а режим дня напрямую влияет на гормональный фон и нейропластичность мозга.",
         "ua": "Сучасна наука підтверджує те, що аюрведа знала тисячоліттями: хронічний стрес руйнує травлення, токсичне навантаження пригнічує імунітет, а режим дня безпосередньо впливає на гормональний фон і нейропластичність мозку.",
         "cz": "Moderní věda potvrzuje to, co ájurvéda znala po tisíciletí: chronický stres ničí trávení, toxická zátěž potlačuje imunitu a denní režim přímo ovlivňuje hormonální rovnováhu a neuroplasticitu mozku.",
         "en": "Modern science confirms what Ayurveda has known for millennia: chronic stress destroys digestion, toxic load suppresses immunity, and a daily routine directly impacts hormone balance and brain neuroplasticity."
     },
-    "nat_sci_1_h": {
+    "naturo_bridge_1_h": {
         "ru": "Что подтвердила наука",
         "ua": "Що підтвердила наука",
         "cz": "Co potvrdila věda",
         "en": "What Science Confirmed"
     },
-    "nat_sci_1_p": {
+    "naturo_bridge_1_p": {
         "ru": "Антимикробные свойства горьких трав. Роль пищеварительных ферментов. Влияние циркадных ритмов на метаболизм. Ось «кишечник-мозг».",
         "ua": "Антимікробні властивості гірких трав. Роль травних ферментів. Вплив циркадних ритмів на метаболізм. Вісь «кишечник-мозок».",
         "cz": "Antimikrobiální vlastnosti hořkých bylin. Role trávicích enzymů. Vliv cirkadiánních rytmů na metabolismus. Osa „střevo-mozek“.",
         "en": "Antimicrobial properties of bitter herbs. The role of digestive enzymes. Circadian rhythm impact on metabolism. The gut-brain axis."
     },
-    "nat_sci_2_h": {
+    "naturo_bridge_2_h": {
         "ru": "Что мы используем",
         "ua": "Що ми використовуємо",
         "cz": "Co používáme",
         "en": "What We Use"
     },
-    "nat_sci_2_p": {
+    "naturo_bridge_2_p": {
         "ru": "Аюрведические принципы питания по дошам. Натуропатический подход к элиминации. Научный протокол восстановления микробиома.",
         "ua": "Аюрведичні принципи харчування по дошах. Натуропатичний підхід до елімінації. Науковий протокол відновлення мікробіома.",
         "cz": "Ájurvédské principy výživy podle dóš. Naturopatický přístup k eliminaci. Vědecký protokol pro obnovu mikrobiomu.",
@@ -1029,6 +1029,14 @@ const translations = {
         "ua": "Завантажити інструкцію Тюбажу (PDF)",
         "cz": "Stáhnout návod Tubage (PDF)",
         "en": "Download Tubage Guide (PDF)"
+    },
+
+    // ════════════ PDF AVAILABILITY ════════════
+    "pdf_unavailable": {
+        "ru": "PDF пока недоступен на этом языке",
+        "ua": "PDF поки недоступний цією мовою",
+        "cz": "PDF zatím není k dispozici v tomto jazyce",
+        "en": "PDF not yet available in this language"
     }
 };
 

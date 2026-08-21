@@ -1,0 +1,15 @@
+# Legacy source material and development-only files are not part of the public MVP.
+.git
+.agents
+.codex
+venv
+PFDmeto
+PDFbiom
+PDFlife
+*.pdf
+*.md
+merge_pdfs*.py
+translations.js
+pdf-matrix.js
+scripts
+supabase

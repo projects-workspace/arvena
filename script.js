@@ -1,704 +1,409 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const track = document.getElementById('slider-track');
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const logoBtn = document.querySelector('.logo-btn');
-    const dots = document.querySelectorAll('.dot');
-    const navLinkBtns = document.querySelectorAll('.nav-link-btn');
-    const popupOverlay = document.getElementById('popup-overlay');
-    const popupClose = document.getElementById('popup-close');
-    const popupContent = document.getElementById('popup-content');
-    
-    // Mobile menu elements
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-    const mobileMenuClose = document.getElementById('mobile-menu-close');
-    const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
-    const mobilePageTitle = document.getElementById('mobile-page-title');
+'use strict';
 
-    const PANEL_COUNT = 5;
-    const CENTER_PANEL = 2; // Main page is panel index 2
-    let currentSlide = CENTER_PANEL;
+(function () {
+    const ROUTES = Object.freeze({
+        '/home': { screen: 'home', nav: 'home', title: 'Arvena — Clearer choices for healthier living' },
+        '/explore': { screen: 'explore', nav: 'explore', title: 'Explore healthier-living solutions — Arvena' },
+        '/solutions/clean-water': { screen: 'clean-water', nav: 'clean-water', title: 'Cleaner drinking water at home — Arvena' },
+        '/products/certified-point-of-use-filter': { screen: 'product', nav: 'clean-water', title: 'Certified point-of-use water filter — Arvena' },
+        '/request': { screen: 'request', nav: 'clean-water', title: 'Request a verified water-filter option — Arvena' },
+        '/result': { screen: 'result', nav: 'clean-water', title: 'Request confirmed — Arvena' },
+        '/methodology': { screen: 'methodology', nav: 'methodology', title: 'Methodology and safety — Arvena' }
+    });
 
-    // ═══════════════════════════════════════════
-    // THEME TOGGLE (Dark/Light Mode)
-    // ═══════════════════════════════════════════
-    const themeToggleBtns = document.querySelectorAll('.theme-toggle');
+    const DEFAULT_ROUTE = '/home';
+    const LAST_SUBMISSION_KEY = 'arvena-last-submission-at';
+    const CONFIRMATION_KEY = 'arvena-confirmation-reference';
+    const THEME_KEY = 'arvena-theme';
+    const SUBMISSION_COOLDOWN_MS = 45 * 1000;
 
-    function setTheme(themeName) {
-        if (themeName === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeToggleBtns.forEach(btn => {
-                btn.querySelector('.sun-icon').style.display = 'none';
-                btn.querySelector('.moon-icon').style.display = 'block';
-            });
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-            themeToggleBtns.forEach(btn => {
-                btn.querySelector('.sun-icon').style.display = 'block';
-                btn.querySelector('.moon-icon').style.display = 'none';
-            });
-        }
-        localStorage.setItem('santiago_theme', themeName);
+    const screens = Array.from(document.querySelectorAll('[data-screen]'));
+    const navLinks = Array.from(document.querySelectorAll('[data-nav-route]'));
+    const menuToggle = document.querySelector('.menu-toggle');
+    const primaryNav = document.querySelector('.primary-nav');
+    const themeToggle = document.querySelector('.theme-toggle');
+    const mainContent = document.getElementById('main-content');
+    const form = document.getElementById('water-request-form');
+    const formStatus = document.getElementById('form-status');
+    const submitButton = document.getElementById('request-submit');
+    const notesField = document.getElementById('request-notes');
+    const notesCount = document.getElementById('notes-count');
+    const confirmationReference = document.getElementById('confirmation-reference');
+    let hasHandledInitialRoute = false;
+
+    function getData() {
+        return window.ARVENA_DATA || { solutions: [], products: [] };
     }
 
-    // Initialize Theme
-    const savedTheme = localStorage.getItem('santiago_theme');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (savedTheme) {
-        setTheme(savedTheme);
-    } else if (prefersDark) {
-        setTheme('dark');
-    } else {
-        setTheme('light');
+    function findSolution() {
+        return getData().solutions.find((item) => item.slug === 'clean-water-at-home');
     }
 
-    themeToggleBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        });
-    });
-
-    // ═══════════════════════════════════════════
-    // SLIDER NAVIGATION
-    // ═══════════════════════════════════════════
-
-    function goToSlide(index) {
-        if (index < 0 || index >= PANEL_COUNT) return;
-        currentSlide = index;
-        const offset = -(index * 100);
-        track.style.transform = `translateX(${offset}vw)`;
-
-        // Update dots
-        dots.forEach(dot => dot.classList.remove('active'));
-        if (dots[index]) dots[index].classList.add('active');
-
-        // Update nav buttons
-        navButtons.forEach(btn => {
-            const target = parseInt(btn.getAttribute('data-target'));
-            btn.classList.toggle('active', target === index);
-        });
-
-        // Update mobile nav buttons
-        mobileNavBtns.forEach(btn => {
-            const target = parseInt(btn.getAttribute('data-target'));
-            btn.classList.toggle('active', target === index);
-        });
-        
-        // Update mobile page title
-        updateMobileTitle();
-
-        // Scroll panel content to top when navigating
-        const panels = document.querySelectorAll('.panel-scroll');
-        if (panels[index]) {
-            panels[index].scrollTop = 0;
-        }
-
-        // Update side nav arrows visibility
-        if (typeof updateSideNav === 'function') updateSideNav();
+    function findProduct() {
+        return getData().products.find((item) => item.slug === 'certified-point-of-use-filter');
     }
 
-    // Nav button clicks
-    navButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const target = parseInt(e.currentTarget.getAttribute('data-target'));
-            goToSlide(target);
-        });
-    });
+    function setText(bindName, value) {
+        const element = document.querySelector(`[data-bind="${bindName}"]`);
+        if (element) element.textContent = value || '';
+    }
 
-    // Logo click (go home to center)
-    logoBtn.addEventListener('click', () => {
-        goToSlide(CENTER_PANEL);
-    });
+    function renderStructuredContent() {
+        const solution = findSolution();
+        const product = findProduct();
 
-    // Mobile dots clicks
-    dots.forEach(dot => {
-        dot.addEventListener('click', (e) => {
-            const target = parseInt(e.currentTarget.getAttribute('data-target'));
-            goToSlide(target);
-        });
-    });
+        if (!solution || !product) return;
 
-    // Mobile nav button clicks
-    mobileNavBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const target = parseInt(e.currentTarget.getAttribute('data-target'));
-            goToSlide(target);
-            closeMobileMenu();
-        });
-    });
+        setText('solution-reviewed-at', solution.reviewedAt);
 
-    // Mobile Header Hide on Scroll Down
-    const navbar = document.getElementById('navbar');
-    const panelScrolls = document.querySelectorAll('.panel-scroll');
-    
-    panelScrolls.forEach(panel => {
-        let lastScrollTop = 0;
-        panel.addEventListener('scroll', () => {
-            if (window.innerWidth > 768) return; // Only apply on mobile
+        const steps = document.getElementById('solution-steps');
+        steps.replaceChildren(...solution.steps.map((step) => {
+            const item = document.createElement('li');
+            const title = document.createElement('h3');
+            const text = document.createElement('p');
+            title.textContent = step.title;
+            text.textContent = step.text;
+            item.append(title, text);
+            return item;
+        }));
 
-            let scrollTop = panel.scrollTop;
-            
-            // Allow some threshold to prevent jitter
-            if (Math.abs(scrollTop - lastScrollTop) <= 10) return;
-            
-            // At top of page, always show header
-            if (scrollTop <= 50) {
-                navbar.classList.remove('navbar-hidden');
-            } else if (scrollTop > lastScrollTop) {
-                // Scrolling down
-                navbar.classList.add('navbar-hidden');
-            } else {
-                // Scrolling up
-                navbar.classList.remove('navbar-hidden');
+        const technologies = document.getElementById('solution-technologies');
+        technologies.replaceChildren(...solution.technologies.map((technology) => {
+            const article = document.createElement('article');
+            article.className = 'technology-card';
+
+            const level = document.createElement('span');
+            level.className = 'technology-level';
+            level.textContent = technology.level;
+
+            const title = document.createElement('h3');
+            title.textContent = technology.name;
+
+            const details = document.createElement('dl');
+            const usefulTerm = document.createElement('dt');
+            const usefulDefinition = document.createElement('dd');
+            const limitTerm = document.createElement('dt');
+            const limitDefinition = document.createElement('dd');
+            usefulTerm.textContent = 'Potential fit';
+            usefulDefinition.textContent = technology.usefulFor;
+            limitTerm.textContent = 'Important limit';
+            limitDefinition.textContent = technology.limitation;
+            details.append(usefulTerm, usefulDefinition, limitTerm, limitDefinition);
+            article.append(level, title, details);
+            return article;
+        }));
+
+        setText('product-title', product.title);
+        setText('product-description', product.description);
+        setText('product-why-selected', product.whySelected);
+        setText('product-problem', product.problem);
+        setText('product-materials', product.materials);
+        setText('product-price', product.priceLevel);
+        setText('product-status', product.status);
+        setText('product-availability', product.availability);
+        setText('product-reviewed-at', product.reviewedAt);
+
+        const evidenceList = document.getElementById('product-evidence');
+        evidenceList.replaceChildren(...product.evidence.map((evidence) => {
+            const article = document.createElement('article');
+            article.className = 'evidence-item';
+
+            const meta = document.createElement('div');
+            meta.className = 'evidence-item-meta';
+            const type = document.createElement('span');
+            const confidence = document.createElement('strong');
+            type.textContent = evidence.type;
+            confidence.textContent = evidence.confidence;
+            meta.append(type, confidence);
+
+            const content = document.createElement('div');
+            const explanation = document.createElement('p');
+            const source = document.createElement('a');
+            explanation.textContent = evidence.explanation;
+            source.className = 'evidence-source';
+            source.href = evidence.sourceUrl;
+            source.textContent = `${evidence.sourceTitle} →`;
+            if (evidence.sourceUrl.startsWith('http')) {
+                source.target = '_blank';
+                source.rel = 'noreferrer';
             }
-            lastScrollTop = scrollTop;
-        });
-    });
+            content.append(explanation, source);
+            article.append(meta, content);
+            return article;
+        }));
 
-    // Mobile Menu Toggle logic
-    if (mobileMenuToggle && mobileMenuOverlay && mobileMenuClose) {
-        mobileMenuToggle.addEventListener('click', () => {
-            mobileMenuOverlay.classList.add('active');
-        });
-        
-        mobileMenuClose.addEventListener('click', closeMobileMenu);
-        
-        mobileMenuOverlay.addEventListener('click', (e) => {
-            if (e.target === mobileMenuOverlay) closeMobileMenu();
-        });
+        const limitations = document.getElementById('product-limitations');
+        limitations.replaceChildren(...product.limitations.map((limitation) => {
+            const item = document.createElement('li');
+            item.textContent = limitation;
+            return item;
+        }));
     }
-    
-    function closeMobileMenu() {
-        if (mobileMenuOverlay) {
-            mobileMenuOverlay.classList.remove('active');
+
+    function normaliseRoute() {
+        const rawHash = window.location.hash.replace(/^#/, '');
+        if (!rawHash || rawHash === '/') return DEFAULT_ROUTE;
+        return rawHash.startsWith('/') ? rawHash : `/${rawHash}`;
+    }
+
+    function closeMenu({ restoreFocus = false } = {}) {
+        if (!menuToggle || !primaryNav) return;
+        primaryNav.classList.remove('is-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.querySelector('.sr-only').textContent = 'Open navigation';
+        document.body.classList.remove('nav-open');
+        if (restoreFocus) menuToggle.focus();
+    }
+
+    function showRoute({ moveFocus = true } = {}) {
+        let routePath = normaliseRoute();
+        let route = ROUTES[routePath] || { screen: 'not-found', nav: '', title: 'Page not found — Arvena' };
+
+        if (route.screen === 'result' && !sessionStorage.getItem(CONFIRMATION_KEY)) {
+            routePath = '/request';
+            route = ROUTES[routePath];
+            window.history.replaceState(null, '', '#/request');
+        }
+
+        screens.forEach((screen) => {
+            screen.hidden = screen.dataset.screen !== route.screen;
+        });
+
+        navLinks.forEach((link) => {
+            if (link.dataset.navRoute === route.nav) {
+                link.setAttribute('aria-current', 'page');
+            } else {
+                link.removeAttribute('aria-current');
+            }
+        });
+
+        document.title = route.title;
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        closeMenu();
+
+        if (route.screen === 'result') {
+            const reference = sessionStorage.getItem(CONFIRMATION_KEY);
+            confirmationReference.textContent = reference || 'Not available';
+        }
+
+        const shouldMoveFocus = moveFocus && hasHandledInitialRoute;
+        hasHandledInitialRoute = true;
+        if (shouldMoveFocus) {
+            const heading = document.querySelector(`[data-screen="${route.screen}"] h1`);
+            if (heading) {
+                heading.setAttribute('tabindex', '-1');
+                heading.focus({ preventScroll: true });
+            } else if (mainContent) {
+                mainContent.focus({ preventScroll: true });
+            }
         }
     }
 
-    // In-page navigation buttons (like "Узнать больше о Микробиоме")
-    navLinkBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const target = parseInt(e.currentTarget.getAttribute('data-target'));
-            goToSlide(target);
-        });
-    });
-
-    // ═══════════════════════════════════════════
-    // SIDE NAV ZONES (Proportional mouse-drag slide peeking)
-    // ═══════════════════════════════════════════
-    // The active zone starts right after the panel-content area.
-    // Moving the mouse toward the screen edge gradually shifts the slide.
-    // Reaching the very edge commits the slide change.
-    // Pulling back before the edge snaps back to the original slide.
-
-    const sideNavLeft = document.getElementById('side-nav-left');
-    const sideNavRight = document.getElementById('side-nav-right');
-
-    // State for proportional peeking
-    let isPeeking = false;
-    let peekDirection = null; // 'left' or 'right'
-    let peekBaseSlide = null;
-    let isTransitioning = false; // lock during committed transitions
-
-    function updateSideNav() {
-        if (!sideNavLeft || !sideNavRight) return;
-        sideNavLeft.classList.toggle('hidden', currentSlide === 0);
-        sideNavRight.classList.toggle('hidden', currentSlide === PANEL_COUNT - 1);
+    function getInitialTheme() {
+        const stored = localStorage.getItem(THEME_KEY);
+        if (stored === 'light' || stored === 'dark') return stored;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-    // Calculate where the CURRENT panel's content edges are (the text zone)
-    function getContentEdges() {
-        const panels = document.querySelectorAll('.panel');
-        const currentPanel = panels[currentSlide];
-        const panelContentEl = currentPanel
-            ? currentPanel.querySelector('.panel-content')
-            : null;
+    function applyTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+        themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+        themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Use light theme' : 'Use dark theme');
+    }
 
-        if (!panelContentEl) {
-            // fallback: assume 900px centered
-            const contentWidth = Math.min(900, window.innerWidth);
-            const leftEdge = (window.innerWidth - contentWidth) / 2;
-            return { left: leftEdge, right: leftEdge + contentWidth };
+    function toggleTheme() {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(THEME_KEY, next);
+        applyTheme(next);
+    }
+
+    function toggleMenu() {
+        const open = menuToggle.getAttribute('aria-expanded') === 'true';
+        menuToggle.setAttribute('aria-expanded', String(!open));
+        menuToggle.querySelector('.sr-only').textContent = open ? 'Open navigation' : 'Close navigation';
+        primaryNav.classList.toggle('is-open', !open);
+        document.body.classList.toggle('nav-open', !open);
+        if (!open) {
+            const firstLink = primaryNav.querySelector('a');
+            if (firstLink) firstLink.focus();
+        }
+    }
+
+    function setFormStatus(message, state = '') {
+        formStatus.textContent = message;
+        formStatus.className = 'form-status';
+        if (state) formStatus.classList.add(`is-${state}`);
+    }
+
+    function clearFieldValidity() {
+        form.querySelectorAll('[aria-invalid="true"]').forEach((field) => {
+            field.removeAttribute('aria-invalid');
+        });
+    }
+
+    function validateForm() {
+        clearFieldValidity();
+        const requiredFields = Array.from(form.querySelectorAll('[required]'));
+        const firstInvalid = requiredFields.find((field) => !field.checkValidity());
+        if (firstInvalid) {
+            firstInvalid.setAttribute('aria-invalid', 'true');
+            firstInvalid.focus();
+            firstInvalid.reportValidity();
+            setFormStatus('Please complete the highlighted field before sending.', 'error');
+            return false;
         }
 
-        // panel-content is inside the slider-track which is translated,
-        // so getBoundingClientRect gives its on-screen position.
-        // But during peek the track moves, so we compute from the panel-content's
-        // own width & centering, which is constant regardless of track offset.
-        const contentWidth = panelContentEl.offsetWidth;
-        const leftEdge = (window.innerWidth - contentWidth) / 2;
-        return { left: leftEdge, right: leftEdge + contentWidth };
+        if (form.elements.website.value.trim()) {
+            setFormStatus('This request could not be submitted.', 'error');
+            return false;
+        }
+
+        return true;
     }
 
-    // Global mousemove handler for proportional peeking (hint only, no auto-switch)
-    function handleMouseMove(e) {
-        if (isTransitioning) return;
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
-        const navbarHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height')) || 72;
+    function decodeJwtRole(key) {
+        try {
+            const payload = key.split('.')[1];
+            if (!payload) return '';
+            const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+            const normalised = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+            const decoded = JSON.parse(atob(normalised));
+            return decoded.role || '';
+        } catch (_error) {
+            return '';
+        }
+    }
 
-        // Ignore if mouse is in the navbar area
-        if (mouseY < navbarHeight) {
-            if (isPeeking) cancelPeek();
+    function getSupabaseConfig() {
+        const config = window.ARVENA_SUPABASE_CONFIG || {};
+        const url = String(config.url || '').replace(/\/$/, '');
+        const key = String(config.publishableKey || '');
+        const table = String(config.table || 'arvena_mvp_requests');
+        const urlIsValid = /^https:\/\/[a-z0-9]+\.supabase\.co$/i.test(url);
+        const keyIsSecret = key.startsWith('sb_secret_') || decodeJwtRole(key) === 'service_role';
+        const keyLooksPublishable = key.startsWith('sb_publishable_') || decodeJwtRole(key) === 'anon';
+
+        if (!urlIsValid || !keyLooksPublishable || keyIsSecret || table !== 'arvena_mvp_requests') {
+            throw new Error('The request service is not connected to the dedicated Arvena Supabase project in this checkout. No information was sent.');
+        }
+
+        return { url, key, table };
+    }
+
+    function createRequestId() {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+            return window.crypto.randomUUID();
+        }
+        const bytes = new Uint8Array(16);
+        window.crypto.getRandomValues(bytes);
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+        return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+    }
+
+    function cooldownRemaining() {
+        const submittedAt = Number(sessionStorage.getItem(LAST_SUBMISSION_KEY) || 0);
+        return Math.max(0, SUBMISSION_COOLDOWN_MS - (Date.now() - submittedAt));
+    }
+
+    async function submitRequest(event) {
+        event.preventDefault();
+        setFormStatus('');
+        if (!validateForm()) return;
+
+        const remaining = cooldownRemaining();
+        if (remaining > 0) {
+            setFormStatus(`Please wait ${Math.ceil(remaining / 1000)} seconds before sending another request.`, 'error');
             return;
         }
 
-        const edges = getContentEdges();
-        const screenW = window.innerWidth;
-
-        // LEFT ZONE: mouse is to the left of text content
-        if (mouseX < edges.left && currentSlide > 0) {
-            if (!isPeeking || peekDirection !== 'left') {
-                startPeek('left');
-            }
-            // Calculate progress: 0 at content edge, 1 at screen edge
-            const zoneWidth = edges.left;
-            const progress = Math.max(0, Math.min(1, (edges.left - mouseX) / zoneWidth));
-
-            applyPeekOffset(progress, 'left');
-
-            // Show the arrow + glow
-            if (sideNavLeft) sideNavLeft.classList.add('peek-active');
-            if (sideNavRight) sideNavRight.classList.remove('peek-active');
+        let config;
+        try {
+            config = getSupabaseConfig();
+        } catch (error) {
+            setFormStatus(error.message, 'error');
+            return;
         }
-        // RIGHT ZONE: mouse is to the right of text content
-        else if (mouseX > edges.right && currentSlide < PANEL_COUNT - 1) {
-            if (!isPeeking || peekDirection !== 'right') {
-                startPeek('right');
-            }
-            // Calculate progress: 0 at content edge, 1 at screen edge
-            const zoneWidth = screenW - edges.right;
-            const progress = Math.max(0, Math.min(1, (mouseX - edges.right) / zoneWidth));
 
-            applyPeekOffset(progress, 'right');
-
-            // Show the arrow + glow
-            if (sideNavRight) sideNavRight.classList.add('peek-active');
-            if (sideNavLeft) sideNavLeft.classList.remove('peek-active');
-        }
-        // Mouse is back in the text content area
-        else {
-            if (isPeeking) {
-                cancelPeek();
-            }
-        }
-    }
-
-    function startPeek(direction) {
-        isPeeking = true;
-        peekDirection = direction;
-        peekBaseSlide = currentSlide;
-        // Disable CSS transition — we animate with requestAnimationFrame instead
-        track.style.transition = 'none';
-        // Initialize lerp state from current position
-        peekCurrentOffset = -(currentSlide * 100);
-        peekTargetOffset = peekCurrentOffset;
-        // Start the animation loop
-        if (!peekAnimating) {
-            peekAnimating = true;
-            requestAnimationFrame(peekAnimationLoop);
-        }
-    }
-
-    // Max peek: just a subtle hint, not a full panel shift
-    const MAX_PEEK_VW = 4;
-    // Lerp smoothing factor (0 = no movement, 1 = instant). Lower = smoother/slower.
-    const LERP_FACTOR = 0.06;
-
-    let peekTargetOffset = 0;   // Where we want to be (vw)
-    let peekCurrentOffset = 0;  // Where we actually are (vw)
-    let peekAnimating = false;
-
-    function applyPeekOffset(progress, direction) {
-        // Compute target offset
-        const baseOffset = -(peekBaseSlide * 100); // in vw
-        const peekAmount = progress * MAX_PEEK_VW; // in vw (no extra easing, lerp handles smoothing)
-
-        if (direction === 'left') {
-            peekTargetOffset = baseOffset + peekAmount;
-        } else {
-            peekTargetOffset = baseOffset - peekAmount;
-        }
-    }
-
-    function peekAnimationLoop() {
-        if (!peekAnimating) return;
-
-        // Smoothly interpolate current toward target
-        peekCurrentOffset += (peekTargetOffset - peekCurrentOffset) * LERP_FACTOR;
-
-        // Apply the smoothed position
-        track.style.transform = `translateX(${peekCurrentOffset}vw)`;
-
-        // Keep animating if we haven't settled
-        if (Math.abs(peekTargetOffset - peekCurrentOffset) > 0.01) {
-            requestAnimationFrame(peekAnimationLoop);
-        } else {
-            // Close enough — snap to exact target
-            peekCurrentOffset = peekTargetOffset;
-            track.style.transform = `translateX(${peekCurrentOffset}vw)`;
-            // If still peeking, keep the loop alive for future mouse moves
-            if (isPeeking) {
-                requestAnimationFrame(peekAnimationLoop);
-            } else {
-                peekAnimating = false;
-            }
-        }
-    }
-
-    function cancelPeek() {
-        if (!isPeeking) return;
-        isPeeking = false;
-
-        // Stop the animation loop
-        peekAnimating = false;
-
-        // Smooth snap back with CSS transition
-        track.style.transition = 'transform 1.2s cubic-bezier(0.22, 0.68, 0.35, 1)';
-        const baseOffset = -(peekBaseSlide * 100);
-        track.style.transform = `translateX(${baseOffset}vw)`;
-
-        // Reset lerp state
-        peekCurrentOffset = baseOffset;
-        peekTargetOffset = baseOffset;
-
-        if (sideNavLeft) sideNavLeft.classList.remove('peek-active');
-        if (sideNavRight) sideNavRight.classList.remove('peek-active');
-        peekDirection = null;
-        peekBaseSlide = null;
-
-        // Restore default transition after snap-back
-        setTimeout(() => {
-            track.style.transition = 'var(--transition-slide)';
-        }, 1300);
-    }
-
-    // Attach global mousemove — only active on desktop (not mobile)
-    if (window.matchMedia('(pointer: fine)').matches) {
-        document.addEventListener('mousemove', handleMouseMove);
-
-        // Also cancel peek if mouse leaves the window entirely
-        document.addEventListener('mouseleave', () => {
-            if (isPeeking) cancelPeek();
-        });
-    }
-
-    // Click ANYWHERE in the active zone (outside text) to instantly switch slides
-    document.addEventListener('click', (e) => {
-        if (isTransitioning) return;
-
-        // Ignore clicks on interactive elements (buttons, links, inputs, etc.)
-        const tag = e.target.tagName;
-        if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-        if (e.target.closest('button, a, .popup-overlay, .navbar, .mobile-dots')) return;
-
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
-        const navbarHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height')) || 72;
-
-        // Ignore clicks in navbar
-        if (mouseY < navbarHeight) return;
-
-        const edges = getContentEdges();
-
-        // Click in left zone
-        if (mouseX < edges.left && currentSlide > 0) {
-            if (isPeeking) cancelPeek();
-            isTransitioning = true;
-            track.style.transition = 'transform 1.6s cubic-bezier(0.22, 0.68, 0.35, 1)';
-            goToSlide(currentSlide - 1);
-            setTimeout(() => {
-                isTransitioning = false;
-                track.style.transition = 'var(--transition-slide)';
-            }, 1700);
-        }
-        // Click in right zone
-        else if (mouseX > edges.right && currentSlide < PANEL_COUNT - 1) {
-            if (isPeeking) cancelPeek();
-            isTransitioning = true;
-            track.style.transition = 'transform 1.6s cubic-bezier(0.22, 0.68, 0.35, 1)';
-            goToSlide(currentSlide + 1);
-            setTimeout(() => {
-                isTransitioning = false;
-                track.style.transition = 'var(--transition-slide)';
-            }, 1700);
-        }
-    });
-
-    // ═══════════════════════════════════════════
-    // TOUCH / SWIPE SUPPORT
-    // ═══════════════════════════════════════════
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let isSwiping = false;
-
-    document.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-        isSwiping = true;
-    }, { passive: true });
-
-    document.addEventListener('touchend', (e) => {
-        if (!isSwiping) return;
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-        const deltaX = touchEndX - touchStartX;
-        const deltaY = touchEndY - touchStartY;
-
-        // Only handle horizontal swipes (ignore vertical scrolling)
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
-            if (deltaX < 0 && currentSlide < PANEL_COUNT - 1) {
-                goToSlide(currentSlide + 1);
-            } else if (deltaX > 0 && currentSlide > 0) {
-                goToSlide(currentSlide - 1);
-            }
-        }
-        isSwiping = false;
-    }, { passive: true });
-
-    // ═══════════════════════════════════════════
-    // TRACKPAD HORIZONTAL SWIPE SUPPORT (Mac/Laptops)
-    // ═══════════════════════════════════════════
-
-    let wheelAccumulator = 0;
-    let wheelCooldown = false;
-    let lastWheelTime = 0;
-    let lastDeltaX = 0;
-
-    document.addEventListener('wheel', (e) => {
-        const now = Date.now();
-        
-        // Reset state if it's been a while (new swipe entirely)
-        if (now - lastWheelTime > 250) {
-            wheelAccumulator = 0;
-            wheelCooldown = false;
-        }
-        
-        // Velocity spike detection: Trackpad inertia decays over time.
-        // If we see a sudden STRONG jump in deltaX (>30), it means a new physical swipe.
-        // We require deltaX > 30 to avoid false positives from uneven inertia deceleration.
-        if (Math.abs(e.deltaX) > 30 && Math.abs(e.deltaX) > Math.abs(lastDeltaX) + 15) {
-            wheelCooldown = false; 
-            wheelAccumulator = 0;
-        }
-        
-        lastWheelTime = now;
-        lastDeltaX = e.deltaX;
-
-        // If we are currently locked by inertia cooldown, ignore
-        if (wheelCooldown) return;
-        
-        // Ignore if scrolling mostly vertically (e.g., reading text)
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            wheelAccumulator = 0;
-            return; 
-        }
-        
-        // Accumulate horizontal scroll distance
-        wheelAccumulator += e.deltaX;
-
-        // The total accumulated distance required to trigger a slide switch
-        const SWIPE_THRESHOLD = 70; // Increased slightly to prevent accidental triggers
-
-        if (wheelAccumulator > SWIPE_THRESHOLD && currentSlide < PANEL_COUNT - 1) {
-            wheelCooldown = true;
-            wheelAccumulator = 0;
-            goToSlide(currentSlide + 1);
-            // 800ms cooldown blocks inertia, but strong velocity spike (above) breaks this instantly
-            setTimeout(() => wheelCooldown = false, 800);
-        } else if (wheelAccumulator < -SWIPE_THRESHOLD && currentSlide > 0) {
-            wheelCooldown = true;
-            wheelAccumulator = 0;
-            goToSlide(currentSlide - 1);
-            setTimeout(() => wheelCooldown = false, 800);
-        }
-    }, { passive: true });
-
-    // ═══════════════════════════════════════════
-    // KEYBOARD NAVIGATION
-    // ═══════════════════════════════════════════
-
-    document.addEventListener('keydown', (e) => {
-        // Don't navigate if popup is open or user is typing
-        if (popupOverlay.classList.contains('active')) return;
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-        if (e.key === 'ArrowLeft' && currentSlide > 0) {
-            goToSlide(currentSlide - 1);
-        } else if (e.key === 'ArrowRight' && currentSlide < PANEL_COUNT - 1) {
-            goToSlide(currentSlide + 1);
-        }
-    });
-
-    // ═══════════════════════════════════════════
-    // PRODUCT POPUP MODAL
-    // ═══════════════════════════════════════════
-
-    const productData = {
-        herbs: {
-            title: 'Горькие травы (Антипаразитарный сбор)',
-            description: `
-                <p>Базовый антипаразитарный этап нашего протокола. Сбор включает тщательно подобранные горькие травы, которые веками использовались в натуропатии для мягкой нейтрализации патогенов.</p>
-                <h3>Состав и действие</h3>
-                <p>Полынь, пижма, гвоздика и черный орех — каждый компонент усиливает действие другого. Горечи стимулируют выработку желчи, что само по себе является антипаразитарным фактором.</p>
-                <h3>Как принимать</h3>
-                <p>Заваривать как чай, принимать натощак или за 30 минут до еды. Начинать с малых доз, постепенно увеличивая. Подробные дозировки — в PDF-протоколе.</p>
-            `
-        },
-        pvjm: {
-            title: 'Настойка ПВЖМ (Экстракт восковой моли)',
-            description: `
-                <p>Утренняя поддержка вашего организма. Экстракт личинок восковой моли содержит уникальный фермент — церразу.</p>
-                <h3>Уникальные свойства</h3>
-                <p>Церраза способна растворять защитные оболочки (биопленки) паразитов и вирусов, делая их уязвимыми для иммунной системы и антипаразитарных трав.</p>
-                <h3>Как принимать</h3>
-                <p>Несколько капель утром натощак, развести в небольшом количестве воды. Точная дозировка зависит от концентрации и указана в PDF-протоколе.</p>
-            `
-        },
-        enzymes: {
-            title: 'Живые ферменты (Яблочный уксус)',
-            description: `
-                <p>Подготовка пищеварительного тракта к оптимальной работе. Натуральный нефильтрованный яблочный уксус с «матерью» — живой культурой бактерий.</p>
-                <h3>Зачем это нужно</h3>
-                <p>Нормализует кислотность желудка, что критически важно для качественного усвоения микроэлементов и витаминов. Без нормальной кислотности пища не переваривается полностью.</p>
-                <h3>Как принимать</h3>
-                <p>Разводить в стакане воды, пить за 15-20 минут до еды. Это подготавливает желудок к приему пищи.</p>
-            `
-        },
-        tea: {
-            title: 'Травяной чай «45 трав»',
-            description: `
-                <p>Глубокое питание и детоксикация на клеточном уровне. Уникальная формула из 45 тщательно подобранных трав.</p>
-                <h3>Действие</h3>
-                <p>Очищает лимфатическую систему, питает клетки микроэлементами, поддерживает работу печени и почек. Идеально подходит как основа для процедуры тюбажа.</p>
-                <h3>Как пить</h3>
-                <p>Заваривать в термосе и пить в течение дня вместо обычного чая. Можно добавлять мед или лимон. Подробности заваривания — в видео-инструкции.</p>
-            `
-        },
-        sorbents: {
-            title: 'Умные сорбенты (Утренний и Вечерний)',
-            description: `
-                <p>Безопасная эвакуация токсинов из организма. Два вида порошка для утреннего и вечернего приема.</p>
-                <h3>Механизм действия</h3>
-                <p>Работают как природная губка — связывают и выводят продукты распада патогенов, тяжелые металлы и токсины. При этом не повреждают слизистую и не выводят полезные минералы.</p>
-                <h3>Почему два вида</h3>
-                <p>Утренний сорбент оптимизирован для работы с желудочной средой. Вечерний — для кишечника. Вместе они обеспечивают полный цикл очистки. Важно правильно разводить — смотрите видео!</p>
-            `
-        }
-    };
-
-    // Make openPopup globally available
-    window.openPopup = function(productKey) {
-        const product = productData[productKey];
-        if (!product) return;
-
-        popupContent.innerHTML = `
-            <h2>${product.title}</h2>
-            ${product.description}
-        `;
-        popupOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    };
-
-    // Close popup
-    function closePopup() {
-        popupOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    popupClose.addEventListener('click', closePopup);
-    popupOverlay.addEventListener('click', (e) => {
-        if (e.target === popupOverlay) closePopup();
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closePopup();
-    });
-
-    // ═══════════════════════════════════════════
-    // LANGUAGE SWITCHER (4-Language i18n)
-    // ═══════════════════════════════════════════
-
-    const langBtns = document.querySelectorAll('.lang-btn');
-    let currentLang = localStorage.getItem('santiago-lang') || 'ru';
-
-    function setLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('santiago-lang', lang);
-
-        // Update active class on buttons
-        langBtns.forEach(btn => {
-            if (btn.dataset.lang === lang) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-
-        // 1. Swap all text using translations dictionary
-        const elements = document.querySelectorAll('[data-i18n]');
-        elements.forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (translations[key] && translations[key][lang]) {
-                el.innerHTML = translations[key][lang]; 
-            }
-        });
-
-        // Update mobile title if needed
-        updateMobileTitle();
-
-        // 2. Swap PDF download links based on data-pdf attributes
-        document.querySelectorAll('[data-pdf-ru][data-pdf-ua][data-pdf-cz][data-pdf-en]').forEach(link => {
-            link.href = link.getAttribute(`data-pdf-${lang}`);
-        });
-
-        // 3. Update HTML lang attribute
-        const htmlLangs = {
-            'ru': 'ru',
-            'ua': 'uk',
-            'cz': 'cs',
-            'en': 'en'
+        const requestId = createRequestId();
+        const payload = {
+            client_request_id: requestId,
+            request_type: 'water_filter_match',
+            email: form.elements.email.value.trim(),
+            country: form.elements.country.value.trim(),
+            concern: form.elements.concern.value,
+            notes: form.elements.notes.value.trim() || null,
+            consent: form.elements.consent.checked,
+            solution_slug: 'clean-water-at-home',
+            product_slug: 'certified-point-of-use-filter',
+            source_path: '#/request'
         };
-        document.documentElement.lang = htmlLangs[lang] || 'ru';
-    }
 
-    if (langBtns.length > 0) {
-        langBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                setLanguage(btn.dataset.lang);
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending request…';
+        setFormStatus('Connecting securely to Arvena…', 'pending');
+
+        try {
+            const response = await fetch(`${config.url}/rest/v1/${config.table}`, {
+                method: 'POST',
+                headers: {
+                    apikey: config.key,
+                    Authorization: `Bearer ${config.key}`,
+                    'Content-Type': 'application/json',
+                    Prefer: 'return=minimal'
+                },
+                body: JSON.stringify(payload)
             });
-        });
-        
-        // Apply saved language on load
-        setLanguage(currentLang);
-    }
 
-    // ═══════════════════════════════════════════
-    // MOBILE TITLE UPDATER
-    // ═══════════════════════════════════════════
-
-    function updateMobileTitle() {
-        if (!mobilePageTitle) return;
-        
-        // Find the active mobile nav button
-        const activeBtn = Array.from(mobileNavBtns).find(btn => btn.classList.contains('active'));
-        if (activeBtn) {
-            // Check if it has a translation key
-            const key = activeBtn.getAttribute('data-i18n');
-            if (key && translations[key] && translations[key][currentLang]) {
-                mobilePageTitle.innerHTML = translations[key][currentLang];
-            } else {
-                // Default to Santiago for center panel or if no translation
-                mobilePageTitle.innerHTML = "SANTIAGO";
+            if (!response.ok) {
+                let code = '';
+                try {
+                    const errorPayload = await response.json();
+                    code = errorPayload.code || '';
+                } catch (_error) {
+                    code = '';
+                }
+                throw new Error(code ? `Database request failed (${code}).` : 'The database did not accept the request.');
             }
+
+            const shortReference = `ARV-${requestId.slice(0, 8).toUpperCase()}`;
+            sessionStorage.setItem(LAST_SUBMISSION_KEY, String(Date.now()));
+            sessionStorage.setItem(CONFIRMATION_KEY, shortReference);
+            form.reset();
+            notesCount.textContent = '0';
+            window.location.hash = '#/result';
+        } catch (error) {
+            const message = error instanceof TypeError
+                ? 'Arvena could not reach the request service. Check the connection and try again; no success was recorded.'
+                : `${error.message} No success was recorded.`;
+            setFormStatus(message, 'error');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send sourcing request';
         }
     }
 
-    // ═══════════════════════════════════════════
-    // INITIAL STATE
-    // ═══════════════════════════════════════════
+    renderStructuredContent();
+    applyTheme(getInitialTheme());
+    showRoute({ moveFocus: false });
 
-    // Set initial active state for center panel nav
-    goToSlide(CENTER_PANEL);
-});
+    window.addEventListener('hashchange', () => showRoute());
+    themeToggle.addEventListener('click', toggleTheme);
+    menuToggle.addEventListener('click', toggleMenu);
+    primaryNav.addEventListener('click', (event) => {
+        if (event.target.closest('a')) closeMenu();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && primaryNav.classList.contains('is-open')) {
+            closeMenu({ restoreFocus: true });
+        }
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900) closeMenu();
+    });
+    notesField.addEventListener('input', () => {
+        notesCount.textContent = String(notesField.value.length);
+    });
+    form.addEventListener('submit', submitRequest);
+})();

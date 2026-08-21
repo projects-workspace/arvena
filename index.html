@@ -1,840 +1,385 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santiago Detox | Натуропатический детокс для всего организма</title>
-    <meta name="description" content="Натуропатический детокс для всего организма. Научный подход к очищению и восстановлению здоровья через микробиом, натуропатию и аюрведу.">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arvena — Clearer choices for healthier living</title>
+    <meta name="description" content="Arvena explains healthier-living solutions, the evidence behind them, their limitations, and the practical next step.">
+    <meta name="theme-color" content="#2d4a3e">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Arvena — Clearer choices for healthier living">
+    <meta property="og:description" content="Explore a transparent, evidence-aware path to cleaner drinking water at home.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=16">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&amp;family=Raleway:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=21">
+    <script src="supabase-config.js?v=21" defer></script>
+    <script src="arvena-data.js?v=21" defer></script>
+    <script src="script.js?v=21" defer></script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <!-- ═══════════════════════ FIXED HEADER ═══════════════════════ -->
-    <nav class="navbar" id="navbar">
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open Menu">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    <header class="site-header">
+        <a class="brand" href="#/home" aria-label="Arvena home">
+            <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M9 28c8-1 11-8 15-17 5 8 7 16 15 17-4 8-9 12-15 12S13 36 9 28Z"/>
+                <path d="M15 29c5 1 12-1 18-6M24 39V18"/>
+            </svg>
+            <span>Arvena</span>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+            <span class="sr-only">Open navigation</span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
         </button>
-        <div class="mobile-page-title" id="mobile-page-title">SANTIAGO</div>
 
-        <div class="nav-left">
-            <button class="nav-btn" data-target="0" data-i18n="nav_science">Наука о Биофлоре</button>
-            <button class="nav-btn" data-target="1" data-i18n="nav_naturo">Натуропатия</button>
-        </div>
-        <div class="logo-container">
-            <button class="logo-btn" data-target="2">SANTIAGO</button>
-        </div>
-        <div class="nav-right">
-            <button class="nav-btn" data-target="3" data-i18n="nav_life">Сферы Жизни</button>
-            <button class="nav-btn" data-target="4" data-i18n="nav_tools">Инструменты</button>
-            
-            <div class="lang-selector">
-                <button class="lang-btn" data-lang="ru">RU</button>
-                <span class="lang-divider">|</span>
-                <button class="lang-btn" data-lang="ua">UA</button>
-                <span class="lang-divider">|</span>
-                <button class="lang-btn" data-lang="cz">CZ</button>
-                <span class="lang-divider">|</span>
-                <button class="lang-btn" data-lang="en">EN</button>
+        <nav class="primary-nav" id="primary-navigation" aria-label="Primary navigation">
+            <a href="#/home" data-nav-route="home">Home</a>
+            <a href="#/explore" data-nav-route="explore">Explore</a>
+            <a href="#/solutions/clean-water" data-nav-route="clean-water">Clean Water</a>
+            <a href="#/methodology" data-nav-route="methodology">Methodology</a>
+        </nav>
+
+        <button class="theme-toggle" type="button" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3a9 9 0 1 0 9 9c0-.5 0-1-.1-1.5A7 7 0 0 1 12 3Z"/>
+            </svg>
+            <span>Theme</span>
+        </button>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+        <section class="screen screen-home" data-screen="home" aria-labelledby="home-title">
+            <div class="screen-inner hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow">Curated healthy-living discovery</p>
+                    <h1 id="home-title">Clearer choices.<br><em>Visible reasoning.</em></h1>
+                    <p class="hero-lead">Arvena helps you understand a practical need, compare possible approaches, see the evidence and limitations, and take a useful next step.</p>
+                    <div class="button-row">
+                        <a class="button button-primary" href="#/explore">Explore the first solution</a>
+                        <a class="button button-secondary" href="#/methodology">How evaluation works</a>
+                    </div>
+                    <p class="microcopy">The first focused journey covers cleaner drinking water at home. No marketplace, no hidden scoring, no medical claims.</p>
+                </div>
+
+                <aside class="hero-object" aria-label="Featured solution">
+                    <div class="water-orbit" aria-hidden="true">
+                        <span class="orbit orbit-one"></span>
+                        <span class="orbit orbit-two"></span>
+                        <svg viewBox="0 0 120 160">
+                            <path d="M60 8C47 34 22 61 22 98a38 38 0 0 0 76 0C98 61 73 34 60 8Z"/>
+                            <path d="M42 105c5 12 14 18 27 17"/>
+                        </svg>
+                    </div>
+                    <p class="object-kicker">First reviewed path</p>
+                    <h2>Clean Water at Home</h2>
+                    <p>Start with your water, then select treatment for a defined need—not a marketing promise.</p>
+                    <a class="text-link" href="#/solutions/clean-water">Open the solution guide <span aria-hidden="true">→</span></a>
+                </aside>
             </div>
-            
-            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Dark Mode">
-                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            </button>
-        </div>
-    </nav>
 
-    <!-- ═══════════════════════ MOBILE MENU OVERLAY ═══════════════════════ -->
-    <div class="mobile-menu-overlay" id="mobile-menu-overlay">
-        <div class="mobile-menu-content">
-            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-            <div class="mobile-menu-links">
-                <button class="mobile-nav-btn" data-target="0" data-i18n="nav_science">Наука о Биофлоре</button>
-                <button class="mobile-nav-btn" data-target="1" data-i18n="nav_naturo">Натуропатия</button>
-                <button class="mobile-nav-btn" data-target="2">SANTIAGO</button>
-                <button class="mobile-nav-btn" data-target="3" data-i18n="nav_life">Сферы Жизни</button>
-                <button class="mobile-nav-btn" data-target="4" data-i18n="nav_tools">Инструменты</button>
+            <div class="principle-strip" aria-label="Arvena principles">
+                <span>Understand first</span>
+                <span>Evidence in context</span>
+                <span>Limitations visible</span>
+                <span>Action without pressure</span>
             </div>
-            <div class="mobile-menu-bottom">
-                <div class="lang-selector">
-                    <button class="lang-btn" data-lang="ru">RU</button>
-                    <button class="lang-btn" data-lang="ua">UA</button>
-                    <button class="lang-btn" data-lang="cz">CZ</button>
-                    <button class="lang-btn" data-lang="en">EN</button>
+        </section>
+
+        <section class="screen" data-screen="explore" aria-labelledby="explore-title" hidden>
+            <div class="screen-inner">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="#/home">Home</a><span aria-hidden="true">/</span><span>Explore</span>
+                </nav>
+                <header class="page-heading">
+                    <p class="eyebrow">Explore</p>
+                    <h1 id="explore-title">Begin with a real-life need</h1>
+                    <p>Arvena is beginning with one complete, carefully bounded collection. More categories come after the discovery method is tested.</p>
+                </header>
+
+                <div class="explore-layout">
+                    <article class="category-card category-card-featured">
+                        <div class="category-symbol" aria-hidden="true">
+                            <svg viewBox="0 0 80 100"><path d="M40 5C31 25 14 43 14 67a26 26 0 0 0 52 0C66 43 49 25 40 5Z"/><path d="M29 69c4 7 9 10 17 10"/></svg>
+                        </div>
+                        <div>
+                            <p class="card-label">Available to explore</p>
+                            <h2>Water</h2>
+                            <p>Understand your water, compare household treatment approaches, and request a verified option for your location.</p>
+                            <ul class="inline-facts" aria-label="Water collection contents">
+                                <li>1 solution guide</li>
+                                <li>3 technologies</li>
+                                <li>1 reviewed profile</li>
+                            </ul>
+                            <a class="button button-primary" href="#/solutions/clean-water">Explore Clean Water</a>
+                        </div>
+                    </article>
+
+                    <aside class="scope-note">
+                        <span class="hand-line" aria-hidden="true"></span>
+                        <p class="eyebrow">Focused by design</p>
+                        <h2>Quality before catalogue size</h2>
+                        <p>Empty categories and unverified product claims are deliberately excluded from this first release.</p>
+                        <a class="text-link" href="#/methodology">Read the methodology <span aria-hidden="true">→</span></a>
+                    </aside>
                 </div>
-                <button class="theme-toggle mobile-theme-btn" aria-label="Toggle Dark Mode">
-                    <span class="theme-icon-wrapper">
-                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                    </span>
-                    <span class="theme-text" data-i18n="theme_toggle">Сменить тему</span>
-                </button>
             </div>
-        </div>
-    </div>    <!-- ═══════════════════════ SLIDER HUB ═══════════════════════ -->
-    <div class="slider-container">
-        <div class="slider-track" id="slider-track">
+        </section>
 
-            <!-- ════════════════════════════════════════════════════════════
-                 PANEL 0 (LEFT): Наука о Биофлоре (merged: science + articles)
-                 ════════════════════════════════════════════════════════════ -->
-            <section class="panel panel-science" id="panel-science">
-                <div class="panel-scroll">
-                    <div class="panel-content">
+        <section class="screen" data-screen="clean-water" aria-labelledby="solution-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/explore">Explore</a><span aria-hidden="true">/</span><span>Clean Water</span>
+                </nav>
+                <header class="page-heading page-heading-split">
+                    <div>
+                        <p class="eyebrow">Solution guide · Water</p>
+                        <h1 id="solution-title">Cleaner drinking water at home</h1>
+                        <p>The useful starting point is not a universal filter. It is the specific quality of your water and the substances you need a treatment system to address.</p>
+                    </div>
+                    <div class="review-stamp" aria-label="Review status">
+                        <span>Arvena reviewed</span>
+                        <strong data-bind="solution-reviewed-at">21 August 2026</strong>
+                        <small>Educational guidance</small>
+                    </div>
+                </header>
 
-                        <!-- Hero -->
-                        <div class="section-hero">
-                            <div class="badge" data-i18n="micro_badge">Фундаментальные знания</div>
-                            <h1 class="section-title" data-i18n="micro_title">Вселенная внутри нас</h1>
-                            <p class="section-subtitle" data-i18n="micro_sub">Наука о Микробиоме — фундамент здоровья, доказательная база и исследования</p>
-                        </div>
-
-                        <!-- PDF Download Button (top) -->
-                        <div class="pdf-download-block">
-                            <a href="PDFbiom/Inner_Ecology RU.pdf" download class="btn-download" id="btn-pdf-bioflora-top" data-pdf-ru="PDFbiom/Inner_Ecology RU.pdf" data-pdf-ua="PDFbiom/Holobiont_Systems_Restoration UA.pdf" data-pdf-cz="PDFbiom/The_Holobiont_Blueprint_(CZ.pdf" data-pdf-en="PDFbiom/The_Holobiont_Blueprint EN.pdf">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                <span data-i18n="btn_bioflora_pdf_top">Скачать полное руководство «Биофлора» (PDF)</span>
-                            </a>
-                        </div>
-
-                        <!-- Block 1: Intro -->
-                        <div class="content-block">
-                            <h2 data-i18n="micro_h2_1">Вы не одни. Познакомьтесь с триллионами своих союзников.</h2>
-                            <p data-i18n="micro_p_1">Мы привыкли воспринимать свое тело как единый механизм, но наука говорит о другом. Мы разберем основы нашей внутренней экологии. Здесь мы раскрываем понятие «голобионта» — как человек и триллионы бактерий, грибов и вирусов живут в симбиозе. От баланса этой системы зависит ваш иммунитет, энергия и даже настроение.</p>
-                        </div>
-
-                        <!-- Block 2: Who lives inside -->
-                        <div class="content-block">
-                            <h2 data-i18n="micro_h2_2">Война миров: Симбионты против Патогенов</h2>
-                            <div class="two-col">
-                                <div class="info-card good">
-                                    <h3 data-i18n="micro_good_h">Хорошие парни</h3>
-                                    <p data-i18n="micro_good_p">Такие симбионты, как <em>Treponema</em>, <em>Prevotella</em> и <em>Bifidobacterium</em>, критически важны для переваривания пищи и обучения нашего иммунитета.</p>
-                                </div>
-                                <div class="info-card bad">
-                                    <h3 data-i18n="micro_bad_h">Плохие парни</h3>
-                                    <p data-i18n="micro_bad_p">Влияние антибиотиков, стерильных городских условий, стресса и западного стиля питания ведет к вымиранию полезных видов. В результате появляются патогенные грибки (кандида), паразиты и бактерии.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 3: Gut-Brain Axis -->
-                        <div class="content-block">
-                            <h2 data-i18n="micro_h2_3">Как ваш живот управляет вашей головой</h2>
-                            <p data-i18n="micro_p_3">Это самый захватывающий блок о том, как пищеварение диктует правила нашему мозгу.</p>
-                            <div class="feature-list">
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="micro_vagus_h">Блуждающий нерв (Vagus Nerve)</h4>
-                                        <p data-i18n="micro_vagus_p">Главная информационная магистраль, которая передает сигналы от бактерий напрямую в мозг.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="micro_happy_h">Фабрика счастья</h4>
-                                        <p data-i18n="micro_happy_p">90-95% гормона счастья (серотонина) производится в кишечнике при помощи бактерий.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="micro_circle_h">Замкнутый круг</h4>
-                                        <p data-i18n="micro_circle_p">Хронический стресс «парализует» пищеварение и разрушает микрофлору. Во воспаление в кишечнике вызывает нейровоспаление, тревожность, депрессию и «туман в голове».</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 4: Food -->
-                        <div class="content-block">
-                            <h2 data-i18n="micro_h2_4">Мы — то, что едят наши бактерии</h2>
-                            <p data-i18n="micro_p_4">Здесь мы обсуждаем, как пища формирует наш внутренний мир.</p>
-                            <div class="two-col">
-                                <div class="info-card bad">
-                                    <h3 data-i18n="micro_food_bad_h">Что разрушает флору</h3>
-                                    <p data-i18n="micro_food_bad_p">Избыток рафинированного сахара, животных жиров и отсутствие клетчатки убивает разнообразие флоры и кормит патогенов.</p>
-                                </div>
-                                <div class="info-card good">
-                                    <h3 data-i18n="micro_food_good_h">Что лечит</h3>
-                                    <p data-i18n="micro_food_good_p">Сложные углеводы, пищевые волокна и растительная пища. Особенно мощно работают ферментированные продукты: кефир, квашеная капуста, комбуча и сыворотка.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 5: Protocol 5R -->
-                        <div class="content-block">
-                            <h2 data-i18n="micro_h2_5">Как вернуть порядок? Клинический подход к очищению.</h2>
-                            <p data-i18n="micro_p_5">В медицине это называется не просто «чисткой», а строгим клиническим протоколом восстановления среды. Мы используем концепцию «5R»:</p>
-                            <div class="steps-grid">
-                                <div class="step-card">
-                                    <div class="step-number">01</div>
-                                    <h4 data-i18n="micro_5r_1_h">Remove (Прополка)</h4>
-                                    <p data-i18n="micro_5r_1_p">Убрать пищевой мусор и патогенов с помощью растительных антимикробных средств (полынь, гвоздика, черный орех).</p>
-                                </div>
-                                <div class="step-card">
-                                    <div class="step-number">02</div>
-                                    <h4 data-i18n="micro_5r_2_h">Replace (Замещение)</h4>
-                                    <p data-i18n="micro_5r_2_p">Помощь желудку через ферменты и горечи для нормального переваривания.</p>
-                                </div>
-                                <div class="step-card">
-                                    <div class="step-number">03</div>
-                                    <h4 data-i18n="micro_5r_3_h">Reinoculate (Заселение)</h4>
-                                    <p data-i18n="micro_5r_3_p">Правильно ввести пробиотики, чтобы они прижились в среде.</p>
-                                </div>
-                                <div class="step-card">
-                                    <div class="step-number">04</div>
-                                    <h4 data-i18n="micro_5r_4_h">Repair (Заживление)</h4>
-                                    <p data-i18n="micro_5r_4_p">Восстановление слизистой кишечника с помощью костного бульона, витаминов и L-глютамина.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 6: Lifestyle -->
-                        <div class="content-block">
-                            <h2 data-i18n="micro_h2_6">Экология повседневности: Сохраняем результат</h2>
-                            <p data-i18n="micro_p_6">Практические привычки для поддержания достигнутого результата.</p>
-                            <div class="feature-list">
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="micro_life_1_h">Циркадное голодание</h4>
-                                        <p data-i18n="micro_life_1_p">Почему нужно не есть минимум 12 часов ночью? Это включает «внутреннего дворника», который выметает остатки пищи и бактерий.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="micro_life_2_h">Стимуляция блуждающего нерва</h4>
-                                        <p data-i18n="micro_life_2_p">Дыхательные практики, йога и работа с парасимпатической нервной системой позволяют включить режим «отдыхай и переваривай».</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 7: Final CTA -->
-                        <div class="content-block cta-block">
-                            <h2 data-i18n="micro_h2_7">Изучите свой микромир в деталях</h2>
-                            <p data-i18n="micro_p_7">Эта страница — лишь верхушка айсберга. Мы собрали всю фундаментальную информацию о пробиотиках, питании, протоколе восстановления и работе блуждающего нерва в один красивый и понятный документ.</p>
-                            <a href="PDFbiom/Inner_Ecology RU.pdf" download class="btn-download large" id="btn-pdf-bioflora-bottom" data-pdf-ru="PDFbiom/Inner_Ecology RU.pdf" data-pdf-ua="PDFbiom/Holobiont_Systems_Restoration UA.pdf" data-pdf-cz="PDFbiom/The_Holobiont_Blueprint_(CZ.pdf" data-pdf-en="PDFbiom/The_Holobiont_Blueprint EN.pdf">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                <span data-i18n="btn_bioflora_pdf_bot">Скачать полное руководство по Биофлоре (PDF)</span>
-                            </a>
-                            <p class="hint-text" data-i18n="micro_hint">Сохраните на телефон, изучите в удобное время и обязательно поделитесь этим файлом с близкими — эти знания меняют качество жизни.</p>
-                        </div>
-
-                        <!-- ── Научная база: Статьи и исследования ── -->
-                        <div class="content-block">
-                            <h2 data-i18n="micro_art_h2">Научная база: Исследования и статьи</h2>
-                            <p data-i18n="micro_art_p">Доказательный фундамент проекта — подробные описания экспериментов, ссылки на международные научные исследования и разбор биохимии компонентов.</p>
-                        </div>
-
-                        <div class="articles-grid">
-
-                            <article class="article-card" data-article="microbiome">
-                                <div class="article-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-                                </div>
-                                <h3 data-i18n="art_microbiome_h">Влияние микробиома на нейротрансмиттеры</h3>
-                                <p data-i18n="art_microbiome_p">Как кишечные бактерии производят 90-95% серотонина и управляют нашим настроением через ось «кишечник-мозг».</p>
-                                <span class="article-tag">PubMed</span>
-                                <span class="article-tag">Нейробиология</span>
-                            </article>
-
-                            <article class="article-card" data-article="parasites">
-                                <div class="article-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 12l7-7"/><circle cx="12" cy="12" r="3"/></svg>
-                                </div>
-                                <h3 data-i18n="art_parasites_h">Биохимия антипаразитарных трав</h3>
-                                <p data-i18n="art_parasites_p">Научный разбор механизмов действия полыни, пижмы и черного ореха на патогенные организмы.</p>
-                                <span class="article-tag">Биохимия</span>
-                                <span class="article-tag">Фитотерапия</span>
-                            </article>
-
-                            <article class="article-card" data-article="vagus">
-                                <div class="article-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                                </div>
-                                <h3 data-i18n="art_vagus_h">Блуждающий нерв и пищеварение</h3>
-                                <p data-i18n="art_vagus_p">Vagus Nerve — главная информационная магистраль между кишечником и мозгом. Как его стимуляция улучшает здоровье.</p>
-                                <span class="article-tag">Нейронаука</span>
-                                <span class="article-tag">Vagus</span>
-                            </article>
-
-                            <article class="article-card" data-article="fermented">
-                                <div class="article-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
-                                </div>
-                                <h3 data-i18n="art_fermented_h">Ферментированные продукты и флора</h3>
-                                <p data-i18n="art_fermented_p">Почему кефир, квашеная капуста и комбуча работают лучше многих таблеток — роль диких дрожжей и лактобактерий.</p>
-                                <span class="article-tag">Диетология</span>
-                                <span class="article-tag">Пробиотики</span>
-                            </article>
-
-                            <article class="article-card" data-article="protocol5r">
-                                <div class="article-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                                </div>
-                                <h3 data-i18n="art_protocol5r_h">Клинический протокол 5R</h3>
-                                <p data-i18n="art_protocol5r_p">Remove, Replace, Reinoculate, Repair — научный подход к восстановлению внутренней среды. Подробный разбор каждого этапа.</p>
-                                <span class="article-tag">Протокол</span>
-                                <span class="article-tag">Клиника</span>
-                            </article>
-
-                            <article class="article-card" data-article="sorbents">
-                                <div class="article-icon">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                </div>
-                                <h3 data-i18n="art_sorbents_h">Сорбенты: механизм действия</h3>
-                                <p data-i18n="art_sorbents_p">Как активированный уголь, глина и лен работают как природная губка, связывая и выводя токсины мертвых бактерий.</p>
-                                <span class="article-tag">Детокс</span>
-                                <span class="article-tag">Сорбция</span>
-                            </article>
-
-                        </div>
-
+                <div class="guide-callout">
+                    <span class="guide-number">01</span>
+                    <div>
+                        <h2>Start with what is actually in your water</h2>
+                        <p>Review the current report from your utility or use an appropriate accredited test. Taste, smell, and appearance do not reliably establish safety.</p>
                     </div>
                 </div>
-                <!-- Footer botanical element -->
-                <div class="footer-botanical"></div>
-            </section>
 
-
-            <!-- ════════════════════════════════════════════════════════════
-                 PANEL 1 (LEFT-CENTER): Натуропатия и Аюрведа
-                 ════════════════════════════════════════════════════════════ -->
-            <section class="panel panel-naturo" id="panel-naturo">
-                <div class="panel-scroll">
-                    <div class="panel-content">
-
-                        <!-- Hero -->
-                        <div class="section-hero">
-                            <div class="badge" data-i18n="naturo_badge">Древняя мудрость + Современная наука</div>
-                            <h1 class="section-title" data-i18n="naturo_title">Натуропатия и Аюрведа</h1>
-                            <p class="section-subtitle" data-i18n="naturo_sub">Тысячелетние знания о гармонии тела и разума, подкрепленные современными исследованиями. Мы берем лучшее из обеих традиций.</p>
-                        </div>
-
-                        <!-- Block 1: What is Naturopathy -->
-                        <div class="content-block">
-                            <h2 data-i18n="naturo_h2_1">Что такое натуропатия?</h2>
-                            <p data-i18n="naturo_p_1">Натуропатия — это система оздоровления, основанная на вере в целительную силу природы (<em>Vis Medicatrix Naturae</em>). Она не борется с симптомами, а ищет и устраняет первопричину дисбаланса. Организм обладает врожденной способностью к самоисцелению — задача натуропата состоит в том, чтобы создать для этого правильные условия.</p>
-                            <div class="feature-list">
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="naturo_feat_1_h">Принцип «Не навреди»</h4>
-                                        <p data-i18n="naturo_feat_1_p">Использование мягких, неинвазивных методов. Приоритет натуральных средств перед синтетическими.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="naturo_feat_2_h">Лечение причины, а не симптома</h4>
-                                        <p data-i18n="naturo_feat_2_p">Головная боль — это не дефицит обезболивающего. Натуропатия ищет корень: обезвоживание, токсины, стресс или дефицит нутриентов.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 data-i18n="naturo_feat_3_h">Человек как целостная система</h4>
-                                        <p data-i18n="naturo_feat_3_p">Тело, разум и дух — единое целое. Нельзя лечить желудок, игнорируя состояние психики и образ жизни.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 2: Ayurveda -->
-                        <div class="content-block">
-                            <h2 data-i18n="naturo_h2_2">Аюрведа: наука о жизни</h2>
-                            <p data-i18n="naturo_p_2">Аюрведа (санскр. «знание жизни») — одна из древнейших медицинских систем мира, зародившаяся более 5000 лет назад в Индии. Она рассматривает здоровье как баланс трех фундаментальных энергий — дош.</p>
-                            <div class="method-cards">
-                                <div class="method-card">
-                                    <div class="method-icon" style="background: linear-gradient(135deg, #DBEAFE, #BFDBFE); color: #2563EB;">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
-                                    </div>
-                                    <h4 data-i18n="naturo_vata_h">Вата</h4>
-                                    <p data-i18n="naturo_vata_p">Воздух и эфир. Движение, дыхание, нервная система. Дисбаланс → тревожность, сухость, бессонница.</p>
-                                </div>
-                                <div class="method-card">
-                                    <div class="method-icon" style="background: linear-gradient(135deg, #FEE2E2, #FECACA); color: #DC2626;">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/></svg>
-                                    </div>
-                                    <h4 data-i18n="naturo_pitta_h">Питта</h4>
-                                    <p data-i18n="naturo_pitta_p">Огонь и вода. Пищеварение, метаболизм, интеллект. Дисбаланс → воспаления, раздражительность, кожные проблемы.</p>
-                                </div>
-                                <div class="method-card">
-                                    <div class="method-icon" style="background: linear-gradient(135deg, #D1FAE5, #A7F3D0); color: #059669;">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                    </div>
-                                    <h4 data-i18n="naturo_kapha_h">Капха</h4>
-                                    <p data-i18n="naturo_kapha_p">Земля и вода. Структура, стабильность, иммунитет. Дисбаланс → вялость, набор веса, застойные процессы.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 3: Detox in traditions -->
-                        <div class="content-block highlight-block">
-                            <h2 data-i18n="naturo_h2_3">Детокс в традиционных системах</h2>
-                            <p data-i18n="naturo_p_3">Очищение тела — центральная практика во всех древних медицинских традициях. В аюрведе это называется <strong>Панчакарма</strong> (пять действий очищения), в натуропатии — <strong>элиминационная диета</strong> с последующим восстановлением.</p>
-                            <div class="insight-box">
-                                <p data-i18n="naturo_insight">Наш протокол Santiago объединяет эти подходы: мягкая элиминация патогенов (натуропатия) + восстановление баланса дош через питание и травы (аюрведа) + научно обоснованный протокол 5R (доказательная медицина).</p>
-                            </div>
-                        </div>
-
-                        <!-- Block 4: Key Practices -->
-                        <div class="content-block">
-                            <h2 data-i18n="naturo_h2_4">Ключевые практики оздоровления</h2>
-                            <div class="steps-grid">
-                                <div class="step-card">
-                                    <div class="step-number">01</div>
-                                    <h4 data-i18n="naturo_prac_1_h">Диначарья (Режим дня)</h4>
-                                    <p data-i18n="naturo_prac_1_p">Просыпаться с рассветом, есть основной приём пищи в полдень (когда огонь пищеварения максимален), засыпать до 22:00.</p>
-                                </div>
-                                <div class="step-card">
-                                    <div class="step-number">02</div>
-                                    <h4 data-i18n="naturo_prac_2_h">Агни (Пищеварительный огонь)</h4>
-                                    <p data-i18n="naturo_prac_2_p">Здоровье начинается с пищеварения. Слабый агни = непереваренная пища (ама) = токсины. Специи, тёплая вода и правильный режим усиливают агни.</p>
-                                </div>
-                                <div class="step-card">
-                                    <div class="step-number">03</div>
-                                    <h4 data-i18n="naturo_prac_3_h">Расаяна (Омоложение)</h4>
-                                    <p data-i18n="naturo_prac_3_p">После очищения тело готово к восстановлению. Адаптогены (ашваганда, шатавари), питательные масла и регенеративные практики.</p>
-                                </div>
-                                <div class="step-card">
-                                    <div class="step-number">04</div>
-                                    <h4 data-i18n="naturo_prac_4_h">Пранаяма (Дыхание)</h4>
-                                    <p data-i18n="naturo_prac_4_p">Контролируемое дыхание стимулирует блуждающий нерв, снижает кортизол и активирует парасимпатическую нервную систему.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 5: Bridge -->
-                        <div class="content-block">
-                            <h2 data-i18n="naturo_h2_5">Почему это работает сегодня</h2>
-                            <p data-i18n="naturo_p_5">Современная наука подтверждает то, что аюрведа знала тысячелетиями: хронический стресс разрушает пищеварение, токсическая нагрузка подавляет иммунитет, а режим дня напрямую влияет на гормональный фон и нейропластичность мозга.</p>
-                            <div class="two-col">
-                                <div class="info-card good">
-                                    <h3 data-i18n="naturo_bridge_1_h">Что подтвердила наука</h3>
-                                    <p data-i18n="naturo_bridge_1_p">Антимикробные свойства горьких трав. Роль пищеварительных ферментов. Влияние циркадных ритмов на метаболизм. Ось «кишечник-мозг».</p>
-                                </div>
-                                <div class="info-card good">
-                                    <h3 data-i18n="naturo_bridge_2_h">Что мы используем</h3>
-                                    <p data-i18n="naturo_bridge_2_p">Аюрведические принципы питания по дошам. Натуропатический подход к элиминации. Научный протокол восстановления микробиома.</p>
-                                </div>
-                            </div>
-                        </div>
-
+                <section class="content-section" aria-labelledby="decision-path-title">
+                    <div class="section-heading">
+                        <p class="eyebrow">Decision path</p>
+                        <h2 id="decision-path-title">From uncertainty to a maintainable setup</h2>
                     </div>
-                </div>
-                <!-- Footer botanical element -->
-                <div class="footer-botanical"></div>
-            </section>
+                    <ol class="step-path" id="solution-steps"></ol>
+                </section>
 
-
-            <!-- ════════════════════════════════════════════════════════════
-                 PANEL 2 (CENTER): Главная страница (Маркетинговый хаб)
-                 ════════════════════════════════════════════════════════════ -->
-            <section class="panel panel-hero" id="panel-home">
-                <div class="panel-scroll">
-                    <div class="panel-content hero-content">
-
-                        <!-- Block 1: Philosophy -->
-                        <div class="hero-section">
-                            <div class="badge" data-i18n="hero_badge">Натуропатический детокс</div>
-                            <h1 class="hero-title" data-i18n="hero_title">Станьте архитектором собственного здоровья.</h1>
-                            <p class="hero-subtitle" data-i18n="hero_sub">Мы верим, что ваше тело — это совершенная система, способная к самовосстановлению. Нужно лишь дать ему правильные инструменты.</p>
-                            <div class="info-box">
-                                <p data-i18n="hero_desc">Детокс — это не экзекуция и не разовая акция. Это регулярная гигиена, которую необходимо проводить раз в полгода. Мы опираемся на глубокую научную экспертизу (нейробиологию и микробиом) в сочетании с мудростью натуропатии и аюрведы.</p>
-                            </div>
-                        </div>
-
-                        <!-- Block 2: Environment -->
-                        <div class="content-block">
-                            <h2 data-i18n="env_h2">Современный мир — это вызов для вашей внутренней экосистемы.</h2>
-                            <p data-i18n="env_p1">Хронический стресс, обработанная еда, нарушение сна, экология — всё это бьет по вашему внутреннему миру. Многие не подозревают, что в их кишечнике живут «незваные гости» — паразиты разных видов, которые есть практически у каждого.</p>
-                            <p data-i18n="env_p2">Они влияют на наши желания (тяга к сладкому), уровень энергии и даже настроение. Мы объясняем биохимию, а не пугаем. Цель — очистить внутреннюю среду, чтобы создать условия, где болезнь просто не может существовать.</p>
-                        </div>
-
-                        <!-- Block 3: Symptoms -->
-                        <div class="content-block">
-                            <h2 data-i18n="symp_h2">Ваше тело говорит с вами. Вы слышите его?</h2>
-                            <div class="symptoms-grid">
-                                <div class="symptom-item">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 12h8"/></svg>
-                                    <span data-i18n="symp_1">«Туман в мозге» и сложность с концентрацией</span>
-                                </div>
-                                <div class="symptom-item">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
-                                    <span data-i18n="symp_2">Постоянная усталость, даже после сна</span>
-                                </div>
-                                <div class="symptom-item">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                    <span data-i18n="symp_3">Проблемы с кожей (акне, высыпания)</span>
-                                </div>
-                                <div class="symptom-item">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                                    <span data-i18n="symp_4">Эмоциональные качели и потеря творческого ресурса</span>
-                                </div>
-                                <div class="symptom-item">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v6l4 2"/></svg>
-                                    <span data-i18n="symp_5">Плохая память и ощущение «потерянности»</span>
-                                </div>
-                            </div>
-                            <p class="positive-text" data-i18n="symp_p">Это не ваша вина и не норма. Это сигнал о перегрузке. Мы приглашаем вас на прекрасный путь возвращения к себе настоящему — энергичному, креативному и продуктивному.</p>
-                        </div>
-
-                        <!-- Block 4: Method Santiago -->
-                        <div class="content-block">
-                            <h2 data-i18n="meth_h2">Экологичный путь к чистоте: Три вектора восстановления.</h2>
-                            <p data-i18n="meth_p">Мы не используем агрессивную химию. Наш метод — это мягкое очищение через:</p>
-                            <div class="method-cards">
-                                <div class="method-card">
-                                    <div class="method-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                    </div>
-                                    <h4 data-i18n="meth_1_h">Горькие травы и настойка ПВЖМ</h4>
-                                    <p data-i18n="meth_1_p">Для нейтрализации патогенов и растворения их защитных оболочек.</p>
-                                </div>
-                                <div class="method-card">
-                                    <div class="method-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                                    </div>
-                                    <h4 data-i18n="meth_2_h">Специальный чай и живые ферменты</h4>
-                                    <p data-i18n="meth_2_p">Для восстановления слизистой и работы лимфы.</p>
-                                </div>
-                                <div class="method-card">
-                                    <div class="method-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                    </div>
-                                    <h4 data-i18n="meth_3_h">Сорбенты (байндеры)</h4>
-                                    <p data-i18n="meth_3_p">Безопасное выведение токсинов как «губкой».</p>
-                                </div>
-                            </div>
-                            <div class="cta-row">
-                                <button class="btn-primary nav-link-btn" data-target="0">
-                                    <span data-i18n="btn_more_microbiome">Узнать больше о Микробиоме</span>
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                                </button>
-                                <button class="btn-secondary nav-link-btn" data-target="4">
-                                    <span data-i18n="btn_view_kit">Посмотреть состав набора</span>
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Block 5: Personal Story -->
-                        <div class="content-block">
-                            <h2 data-i18n="story_h2">От личного поиска к созданию сообщества.</h2>
-                            <p data-i18n="story_p">Личный опыт борьбы за здоровье привел к открытию основ натуропатии. Первые результаты вдохновили делиться знаниями с друзьями, близкими, а затем и создавать целую экосистему Santiago Wellness Hub.</p>
-                            <div class="testimonials">
-                                <div class="testimonial-card">
-                                    <p class="testimonial-text" data-i18n="testim_1">&laquo;Вернулась ясность ума. Я наконец-то могу сосредоточиться на творчестве без постоянного тумана.&raquo;</p>
-                                    <span class="testimonial-author" data-i18n="testim_author">— Участник программы</span>
-                                </div>
-                                <div class="testimonial-card">
-                                    <p class="testimonial-text" data-i18n="testim_2">&laquo;Исчезла тяга к сахару. Это казалось невозможным, но через 2 недели я просто перестала хотеть сладкое.&raquo;</p>
-                                    <span class="testimonial-author" data-i18n="testim_author">— Участник программы</span>
-                                </div>
-                                <div class="testimonial-card">
-                                    <p class="testimonial-text" data-i18n="testim_3">&laquo;Появились силы на новые проекты. Энергия, которую я не чувствовал годами.&raquo;</p>
-                                    <span class="testimonial-author" data-i18n="testim_author">— Участник программы</span>
-                                </div>
-                            </div>
-                        </div>
-
+                <section class="content-section" aria-labelledby="technology-title">
+                    <div class="section-heading">
+                        <p class="eyebrow">Technology comparison</p>
+                        <h2 id="technology-title">Three common approaches</h2>
+                        <p>Performance is product- and claim-specific. A technology name alone does not prove what a particular device removes.</p>
                     </div>
-                </div>
-                <!-- Decorative shapes -->
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-                <!-- Footer botanical element -->
-                <div class="footer-botanical"></div>
-            </section>
+                    <div class="technology-grid" id="solution-technologies"></div>
+                </section>
 
-
-            <!-- ════════════════════════════════════════════════════════════
-                 PANEL 3 (RIGHT): Сферы Жизни (Мотивация и Карта Жизни)
-                 ════════════════════════════════════════════════════════════ -->
-            <section class="panel panel-life" id="panel-life">
-                <div class="panel-scroll">
-                    <div class="panel-content">
-
-                        <!-- Block 1: Vision -->
-                        <div class="section-hero">
-                            <div class="badge" data-i18n="life_badge">Путь к полноценной жизни</div>
-                            <h1 class="section-title" data-i18n="life_title">Жизнь может быть искусством.</h1>
-                            <p class="section-subtitle" data-i18n="life_sub">Вы готовы стать творцом? Мы забыли, что развиваться, творить, строить отношения и достигать целей можно не через усталость и выгорание, а через искреннюю радость от процесса.</p>
-                        </div>
-
-                        <div class="content-block">
-                            <p class="large-text" data-i18n="life_large_p">Спорт, музыка, путешествия, любимое дело, финансы и глубокие отношения — всё это делает нас лучше. И самое главное — это доступно каждому, это весело и дает колоссальный заряд энергии, а не забирает её.</p>
-                        </div>
-
-                        <!-- Block 2: Need for start -->
-                        <div class="content-block">
-                            <h2 data-i18n="life_h2_1">Где взять искру?</h2>
-                            <p data-i18n="life_p_1">Мы понимаем, что человеку часто нужен старт. Мощный импульс и подзарядка, чтобы просто начать, а главное — не бросить, продолжать улучшать себя и становиться тем человеком, которым хочется быть. Трудно быть продуктивным, когда нет базовых сил.</p>
-                        </div>
-
-                        <!-- Block 3: Cleansing as foundation -->
-                        <div class="content-block highlight-block">
-                            <h2 data-i18n="life_h2_2">Точка запуска</h2>
-                            <p data-i18n="life_p_2">Чтобы появилась та самая искра, нужно начать с заботы о себе. Когда мы очищаем внутреннюю среду, наше тело становится чистым и насыщенным, а ум — осознанным и ясным. Именно отсюда берется сила, концентрация и креатив для достижения результатов.</p>
-                            <div class="insight-box">
-                                <p data-i18n="life_insight">В чистом теле вредные привычки отпадают сами собой. А это дает нам колоссальное количество свободного времени, энергии и новых возможностей просто быть собой!</p>
-                            </div>
-                        </div>
-
-                        <!-- Block 4: Life Map / PDF Guide -->
-                        <div class="content-block">
-                            <h2 data-i18n="life_h2_3">Ваша «Дорога» по 16 жизненным сферам</h2>
-                            <p data-i18n="life_p_3">Чтобы вам было легко идти по этому пути, мы создали инспиративный и информативный гайд — вашу дорогу по 16 жизненным сферам:</p>
-                            <div class="spheres-grid">
-                                <div class="sphere-card">
-                                    <div class="sphere-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                                    </div>
-                                    <h4 data-i18n="life_sph_1_h">Физика и Энергия</h4>
-                                    <p data-i18n="life_sph_1_p">База для вашей «батарейки» — тело, сон, восстановление.</p>
-                                </div>
-                                <div class="sphere-card">
-                                    <div class="sphere-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/></svg>
-                                    </div>
-                                    <h4 data-i18n="life_sph_2_h">Разум и Эмоции</h4>
-                                    <p data-i18n="life_sph_2_p">Ваш внутренний мир — когнитивная гигиена, творчество, радость.</p>
-                                </div>
-                                <div class="sphere-card">
-                                    <div class="sphere-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                                    </div>
-                                    <h4 data-i18n="life_sph_3_h">Системы и Ресурсы</h4>
-                                    <p data-i18n="life_sph_3_p">Ваша материальная опора — финансы, время, цифровой баланс.</p>
-                                </div>
-                                <div class="sphere-card">
-                                    <div class="sphere-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                    </div>
-                                    <h4 data-i18n="life_sph_4_h">Социум и Проявление</h4>
-                                    <p data-i18n="life_sph_4_p">Взаимодействие с миром — отношения, реализация, пространство.</p>
-                                </div>
-                                <div class="sphere-card sphere-card-wide">
-                                    <div class="sphere-icon">
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                                    </div>
-                                    <h4 data-i18n="life_sph_5_h">Смыслы</h4>
-                                    <p data-i18n="life_sph_5_p">Ваш вектор — философия и масштаб личности.</p>
-                                </div>
-                            </div>
-
-                            <!-- PDF CTA -->
-                            <div class="pdf-download-block">
-                                <a href="PDFlife/Spheres_of_Life_RU.pdf" download class="btn-download large" id="btn-pdf-lifemap" data-pdf-ru="PDFlife/Spheres_of_Life_RU.pdf" data-pdf-ua="PDFlife/Spheres_of_Life_UA.pdf" data-pdf-cz="PDFlife/Spheres_of_Life_RU.pdf" data-pdf-en="PDFlife/Spheres_of_Life_RU.pdf">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                    <span data-i18n="life_btn_pdf">Получить премиальный PDF-гайд «Карта Жизни»</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Block 5: Synergy -->
-                        <div class="content-block">
-                            <h2 data-i18n="life_h2_4">Идем вместе</h2>
-                            <p data-i18n="life_p_4">Идти по пути целостного саморазвития — это не только про здоровье, это про новые горизонты. Это возможность посоветовать этот путь друзьям и близким, вместе открывать новые активности и интересы. Это приведет к новым знакомствам, расширению ваших способностей и выведет качество жизни на совершенно другой уровень.</p>
-                        </div>
-
+                <section class="content-section next-step-panel" aria-labelledby="solution-next-title">
+                    <div>
+                        <p class="eyebrow">Next step</p>
+                        <h2 id="solution-next-title">Inspect the first evaluated product type</h2>
+                        <p>See why certification scope, maintenance, and local water data matter before choosing a point-of-use filter.</p>
                     </div>
-                </div>
-                <!-- Footer botanical element -->
-                <div class="footer-botanical"></div>
-            </section>
-
-
-            <!-- ════════════════════════════════════════════════════════════
-                 PANEL 4 (FAR RIGHT): Инструменты и Продукты (Практика)
-                 ════════════════════════════════════════════════════════════ -->
-            <section class="panel panel-tools" id="panel-tools">
-                <div class="panel-scroll">
-                    <div class="panel-content">
-
-                        <!-- Block 1: Intro -->
-                        <div class="section-hero">
-                            <div class="badge" data-i18n="tools_badge">Практика и Восстановление</div>
-                            <h1 class="section-title" data-i18n="tools_title">Природа, усиленная наукой</h1>
-                            <p class="section-subtitle" data-i18n="tools_sub">Ваш арсенал восстановления. Мы создали комплексный набор, где каждый элемент усиливает действие другого. Это не просто добавки — это последовательная система очищения, питания и защиты вашего организма.</p>
-                        </div>
-
-                        <!-- Block 2: Product Showcase -->
-                        <div class="products-grid">
-
-                            <div class="product-card" data-product="herbs">
-                                <div class="product-icon">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                </div>
-                                <h3 data-i18n="tools_prod_1_h">Горькие травы</h3>
-                                <p class="product-brief" data-i18n="tools_prod_1_p">Базовый антипаразитарный этап. Мягкая нейтрализация патогенов и грибков без агрессии для ЖКТ.</p>
-                                <button class="btn-detail" onclick="openPopup('herbs')" data-i18n="tools_prod_1_btn">Подробнее о составе</button>
-                            </div>
-
-                            <div class="product-card" data-product="pvjm">
-                                <div class="product-icon">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                                </div>
-                                <h3 data-i18n="tools_prod_2_h">Настойка ПВЖМ</h3>
-                                <p class="product-brief" data-i18n="tools_prod_2_p">Утренняя поддержка. Уникальный фермент, способный растворять защитные оболочки паразитов и вирусов.</p>
-                                <button class="btn-detail" onclick="openPopup('pvjm')" data-i18n="tools_prod_2_btn">Подробнее о свойствах</button>
-                            </div>
-
-                            <div class="product-card" data-product="enzymes">
-                                <div class="product-icon">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                                </div>
-                                <h3 data-i18n="tools_prod_3_h">Живые ферменты</h3>
-                                <p class="product-brief" data-i18n="tools_prod_3_p">Подготовка к пищеварению. Яблочный уксус для нормализации кислотности и качественного усвоения микроэлементов.</p>
-                                <button class="btn-detail" onclick="openPopup('enzymes')" data-i18n="tools_prod_3_btn">Подробнее</button>
-                            </div>
-
-                            <div class="product-card" data-product="tea">
-                                <div class="product-icon">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
-                                </div>
-                                <h3 data-i18n="tools_prod_4_h">Травяной чай «45 трав»</h3>
-                                <p class="product-brief" data-i18n="tools_prod_4_p">Глубокое питание и детокс. Пьется в течение дня. Очищает лимфу, питает клетки и идеально подходит для процедуры тюбажа.</p>
-                                <button class="btn-detail" onclick="openPopup('tea')" data-i18n="tools_prod_4_btn">Подробнее о сборе</button>
-                            </div>
-
-                            <div class="product-card" data-product="sorbents">
-                                <div class="product-icon">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                </div>
-                                <h3 data-i18n="tools_prod_5_h">Умные сорбенты</h3>
-                                <p class="product-brief" data-i18n="tools_prod_5_p">Безопасная эвакуация токсинов. Работают как природная губка, связывая и выводя продукты распада без вреда для слизистой.</p>
-                                <button class="btn-detail" onclick="openPopup('sorbents')" data-i18n="tools_prod_5_btn">Как они работают</button>
-                            </div>
-
-                        </div>
-
-                        <!-- Block 3: Golden Rules -->
-                        <div class="content-block">
-                            <h2 data-i18n="tools_rules_h2">Как это работает: Три золотых правила курса.</h2>
-                            <p data-i18n="tools_rules_p">Полный протокол вы найдете в нашем PDF-гайде, но основа успеха держится на трех китах:</p>
-                            <div class="rules-grid">
-                                <div class="rule-card">
-                                    <div class="rule-number">1</div>
-                                    <h4 data-i18n="tools_rule_1_h">Чистое топливо (Диета)</h4>
-                                    <p data-i18n="tools_rule_1_p">Убираем «пищевой шум» (сладкое, мучное, рафинированную еду). Основу рациона составляют овощи (квашеная капуста), зелень, кислые фрукты (грейпфрут, киви, ягоды). Главное — не переедать и ужинать за 3 часа до сна!</p>
-                                </div>
-                                <div class="rule-card">
-                                    <div class="rule-number">2</div>
-                                    <h4 data-i18n="tools_rule_2_h">Промывание системы</h4>
-                                    <p data-i18n="tools_rule_2_p">Вода — ваш главный помощник. При дискомфорте или легком ознобе (нормальная реакция очищения), пейте больше чистой воды и используйте натуральные абсорбенты.</p>
-                                </div>
-                                <div class="rule-card">
-                                    <div class="rule-number">3</div>
-                                    <h4 data-i18n="tools_rule_3_h">Тюбаж печени (Глубокая очистка)</h4>
-                                    <p data-i18n="tools_rule_3_p">Мощная, опциональная процедура для высвобождения застойной желчи. Выполняется с помощью магнезии, теплой грелки на правый бок и сбора «45 трав».</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Block 4: Video + PDF Instructions -->
-                        <div class="content-block">
-                            <h2 data-i18n="tools_inst_h2">Инструкции</h2>
-                            <div class="instructions-split">
-                                <!-- <div class="instruction-section video-section">
-                                    <h3 data-i18n="tools_inst_vid_h">Смотреть инструкцию</h3>
-                                    <div class="video-placeholder" id="video-container">
-                                        <div class="play-button">
-                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                        </div>
-                                        <span data-i18n="tools_inst_vid_label">Видео-инструкция</span>
-                                    </div>
-                                    <p data-i18n="tools_inst_vid_p">Посмотрите короткое видео, где мы наглядно показываем, как правильно разводить сорбенты, заваривать чай и в какой последовательности принимать настойки.</p>
-                                </div> -->
-                                <div class="instruction-section pdf-section">
-                                    <h3 data-i18n="tools_inst_pdf_h">Полный протокол в вашем смартфоне</h3>
-                                    <p data-i18n="tools_inst_pdf_p">Мы собрали все детали в одном месте:</p>
-                                    <ul class="pdf-features">
-                                        <li data-i18n="tools_inst_pdf_li1">Точные дозировки и тайминги приема (утро/день/вечер)</li>
-                                        <li data-i18n="tools_inst_pdf_li2">Подробное меню и списки продуктов</li>
-                                    </ul>
-                                    <a href="PFDmeto/Santiago_Protocol_RU.pdf" download class="btn-download" id="btn-pdf-protocol" data-pdf-ru="PFDmeto/Santiago_Protocol_RU.pdf" data-pdf-ua="PFDmeto/Santiago_Protocol_UA.pdf" data-pdf-cz="PFDmeto/Santiago_Protocol_EN.pdf" data-pdf-en="PFDmeto/Santiago_Protocol_EN.pdf">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                        <span data-i18n="btn_santiago_pdf">Скачать протокол Santiago (PDF)</span>
-                                    </a>
-
-                                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);">
-                                        <h4 style="font-family: var(--font-heading); margin-bottom: 0.5rem;" data-i18n="tools_tubazh_h4">Тюбаж печени — отдельная инструкция</h4>
-                                        <p style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 1rem;" data-i18n="tools_tubazh_p">Пошаговый алгоритм процедуры тюбажа для глубокой очистки печени и желчного пузыря.</p>
-                                        <a href="PFDmeto/Tyubazh_Ritual_RU.pdf" download class="btn-download" id="btn-pdf-tyubazh" data-pdf-ru="PFDmeto/Tyubazh_Ritual_RU.pdf" data-pdf-ua="PFDmeto/Tyubazh_Ritual_UA.pdf" data-pdf-cz="PFDmeto/Tyubazh_Ritual_EN.pdf" data-pdf-en="PFDmeto/Tyubazh_Ritual_EN.pdf" style="background: var(--color-primary); color: var(--color-on-primary); box-shadow: 0 8px 25px rgba(45, 74, 62, 0.25);">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                            <span data-i18n="btn_tubazh_pdf">Скачать инструкцию Тюбажа (PDF)</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Footer botanical element -->
-                <div class="footer-botanical"></div>
-            </section>
-
-        </div>
-    </div>
-
-    <!-- ═══════════════════════ SIDE NAV ZONES (PC) ═══════════════════════ -->
-    <div class="side-nav-zone side-nav-zone--left" id="side-nav-left">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </div>
-    <div class="side-nav-zone side-nav-zone--right" id="side-nav-right">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 6 15 12 9 18"/></svg>
-    </div>
-
-    <!-- ═══════════════════════ MOBILE DOTS ═══════════════════════ -->
-    <div class="mobile-dots">
-        <button class="dot" data-target="0"></button>
-        <button class="dot" data-target="1"></button>
-        <button class="dot active" data-target="2"></button>
-        <button class="dot" data-target="3"></button>
-        <button class="dot" data-target="4"></button>
-    </div>
-
-    <!-- ═══════════════════════ PRODUCT POP-UP MODAL ═══════════════════════ -->
-    <div class="popup-overlay" id="popup-overlay">
-        <div class="popup-modal" id="popup-modal">
-            <button class="popup-close" id="popup-close" aria-label="Close popup">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-            <div class="popup-content" id="popup-content">
-                <!-- Dynamic content inserted by JS -->
+                    <a class="button button-primary" href="#/products/certified-point-of-use-filter">View product & evidence</a>
+                </section>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <script src="translations.js?v=16"></script>
-    <script src="script.js?v=16"></script>
+        <section class="screen" data-screen="product" aria-labelledby="product-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/explore">Explore</a><span aria-hidden="true">/</span><a href="#/solutions/clean-water">Clean Water</a><span aria-hidden="true">/</span><span>Product profile</span>
+                </nav>
+
+                <header class="product-header">
+                    <div>
+                        <div class="status-row">
+                            <span class="status-badge" data-bind="product-status">Researching verified models</span>
+                            <span class="evidence-badge">Technical / public-health basis</span>
+                        </div>
+                        <p class="eyebrow">Evaluated product type · Point of use</p>
+                        <h1 id="product-title" data-bind="product-title">Certified point-of-use water filter</h1>
+                        <p class="hero-lead" data-bind="product-description"></p>
+                    </div>
+                    <div class="product-mark" aria-hidden="true">
+                        <svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="62"/><path d="M75 25c-11 23-31 43-31 70a31 31 0 0 0 62 0c0-27-20-47-31-70Z"/><path d="M58 97c5 8 12 12 22 12"/></svg>
+                    </div>
+                </header>
+
+                <div class="profile-layout">
+                    <div class="profile-main">
+                        <section class="profile-section" aria-labelledby="selected-title">
+                            <p class="eyebrow">Why selected</p>
+                            <h2 id="selected-title">A claim can be checked</h2>
+                            <p data-bind="product-why-selected"></p>
+                        </section>
+
+                        <section class="profile-section" aria-labelledby="evidence-title">
+                            <p class="eyebrow">Evidence & basis</p>
+                            <h2 id="evidence-title">What supports this profile</h2>
+                            <div class="evidence-list" id="product-evidence"></div>
+                        </section>
+
+                        <section class="profile-section" aria-labelledby="limitations-title">
+                            <p class="eyebrow">Limitations</p>
+                            <h2 id="limitations-title">What this does not establish</h2>
+                            <ul class="limitation-list" id="product-limitations"></ul>
+                        </section>
+                    </div>
+
+                    <aside class="profile-summary" aria-label="Product summary">
+                        <dl>
+                            <div><dt>Problem addressed</dt><dd data-bind="product-problem"></dd></div>
+                            <div><dt>Materials / system</dt><dd data-bind="product-materials"></dd></div>
+                            <div><dt>Price level</dt><dd data-bind="product-price"></dd></div>
+                            <div><dt>Availability</dt><dd data-bind="product-availability"></dd></div>
+                            <div><dt>Last reviewed</dt><dd data-bind="product-reviewed-at"></dd></div>
+                        </dl>
+                        <div class="summary-action">
+                            <p>Arvena has not published a seller link until a specific model and market are checked.</p>
+                            <a class="button button-primary button-block" href="#/request">Request a verified option</a>
+                            <a class="text-link text-link-centred" href="#/solutions/clean-water">Back to the guide</a>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="screen" data-screen="request" aria-labelledby="request-title" hidden>
+            <div class="screen-inner form-layout">
+                <div class="form-intro">
+                    <nav class="breadcrumbs" aria-label="Breadcrumb">
+                        <a href="#/products/certified-point-of-use-filter">Product profile</a><span aria-hidden="true">/</span><span>Request</span>
+                    </nav>
+                    <p class="eyebrow">Real next action</p>
+                    <h1 id="request-title">Request a verified water-filter option</h1>
+                    <p>Tell Arvena where you are and what you need to investigate. This records a real sourcing request; it does not promise a product or substitute for water-quality or public-health advice.</p>
+                    <div class="privacy-note">
+                        <strong>Minimal data only</strong>
+                        <p>Do not include medical details. Your email is used only to respond to this request. Public visitors cannot read submitted records.</p>
+                    </div>
+                </div>
+
+                <form class="request-form" id="water-request-form" novalidate>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="request-email">Email</label>
+                            <input id="request-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+                            <span class="field-hint">Where Arvena can reply</span>
+                        </div>
+                        <div class="field">
+                            <label for="request-country">Country or region</label>
+                            <input id="request-country" name="country" type="text" autocomplete="country-name" minlength="2" maxlength="80" required>
+                            <span class="field-hint">Used to check availability</span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="request-concern">What should the option address?</label>
+                        <select id="request-concern" name="concern" required>
+                            <option value="">Choose one</option>
+                            <option value="taste-odor">Taste or odour</option>
+                            <option value="lead-metals">Lead or other metals</option>
+                            <option value="microorganisms">Microorganisms</option>
+                            <option value="broad-unknown">I need help interpreting my water data</option>
+                            <option value="plastic-contact">Reducing plastic contact</option>
+                            <option value="other">Another defined concern</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="request-notes">Useful context <span>(optional)</span></label>
+                        <textarea id="request-notes" name="notes" rows="5" maxlength="1000" placeholder="For example: utility report available, rented home, under-sink installation not possible."></textarea>
+                        <span class="field-hint"><span id="notes-count">0</span>/1000 characters</span>
+                    </div>
+
+                    <div class="honeypot" aria-hidden="true">
+                        <label for="request-website">Website</label>
+                        <input id="request-website" name="website" type="text" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <label class="consent-row" for="request-consent">
+                        <input id="request-consent" name="consent" type="checkbox" required>
+                        <span>I agree that Arvena may store this information and email me about this request.</span>
+                    </label>
+
+                    <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+                    <button class="button button-primary button-block" type="submit" id="request-submit">Send sourcing request</button>
+                    <p class="form-footnote">No account is created. Submission succeeds only after the database confirms the record.</p>
+                </form>
+            </div>
+        </section>
+
+        <section class="screen" data-screen="result" aria-labelledby="result-title" hidden>
+            <div class="screen-inner result-layout">
+                <div class="result-mark" aria-hidden="true">
+                    <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52"/><path d="m34 61 17 17 36-39"/></svg>
+                </div>
+                <p class="eyebrow">Confirmed result</p>
+                <h1 id="result-title">Your request was recorded</h1>
+                <p>The Arvena database accepted the request. Keep the reference below if you need to follow up.</p>
+                <div class="confirmation-code"><span>Reference</span><strong id="confirmation-reference">—</strong></div>
+                <div class="button-row button-row-centred">
+                    <a class="button button-primary" href="#/home">Return home</a>
+                    <a class="button button-secondary" href="#/solutions/clean-water">Review the guide</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="screen" data-screen="methodology" aria-labelledby="methodology-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="#/home">Home</a><span aria-hidden="true">/</span><span>Methodology</span>
+                </nav>
+                <header class="page-heading">
+                    <p class="eyebrow">Methodology</p>
+                    <h1 id="methodology-title">The basis stays visible</h1>
+                    <p>Arvena separates source types, states uncertainty, and shows limitations before asking a visitor to act.</p>
+                </header>
+
+                <div class="method-grid">
+                    <article><span>01</span><h2>Define the need</h2><p>Begin with the user’s practical problem and the local conditions that affect it.</p></article>
+                    <article><span>02</span><h2>Check the basis</h2><p>Use relevant public-health guidance, technical standards, product documentation, and transparent testing.</p></article>
+                    <article><span>03</span><h2>Name the limits</h2><p>Do not turn a category-level finding into a claim for every product. Show missing data and maintenance needs.</p></article>
+                    <article><span>04</span><h2>Review before access</h2><p>Publish a seller or product link only after its claims, market availability, and commercial relationship are checked.</p></article>
+                </div>
+
+                <section class="content-section evidence-key" aria-labelledby="evidence-key-title">
+                    <div class="section-heading">
+                        <p class="eyebrow">Evidence labels</p>
+                        <h2 id="evidence-key-title">Context, not a universal score</h2>
+                    </div>
+                    <dl>
+                        <div><dt>Public-health guidance</dt><dd>Guidance from an accountable public-health body.</dd></div>
+                        <div><dt>Technical standard</dt><dd>A defined testing or certification framework; the exact claim still matters.</dd></div>
+                        <div><dt>Product documentation</dt><dd>Manufacturer information that requires independent checking where material.</dd></div>
+                        <div><dt>Arvena reviewed</dt><dd>The page and its limitations were editorially checked on the stated date.</dd></div>
+                    </dl>
+                </section>
+
+                <div class="disclaimer-panel">
+                    <strong>Scope and safety</strong>
+                    <p>Arvena provides educational product-discovery information, not diagnosis or medical treatment. During advisories, emergencies, or uncertainty about drinking-water safety, follow the responsible local authority or a qualified professional.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="screen" data-screen="not-found" aria-labelledby="not-found-title" hidden>
+            <div class="screen-inner result-layout">
+                <p class="eyebrow">404</p>
+                <h1 id="not-found-title">This path is not available</h1>
+                <p>The first Arvena release contains one focused Clean Water journey.</p>
+                <a class="button button-primary" href="#/home">Return home</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p><strong>Arvena</strong> · Discover → understand → evaluate → act</p>
+        <p><a href="#/methodology">Methodology & safety</a> <span aria-hidden="true">·</span> <span>English-first MVP</span></p>
+    </footer>
+
+    <noscript>
+        <div class="noscript-message">Arvena needs JavaScript to move through this prototype and submit a sourcing request.</div>
+    </noscript>
 </body>
 </html>
