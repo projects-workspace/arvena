@@ -157,8 +157,15 @@ for bind_name in re.findall(r"data-bind=\"([^\"]+)\"", html):
 
 if "sb_secret_" not in script or "service_role" not in script:
     report("configuration: browser key safety checks are missing")
-if re.search(r"url:\s*'https://", config) or re.search(r"publishableKey:\s*'[^']+", config):
-    report("configuration: committed Supabase configuration must remain empty until the dedicated Arvena project is connected")
+expected_supabase_url = "https://qkwffuwvioiikumddoie.supabase.co"
+configured_url = re.search(r"url:\s*'([^']*)'", config)
+configured_key = re.search(r"publishableKey:\s*'([^']*)'", config)
+if not configured_url or configured_url.group(1) != expected_supabase_url:
+    report("configuration: expected the dedicated Arvena Supabase project URL")
+if not configured_key or not re.fullmatch(r"sb_publishable_[A-Za-z0-9_-]+", configured_key.group(1)):
+    report("configuration: expected a browser-safe Supabase publishable key")
+if configured_key and configured_key.group(1).startswith("sb_secret_"):
+    report("configuration: a secret Supabase key must never be committed")
 if "arvena_mvp_requests" not in config or "arvena_mvp_requests" not in script:
     report("configuration: frontend table name is inconsistent")
 if "route.screen === 'result'" not in script or "history.replaceState" not in script:

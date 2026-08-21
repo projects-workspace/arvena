@@ -34,15 +34,21 @@ python3 -m http.server 8000
 ```
 
 Open `http://127.0.0.1:8000`. All read-only routes work without external
-configuration. The request form intentionally reports that the service is not
-connected until the dedicated Arvena public Supabase configuration is supplied.
+configuration. The request form is connected to the dedicated Arvena Supabase
+project and creates a real private sourcing request when submitted.
 
-## Supabase setup
+## Live Supabase backend
 
-1. Connect to the project assigned specifically to Arvena.
-2. Apply `supabase/migrations/20260821000000_arvena_mvp_requests.sql`.
-3. Put that project's URL and publishable key in `supabase-config.js`.
-4. Follow the live insert and RLS checks in `supabase/README.md`.
+The migration in `supabase/migrations/20260821000000_arvena_mvp_requests.sql`
+was applied to the dedicated Arvena project on 22 August 2026. The committed
+browser configuration contains only that project's public URL and publishable
+key.
+
+The public journey does not create an Auth user. It uses the Data API `anon`
+role, which can insert only the ten form-controlled columns. RLS is enabled and
+forced; public and authenticated clients have no read, update, or delete access
+to submitted records. Full live verification is recorded in
+`supabase/README.md`.
 
 Never put a secret or service-role key in `supabase-config.js`. The browser must
 not be given public SELECT access to submitted email addresses.
@@ -59,15 +65,14 @@ boundaries, local assets, data bindings, form/schema alignment, the insert-only
 RLS migration, deployment exclusions, duplicate HTML IDs, and JavaScript syntax
 when Node is available.
 
-Browser acceptance still includes desktop and mobile navigation, keyboard
-focus, theme persistence, form validation, the configured failure state, one
-successful live submission, and verification of the matching private database
-row.
+Browser acceptance was completed on desktop and at a 390 × 844 mobile viewport.
+The full route journey, responsive navigation, form, live confirmation, matching
+private database row, and absence of console errors were verified.
 
 ## Deployment boundary
 
 `vercel.json` supplies security headers. `.vercelignore` prevents legacy PDFs,
 internal documentation, tooling, and repository metadata from entering the
-public deployment. Production is ready only after the Arvena Supabase migration,
-public configuration, browser submission, row verification, and production URL
-checks are complete.
+public deployment. The repository and backend are demo-ready; a production URL
+still needs its own post-deployment smoke test before being called production
+verified.
