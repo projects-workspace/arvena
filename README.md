@@ -1,5 +1,7 @@
 # Arvena
 
+Production: https://arvena-natural-product-discovery.vercel.app
+
 Arvena is a curated healthy-living discovery platform. This first MVP is an
 English-only, public Clean Water journey:
 
@@ -73,6 +75,8 @@ private database row, and absence of console errors were verified.
 
 `vercel.json` supplies security headers. `.vercelignore` prevents legacy PDFs,
 internal documentation, tooling, and repository metadata from entering the
-public deployment. The repository and backend are demo-ready; a production URL
-still needs its own post-deployment smoke test before being called production
-verified.
+public deployment. The production deployment returned HTTP 200, its security
+headers were present, and the four public journey routes loaded without console
+errors. The deployed browser configuration points to the dedicated Arvena
+Supabase project and request table. The production form was not resubmitted, so
+no duplicate verification record was created.

@@ -42,6 +42,12 @@ row back. Operational access should stay in the Supabase dashboard or a later
 authenticated internal tool using a server-side credential. Never put a secret
 or service-role key in a browser file.
 
-Deployment remains a separate evidence layer. After a host publishes this
-revision, rerun the public journey and security-header checks against the final
-production URL.
+## Production verification
+
+The production deployment at
+`https://arvena-natural-product-discovery.vercel.app` returned HTTP 200 with
+the expected security headers. Home, Explore, Clean Water, product, and request
+views loaded in the deployed browser without console errors. The deployed
+public configuration resolves to this project's URL and
+`public.arvena_mvp_requests`. The production form was not resubmitted, so the
+single verified database record above remains the only test record.
