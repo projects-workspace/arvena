@@ -2,13 +2,13 @@
 
 (function () {
     const ROUTES = Object.freeze({
-        '/home': { screen: 'home', nav: 'home', title: 'Arvena — Clearer choices for healthier living' },
-        '/explore': { screen: 'explore', nav: 'explore', title: 'Explore healthier-living solutions — Arvena' },
-        '/solutions/clean-water': { screen: 'clean-water', nav: 'clean-water', title: 'Cleaner drinking water at home — Arvena' },
-        '/products/certified-point-of-use-filter': { screen: 'product', nav: 'clean-water', title: 'Certified point-of-use water filter — Arvena' },
-        '/request': { screen: 'request', nav: 'clean-water', title: 'Request a verified water-filter option — Arvena' },
+        '/home': { screen: 'home', nav: 'home', title: 'Arvena — Curated Marketplace for Better Living' },
+        '/explore': { screen: 'explore', nav: 'explore', title: 'Marketplace — Arvena' },
+        '/solutions/clean-water': { screen: 'clean-water', nav: 'clean-water', title: 'Clean Water — Arvena Marketplace' },
+        '/products/certified-point-of-use-filter': { screen: 'product', nav: 'clean-water', title: 'Point-of-use water filter profile — Arvena' },
+        '/request': { screen: 'request', nav: 'clean-water', title: 'Clean Water sourcing status — Arvena' },
         '/result': { screen: 'result', nav: 'clean-water', title: 'Request confirmed — Arvena' },
-        '/methodology': { screen: 'methodology', nav: 'methodology', title: 'Methodology and safety — Arvena' }
+        '/methodology': { screen: 'methodology', nav: 'methodology', title: 'Marketplace selection method — Arvena' }
     });
 
     const DEFAULT_ROUTE = '/home';
@@ -16,15 +16,23 @@
     const CONFIRMATION_KEY = 'arvena-confirmation-reference';
     const THEME_KEY = 'arvena-theme';
     const SUBMISSION_COOLDOWN_MS = 45 * 1000;
+    const REQUEST_UNAVAILABLE_MESSAGE = 'Clean Water sourcing requests are temporarily unavailable while the request-system connection is being restored.';
 
     const screens = Array.from(document.querySelectorAll('[data-screen]'));
     const navLinks = Array.from(document.querySelectorAll('[data-nav-route]'));
+    const skipLink = document.querySelector('[data-skip-link]');
     const menuToggle = document.querySelector('.menu-toggle');
     const primaryNav = document.querySelector('.primary-nav');
+    const mobileNavigationQuery = window.matchMedia('(max-width: 900px)');
     const themeToggle = document.querySelector('.theme-toggle');
     const mainContent = document.getElementById('main-content');
     const form = document.getElementById('water-request-form');
     const formStatus = document.getElementById('form-status');
+    const requestFields = document.getElementById('request-fields');
+    const requestAvailabilityNotice = document.getElementById('request-availability-notice');
+    const requestAvailabilityText = requestAvailabilityNotice.querySelector('p');
+    const requestTitle = document.getElementById('request-title');
+    const requestIntro = document.getElementById('request-intro');
     const submitButton = document.getElementById('request-submit');
     const notesField = document.getElementById('request-notes');
     const notesCount = document.getElementById('notes-count');
@@ -44,8 +52,9 @@
     }
 
     function setText(bindName, value) {
-        const element = document.querySelector(`[data-bind="${bindName}"]`);
-        if (element) element.textContent = value || '';
+        document.querySelectorAll(`[data-bind="${bindName}"]`).forEach((element) => {
+            element.textContent = value || '';
+        });
     }
 
     function renderStructuredContent() {
@@ -54,7 +63,7 @@
 
         if (!solution || !product) return;
 
-        setText('solution-reviewed-at', solution.reviewedAt);
+        setText('solution-updated-at', solution.updatedAt);
 
         const steps = document.getElementById('solution-steps');
         steps.replaceChildren(...solution.steps.map((step) => {
@@ -96,12 +105,15 @@
         setText('product-title', product.title);
         setText('product-description', product.description);
         setText('product-why-selected', product.whySelected);
+        setText('product-offer-type', product.offerType);
+        setText('product-publication-status', product.publicationStatus);
         setText('product-problem', product.problem);
         setText('product-materials', product.materials);
         setText('product-price', product.priceLevel);
-        setText('product-status', product.status);
         setText('product-availability', product.availability);
-        setText('product-reviewed-at', product.reviewedAt);
+        setText('product-access-status', product.accessStatus);
+        setText('product-commercial-disclosure', product.commercialDisclosure);
+        setText('product-updated-at', product.updatedAt);
 
         const evidenceList = document.getElementById('product-evidence');
         evidenceList.replaceChildren(...product.evidence.map((evidence) => {
@@ -146,20 +158,75 @@
         return rawHash.startsWith('/') ? rawHash : `/${rawHash}`;
     }
 
+    function requestsAreEnabled() {
+        const config = window.ARVENA_SUPABASE_CONFIG || {};
+        return config.requestsEnabled === true;
+    }
+
+    function applyRequestAvailability() {
+        const enabled = requestsAreEnabled();
+        requestFields.disabled = !enabled;
+        submitButton.disabled = !enabled;
+        requestAvailabilityNotice.hidden = enabled;
+        requestAvailabilityText.textContent = `${REQUEST_UNAVAILABLE_MESSAGE} This form is disabled and will not send information.`;
+        form.dataset.requestsEnabled = String(enabled);
+        form.setAttribute('aria-disabled', String(!enabled));
+
+        if (enabled) {
+            form.removeAttribute('aria-describedby');
+            requestTitle.textContent = 'Request a Clean Water option';
+            requestIntro.textContent = 'Tell Arvena what you need to investigate. This records a Clean Water sourcing request; it does not promise a product or replace water-quality or public-health advice.';
+            submitButton.textContent = 'Send sourcing request';
+            return;
+        }
+
+        form.setAttribute('aria-describedby', 'request-availability-notice');
+        requestTitle.textContent = 'Clean Water sourcing is temporarily unavailable';
+        requestIntro.textContent = 'The request-system connection is being restored. The educational guide and product-type profile remain available, but this form cannot currently send information.';
+        submitButton.textContent = 'Sourcing temporarily unavailable';
+        sessionStorage.removeItem(CONFIRMATION_KEY);
+        setFormStatus('');
+    }
+
+    function syncNavigationAccessibility(isOpen = primaryNav.classList.contains('is-open')) {
+        const isClosedOnMobile = mobileNavigationQuery.matches && !isOpen;
+        primaryNav.toggleAttribute('inert', isClosedOnMobile);
+        navLinks.forEach((link) => {
+            if (isClosedOnMobile) {
+                link.setAttribute('tabindex', '-1');
+            } else {
+                link.removeAttribute('tabindex');
+            }
+        });
+        if (isClosedOnMobile) {
+            primaryNav.setAttribute('aria-hidden', 'true');
+        } else {
+            primaryNav.removeAttribute('aria-hidden');
+        }
+    }
+
+    function skipToMainContent(event) {
+        event.preventDefault();
+        mainContent.focus();
+        mainContent.scrollIntoView({ block: 'start' });
+    }
+
     function closeMenu({ restoreFocus = false } = {}) {
         if (!menuToggle || !primaryNav) return;
+        const focusIsInsideMobileMenu = mobileNavigationQuery.matches && primaryNav.contains(document.activeElement);
+        if (restoreFocus || focusIsInsideMobileMenu) menuToggle.focus();
         primaryNav.classList.remove('is-open');
         menuToggle.setAttribute('aria-expanded', 'false');
         menuToggle.querySelector('.sr-only').textContent = 'Open navigation';
         document.body.classList.remove('nav-open');
-        if (restoreFocus) menuToggle.focus();
+        syncNavigationAccessibility(false);
     }
 
     function showRoute({ moveFocus = true } = {}) {
         let routePath = normaliseRoute();
         let route = ROUTES[routePath] || { screen: 'not-found', nav: '', title: 'Page not found — Arvena' };
 
-        if (route.screen === 'result' && !sessionStorage.getItem(CONFIRMATION_KEY)) {
+        if (route.screen === 'result' && (!requestsAreEnabled() || !sessionStorage.getItem(CONFIRMATION_KEY))) {
             routePath = '/request';
             route = ROUTES[routePath];
             window.history.replaceState(null, '', '#/request');
@@ -223,6 +290,7 @@
         menuToggle.querySelector('.sr-only').textContent = open ? 'Open navigation' : 'Close navigation';
         primaryNav.classList.toggle('is-open', !open);
         document.body.classList.toggle('nav-open', !open);
+        syncNavigationAccessibility(!open);
         if (!open) {
             const firstLink = primaryNav.querySelector('a');
             if (firstLink) firstLink.focus();
@@ -310,6 +378,10 @@
     async function submitRequest(event) {
         event.preventDefault();
         setFormStatus('');
+        if (!requestsAreEnabled()) {
+            applyRequestAvailability();
+            return;
+        }
         if (!validateForm()) return;
 
         const remaining = cooldownRemaining();
@@ -379,16 +451,20 @@
                 : `${error.message} No success was recorded.`;
             setFormStatus(message, 'error');
         } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Send sourcing request';
+            const enabled = requestsAreEnabled();
+            submitButton.disabled = !enabled;
+            submitButton.textContent = enabled ? 'Send sourcing request' : 'Sourcing temporarily unavailable';
         }
     }
 
     renderStructuredContent();
     applyTheme(getInitialTheme());
+    applyRequestAvailability();
+    syncNavigationAccessibility(false);
     showRoute({ moveFocus: false });
 
     window.addEventListener('hashchange', () => showRoute());
+    skipLink.addEventListener('click', skipToMainContent);
     themeToggle.addEventListener('click', toggleTheme);
     menuToggle.addEventListener('click', toggleMenu);
     primaryNav.addEventListener('click', (event) => {
@@ -399,9 +475,7 @@
             closeMenu({ restoreFocus: true });
         }
     });
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 900) closeMenu();
-    });
+    mobileNavigationQuery.addEventListener('change', () => closeMenu());
     notesField.addEventListener('input', () => {
         notesCount.textContent = String(notesField.value.length);
     });

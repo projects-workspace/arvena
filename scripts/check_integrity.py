@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dependency-free integrity checks for the public Arvena Clean Water MVP."""
+"""Dependency-free integrity checks for Arvena Stage 1 public alignment."""
 
 from html.parser import HTMLParser
 import os
@@ -16,6 +16,7 @@ UNKNOWN_ARGS = [arg for arg in sys.argv[1:] if arg != "--quiet"]
 PROBLEMS = []
 
 PUBLIC_JS = ("supabase-config.js", "arvena-data.js", "script.js")
+ACTIVE_PUBLIC_FILES = ("index.html", "style.css", *PUBLIC_JS, "vercel.json")
 REQUIRED_ROUTES = (
     "/home",
     "/explore",
@@ -92,6 +93,8 @@ data = read("arvena-data.js")
 config = read("supabase-config.js")
 migration = read("supabase/migrations/20260821000000_arvena_mvp_requests.sql")
 vercel_ignore = read(".vercelignore")
+active_public_text = "\n".join(read(path) for path in ACTIVE_PUBLIC_FILES)
+active_public_casefold = active_public_text.casefold()
 
 parser = SiteParser()
 parser.feed(html)
@@ -136,16 +139,60 @@ for marker in LEGACY_PUBLIC_MARKERS:
     if marker.casefold() in html.casefold() or marker.casefold() in script.casefold():
         report(f"public safety: legacy marker is exposed: {marker!r}")
 
+for phrase in (
+    "no marketplace",
+    "arvena reviewed",
+    "arvena verified",
+    "request a verified option",
+    "researching verified models",
+    "last editorial review",
+    "request-based matching for czechia",
+    "other european markets",
+):
+    if phrase in active_public_casefold:
+        report(f"positioning: obsolete or misleading public phrase is exposed: {phrase!r}")
+
+if "lumeya" in active_public_casefold:
+    report("positioning: Lumeya naming must not appear in active Arvena public files")
+
+for required_text in (
+    "independent curated marketplace",
+    "professional services",
+    "integrated solutions",
+    "turnkey implementations",
+    "only currently published collection",
+    "scope, not inventory",
+):
+    if required_text not in active_public_casefold:
+        report(f"positioning: required Stage 1 public message is missing: {required_text!r}")
+
+if not re.search(r'data-nav-route="explore"[^>]*>Marketplace</a>', html):
+    report("navigation: the Explore route must be presented as Marketplace")
+
 for required_text in (
     "clean-water-at-home",
     "certified-point-of-use-filter",
+    "offerType:",
+    "publicationStatus:",
+    "accessStatus:",
+    "commercialDisclosure:",
     "evidence:",
     "limitations:",
-    "reviewedAt:",
+    "updatedAt:",
     "availability:",
 ):
     if required_text not in data:
         report(f"data: required structured value missing: {required_text!r}")
+
+if "reviewedAt:" in data or "content last updated" not in html.casefold():
+    report("trust language: public dates must be content updates, not unsupported editorial reviews")
+for marker in (
+    "Specific models require checking",
+    "not a product listing or an Arvena certification",
+    "Arvena interpretation",
+):
+    if marker.casefold() not in active_public_casefold:
+        report(f"trust language: required scope clarification is missing: {marker!r}")
 
 for source_url in re.findall(r"sourceUrl:\s*'([^']+)'", data):
     if not source_url.startswith(("https://", "#/")):
@@ -168,8 +215,80 @@ if configured_key and configured_key.group(1).startswith("sb_secret_"):
     report("configuration: a secret Supabase key must never be committed")
 if "arvena_mvp_requests" not in config or "arvena_mvp_requests" not in script:
     report("configuration: frontend table name is inconsistent")
+if not re.search(r"requestsEnabled:\s*false\b", config):
+    report("configuration: Clean Water requests must remain explicitly disabled in this batch")
+if "function requestsAreEnabled()" not in script or "config.requestsEnabled === true" not in script:
+    report("configuration: fail-closed request availability helper is missing")
+
+submit_start = script.find("async function submitRequest")
+submit_config_lookup = script.find("getSupabaseConfig()", submit_start)
+submit_fetch = script.find("fetch(", submit_start)
+submit_guard = script.find("if (!requestsAreEnabled())", submit_start)
+if (
+    submit_start < 0
+    or submit_config_lookup < 0
+    or submit_fetch < 0
+    or submit_guard < submit_start
+    or submit_guard > submit_config_lookup
+    or submit_guard > submit_fetch
+):
+    report("request safety: disabled-state guard must run before configuration lookup or network request")
+
+if 'id="request-fields" disabled' not in html:
+    report("request safety: request controls must be disabled before JavaScript initialises")
+if "request-system connection is being restored" not in html:
+    report("request safety: clear public unavailable-state copy is missing")
+if "requestFields.disabled = !enabled" not in script or "requestAvailabilityNotice.hidden = enabled" not in script:
+    report("request safety: request availability UI is not controlled by the explicit flag")
+if "sessionStorage.removeItem(CONFIRMATION_KEY)" not in script:
+    report("request safety: stale success state must be cleared while requests are disabled")
+
 if "route.screen === 'result'" not in script or "history.replaceState" not in script:
     report("routing: confirmation screen is not guarded against direct access")
+if "(!requestsAreEnabled() || !sessionStorage.getItem(CONFIRMATION_KEY))" not in script:
+    report("routing: confirmation must remain unavailable while requests are disabled")
+
+if 'href="#main-content" data-skip-link' not in html:
+    report("accessibility: skip link target or handling marker is missing")
+skip_handler = re.search(
+    r"function skipToMainContent\(event\)\s*\{(?P<body>.*?)\n\s*\}",
+    script,
+    flags=re.DOTALL,
+)
+if not skip_handler or "skipLink.addEventListener('click', skipToMainContent)" not in script:
+    report("accessibility: skip link must use explicit non-routing focus handling")
+elif "event.preventDefault();" not in skip_handler.group("body") or "mainContent.focus();" not in skip_handler.group("body"):
+    report("accessibility: skip-link handling must prevent hash routing and focus main content")
+
+for marker in (
+    "function syncNavigationAccessibility",
+    "primaryNav.toggleAttribute('inert', isClosedOnMobile)",
+    "link.setAttribute('tabindex', '-1')",
+    "link.removeAttribute('tabindex')",
+    "primaryNav.setAttribute('aria-hidden', 'true')",
+    "syncNavigationAccessibility(!open)",
+):
+    if marker not in script:
+        report(f"accessibility: closed mobile-navigation state is missing marker {marker!r}")
+
+close_menu_handler = re.search(
+    r"function closeMenu\([^)]*\)\s*\{(?P<body>.*?)\n\s*\}",
+    script,
+    flags=re.DOTALL,
+)
+if not close_menu_handler:
+    report("accessibility: mobile close-menu handler is missing")
+else:
+    close_menu_body = close_menu_handler.group("body")
+    focus_position = close_menu_body.find("menuToggle.focus();")
+    hidden_state_position = close_menu_body.find("syncNavigationAccessibility(false);")
+    if (
+        "primaryNav.contains(document.activeElement)" not in close_menu_body
+        or focus_position < 0
+        or hidden_state_position < 0
+        or focus_position > hidden_state_position
+    ):
+        report("accessibility: focus must leave the mobile menu before inert or aria-hidden is applied")
 
 normalised_migration = re.sub(r"\s+", " ", migration.casefold())
 required_sql = (
@@ -214,6 +333,9 @@ if PROBLEMS:
     sys.exit(1)
 
 if not QUIET:
-    print("OK: Arvena Clean Water MVP integrity checks passed")
-    print(f"    {len(REQUIRED_ROUTES)} public routes, {len(parser.ids)} unique element ids, insert-only RLS migration")
+    print("OK: Arvena Stage 1 public alignment checks passed")
+    print(
+        f"    {len(REQUIRED_ROUTES)} public routes, {len(parser.ids)} unique element ids, "
+        "requests disabled, insert-only RLS migration preserved"
+    )
 sys.exit(0)

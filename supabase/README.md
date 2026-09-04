@@ -1,7 +1,20 @@
 # Arvena Supabase MVP record
 
-This directory contains the database change and verification record for the
-first public MVP. It was applied only to the dedicated Arvena Supabase project.
+This directory contains the database change and historical verification record
+for the first public MVP. It was applied only to the dedicated Arvena Supabase
+project.
+
+## Current frontend availability
+
+As of 4 September 2026, the configured project hostname does not resolve. The
+public application therefore sets `requestsEnabled: false`, disables every
+request control, blocks submission before `fetch`, and prevents access to the
+confirmation route. The migration and request payload remain unchanged.
+
+The verification below records what passed on 22 August 2026. It must not be
+treated as proof that the request system is currently available. Requests may
+be re-enabled only after the authoritative Arvena project is confirmed and the
+complete browser-to-database path passes fresh verification.
 
 ## Applied change
 
@@ -17,7 +30,7 @@ IDs and timestamps, forced RLS, an anonymous insert-only policy, and explicit
 column-level insert grants. The `anon` role cannot supply the generated ID,
 status, or creation timestamp.
 
-## Live verification
+## Historical live verification — 22 August 2026
 
 - The complete browser journey created one request and displayed reference
   `ARV-666E67A1`.
@@ -44,10 +57,10 @@ or service-role key in a browser file.
 
 ## Production verification
 
-The production deployment at
+At the time of verification, the production deployment at
 `https://arvena-natural-product-discovery.vercel.app` returned HTTP 200 with
 the expected security headers. Home, Explore, Clean Water, product, and request
 views loaded in the deployed browser without console errors. The deployed
-public configuration resolves to this project's URL and
+public configuration then resolved to this project's URL and
 `public.arvena_mvp_requests`. The production form was not resubmitted, so the
 single verified database record above remains the only test record.
