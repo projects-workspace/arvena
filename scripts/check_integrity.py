@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Dependency-free integrity checks for Arvena Stage 1 public alignment."""
+"""Dependency-free integrity checks for the public Arvena platform foundation."""
 
+from hashlib import sha256
 from html.parser import HTMLParser
 import os
 import re
@@ -20,39 +21,100 @@ ACTIVE_PUBLIC_FILES = ("index.html", "style.css", *PUBLIC_JS, "vercel.json")
 REQUIRED_ROUTES = (
     "/home",
     "/explore",
+    "/solutions",
     "/solutions/clean-water",
-    "/products/certified-point-of-use-filter",
+    "/solution-classes/point-of-use-filtration",
+    "/offers",
+    "/providers",
+    "/integrated-solutions",
+    "/how-we-select",
+    "/craft-local",
+    "/about",
+    "/development",
+    "/participate",
+    "/participate/producers",
+    "/participate/work",
+    "/contact",
     "/request",
     "/result",
+)
+REQUIRED_ALIASES = (
+    "/products/certified-point-of-use-filter",
     "/methodology",
 )
-REQUIRED_FORM_FIELDS = {
-    "email",
-    "country",
-    "concern",
-    "notes",
-    "website",
-    "consent",
+EXPECTED_SCREENS = {
+    "home",
+    "explore",
+    "solutions",
+    "clean-water",
+    "solution-class",
+    "offers",
+    "providers",
+    "integrated",
+    "methodology",
+    "craft",
+    "about",
+    "development",
+    "participate",
+    "producers",
+    "work",
+    "contact",
+    "request",
+    "result",
+    "not-found",
 }
-LEGACY_PUBLIC_MARKERS = (
-    "data-i18n",
-    "language-selector",
-    "PFDmeto/",
-    "PDFbiom/",
-    "PDFlife/",
-    "Santiago Protocol",
-    "Tyubazh",
-    "Tubazh",
-)
+REQUIRED_FORM_FIELDS = {"email", "country", "concern", "notes", "website", "consent"}
+REQUIRED_DATA_HOOKS = {
+    "home-domain-preview",
+    "solutions-domain-grid",
+    "developing-domain-list",
+    "explore-search",
+    "explore-domain-filter",
+    "explore-type-filter",
+    "explore-results",
+    "explore-result-count",
+    "explore-empty",
+    "explore-clear",
+    "solution-title",
+    "solution-problem",
+    "solution-updated",
+    "solution-steps",
+    "technology-grid",
+    "class-title",
+    "class-description",
+    "class-problem",
+    "class-why-included",
+    "class-materials",
+    "class-publication",
+    "class-access",
+    "class-price",
+    "class-availability",
+    "class-evidence",
+    "class-limitations",
+    "class-updated",
+    "class-disclosure",
+    "offer-count",
+    "provider-count",
+}
+EXPECTED_MIGRATION_SHA256 = "8839a517ff5247c5929edf7a8514b11f95bf844a1632e2de8d1d1a93676ff491"
+
+
+def path(relative_path):
+    return os.path.join(ROOT, relative_path)
 
 
 def read(relative_path):
-    with open(os.path.join(ROOT, relative_path), encoding="utf-8") as handle:
+    with open(path(relative_path), encoding="utf-8") as handle:
+        return handle.read()
+
+
+def read_bytes(relative_path):
+    with open(path(relative_path), "rb") as handle:
         return handle.read()
 
 
 def exists(relative_path):
-    return os.path.isfile(os.path.join(ROOT, relative_path))
+    return os.path.isfile(path(relative_path))
 
 
 def report(message):
@@ -67,6 +129,9 @@ class SiteParser(HTMLParser):
         self.form_names = set()
         self.html_lang = ""
         self.screens = set()
+        self.nav_route_links = 0
+        self.nav_route_values = []
+        self.hash_routes = []
 
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
@@ -81,19 +146,48 @@ class SiteParser(HTMLParser):
             self.form_names.add(attributes["name"])
         if attributes.get("data-screen"):
             self.screens.add(attributes["data-screen"])
+        if tag == "a" and "data-route-link" in attributes:
+            self.nav_route_links += 1
+            self.nav_route_values.append(attributes.get("data-route-link"))
+        if tag == "a" and str(attributes.get("href", "")).startswith("#/"):
+            self.hash_routes.append(attributes["href"][1:])
 
 
 if UNKNOWN_ARGS:
     report(f"arguments: unsupported option(s): {', '.join(UNKNOWN_ARGS)}")
+
+required_files = (
+    "index.html",
+    "style.css",
+    *PUBLIC_JS,
+    "favicon.svg",
+    "assets/arvena-botanical-background.jpg",
+    "assets/arvena-material-study.jpg",
+    "assets/arvena-craft-process.jpg",
+    "scripts/serve_preview.py",
+    "supabase/migrations/20260821000000_arvena_mvp_requests.sql",
+    ".vercelignore",
+    "vercel.json",
+)
+for required_file in required_files:
+    if not exists(required_file):
+        report(f"files: required file is missing: {required_file}")
+
+if PROBLEMS and any(not exists(item) for item in ("index.html", "style.css", *PUBLIC_JS)):
+    print(f"FAIL: {len(PROBLEMS)} problem(s) found")
+    for problem in PROBLEMS:
+        print(f"  - {problem}")
+    sys.exit(1)
 
 html = read("index.html")
 css = read("style.css")
 script = read("script.js")
 data = read("arvena-data.js")
 config = read("supabase-config.js")
-migration = read("supabase/migrations/20260821000000_arvena_mvp_requests.sql")
+migration_bytes = read_bytes("supabase/migrations/20260821000000_arvena_mvp_requests.sql")
 vercel_ignore = read(".vercelignore")
-active_public_text = "\n".join(read(path) for path in ACTIVE_PUBLIC_FILES)
+vercel_config = read("vercel.json")
+active_public_text = "\n".join(read(item) for item in ACTIVE_PUBLIC_FILES)
 active_public_casefold = active_public_text.casefold()
 
 parser = SiteParser()
@@ -104,103 +198,126 @@ if parser.html_lang != "en":
 
 for element_id in sorted(set(parser.ids)):
     if parser.ids.count(element_id) > 1:
-        report(f"html: duplicate id '{element_id}'")
+        report(f"html: duplicate id {element_id!r}")
+
+for required_id in sorted(REQUIRED_DATA_HOOKS):
+    if required_id not in parser.ids:
+        report(f"html: required data hook is missing: {required_id!r}")
+
+missing_screens = EXPECTED_SCREENS - parser.screens
+if missing_screens:
+    report(f"html: missing screen(s): {', '.join(sorted(missing_screens))}")
+
+if parser.nav_route_links != 5:
+    report(f"navigation: expected exactly 5 top-level route links, found {parser.nav_route_links}")
+expected_nav_values = {"explore", "solutions", "how-we-select", "about", "participate"}
+if set(parser.nav_route_values) != expected_nav_values:
+    report(f"navigation: top-level route keys must be {', '.join(sorted(expected_nav_values))}")
 
 for attribute, reference in parser.references:
     if reference.startswith(("http://", "https://", "#", "mailto:", "data:")):
         continue
-    path = urlsplit(reference).path
-    if path and not exists(path):
+    relative = urlsplit(reference).path.lstrip("./")
+    if relative and not exists(relative):
         report(f"html: {attribute} points to missing file: {reference}")
 
 for reference in re.findall(r"url\(['\"]?([^'\"()]+)['\"]?\)", css):
     if reference.startswith(("http://", "https://", "data:")):
         continue
-    path = urlsplit(reference).path
-    if path and not exists(path):
+    relative = urlsplit(reference).path.lstrip("./")
+    if relative and not exists(relative):
         report(f"css: url() points to missing file: {reference}")
 
-for route in REQUIRED_ROUTES:
-    if f"'{route}'" not in script:
-        report(f"routing: required route {route!r} missing from script.js")
-    if route != "/result" and f"#{route}" not in html:
-        report(f"routing: no public link to required route '#{route}'")
+for route in (*REQUIRED_ROUTES, *REQUIRED_ALIASES):
+    if route not in script:
+        report(f"routing: required route or alias {route!r} missing from script.js")
 
-expected_screens = {"home", "explore", "clean-water", "product", "request", "result", "methodology", "not-found"}
-missing_screens = expected_screens - parser.screens
-if missing_screens:
-    report(f"html: missing screen(s): {', '.join(sorted(missing_screens))}")
+known_routes = {*REQUIRED_ROUTES, *REQUIRED_ALIASES}
+for linked_route in sorted(set(parser.hash_routes)):
+    if linked_route not in known_routes:
+        report(f"routing: HTML links to an unknown route: {linked_route!r}")
+
+for route in REQUIRED_ROUTES:
+    if route == "/result":
+        continue
+    if f"#{route}" not in html:
+        report(f"routing: no public link to required route '#{route}'")
 
 missing_fields = REQUIRED_FORM_FIELDS - parser.form_names
 if missing_fields:
     report(f"form: missing field(s): {', '.join(sorted(missing_fields))}")
 
-for marker in LEGACY_PUBLIC_MARKERS:
-    if marker.casefold() in html.casefold() or marker.casefold() in script.casefold():
-        report(f"public safety: legacy marker is exposed: {marker!r}")
-
-for phrase in (
-    "no marketplace",
-    "arvena reviewed",
-    "arvena verified",
-    "request a verified option",
-    "researching verified models",
-    "last editorial review",
-    "request-based matching for czechia",
-    "other european markets",
+for marker in (
+    "data-i18n",
+    "language-selector",
+    "PFDmeto/",
+    "PDFbiom/",
+    "PDFlife/",
+    "Santiago Protocol",
+    "Tyubazh",
+    "Tubazh",
+    "Lumeya",
+    "Commonry",
 ):
-    if phrase in active_public_casefold:
-        report(f"positioning: obsolete or misleading public phrase is exposed: {phrase!r}")
-
-if "lumeya" in active_public_casefold:
-    report("positioning: Lumeya naming must not appear in active Arvena public files")
+    if marker.casefold() in active_public_casefold:
+        report(f"public safety: legacy or out-of-scope marker is exposed: {marker!r}")
 
 for required_text in (
     "independent curated marketplace",
-    "professional services",
+    "solution classes",
+    "specific offers",
     "integrated solutions",
-    "turnkey implementations",
-    "only currently published collection",
-    "scope, not inventory",
+    "scope is not inventory",
+    "no specific offer",
+    "future direction",
+    "not an existing certification",
 ):
     if required_text not in active_public_casefold:
-        report(f"positioning: required Stage 1 public message is missing: {required_text!r}")
+        report(f"positioning: required public message is missing: {required_text!r}")
 
-if not re.search(r'data-nav-route="explore"[^>]*>Marketplace</a>', html):
-    report("navigation: the Explore route must be presented as Marketplace")
+for misleading_phrase in (
+    "arvena verified product",
+    "certified by arvena",
+    "our laboratory",
+    "our investment programme",
+    "successful application",
+    "connection is being restored",
+    "hostname is unavailable",
+):
+    if misleading_phrase in active_public_casefold:
+        report(f"trust language: misleading or stale phrase is exposed: {misleading_phrase!r}")
 
-for required_text in (
+if "\u2013" in active_public_text or "\u2014" in active_public_text:
+    report("content style: active public files contain a visible en dash or em dash")
+
+for marker in (
+    "domains:",
+    "discoveryRecords:",
+    "offers: []",
+    "providers: []",
+    "protectedLegacyRequestContract:",
     "clean-water-at-home",
+    "point-of-use-filtration",
     "certified-point-of-use-filter",
-    "offerType:",
-    "publicationStatus:",
-    "accessStatus:",
-    "commercialDisclosure:",
+    "priceState:",
+    "availabilityState:",
     "evidence:",
     "limitations:",
-    "updatedAt:",
-    "availability:",
+    "commercialDisclosure:",
 ):
-    if required_text not in data:
-        report(f"data: required structured value missing: {required_text!r}")
+    if marker not in data:
+        report(f"data: required structured value missing: {marker!r}")
 
-if "reviewedAt:" in data or "content last updated" not in html.casefold():
-    report("trust language: public dates must be content updates, not unsupported editorial reviews")
-for marker in (
-    "Specific models require checking",
-    "not a product listing or an Arvena certification",
-    "Arvena interpretation",
-):
-    if marker.casefold() not in active_public_casefold:
-        report(f"trust language: required scope clarification is missing: {marker!r}")
+if len(re.findall(r"status: 'published'", data)) != 1:
+    report("data: exactly one solution domain must currently be published")
+if len(re.findall(r"status: 'developing'", data)) != 9:
+    report("data: exactly nine solution domains must currently be developing")
+if len(re.findall(r"recordType: '(?:guide|solution-class)'", data)) != 2:
+    report("data: exactly two genuine discovery records are expected in this foundation")
 
 for source_url in re.findall(r"sourceUrl:\s*'([^']+)'", data):
     if not source_url.startswith(("https://", "#/")):
         report(f"data: evidence URL must use HTTPS or an internal route: {source_url}")
-
-for bind_name in re.findall(r"data-bind=\"([^\"]+)\"", html):
-    if f"setText('{bind_name}'" not in script:
-        report(f"data binding: {bind_name!r} is not populated by script.js")
 
 if "sb_secret_" not in script or "service_role" not in script:
     report("configuration: browser key safety checks are missing")
@@ -213,111 +330,88 @@ if not configured_key or not re.fullmatch(r"sb_publishable_[A-Za-z0-9_-]+", conf
     report("configuration: expected a browser-safe Supabase publishable key")
 if configured_key and configured_key.group(1).startswith("sb_secret_"):
     report("configuration: a secret Supabase key must never be committed")
-if "arvena_mvp_requests" not in config or "arvena_mvp_requests" not in script:
-    report("configuration: frontend table name is inconsistent")
 if not re.search(r"requestsEnabled:\s*false\b", config):
-    report("configuration: Clean Water requests must remain explicitly disabled in this batch")
-if "function requestsAreEnabled()" not in script or "config.requestsEnabled === true" not in script:
+    report("configuration: Clean Water requests must remain explicitly disabled")
+if "config.requestsEnabled === true" not in script:
     report("configuration: fail-closed request availability helper is missing")
+
+for fragment in (
+    "client_request_id: requestId",
+    "request_type: 'water_filter_match'",
+    "email: form.elements.email.value.trim()",
+    "country: form.elements.country.value.trim()",
+    "concern: form.elements.concern.value",
+    "notes: form.elements.notes.value.trim() || null",
+    "consent: form.elements.consent.checked",
+    "solution_slug: 'clean-water-at-home'",
+    "product_slug: 'certified-point-of-use-filter'",
+    "source_path: '#/request'",
+    "Prefer: 'return=minimal'",
+    "body: JSON.stringify(payload)",
+):
+    if fragment not in script:
+        report(f"request safety: protected payload or request fragment changed: {fragment!r}")
 
 submit_start = script.find("async function submitRequest")
 submit_config_lookup = script.find("getSupabaseConfig()", submit_start)
 submit_fetch = script.find("fetch(", submit_start)
 submit_guard = script.find("if (!requestsAreEnabled())", submit_start)
-if (
-    submit_start < 0
-    or submit_config_lookup < 0
-    or submit_fetch < 0
-    or submit_guard < submit_start
-    or submit_guard > submit_config_lookup
-    or submit_guard > submit_fetch
+if min(submit_start, submit_config_lookup, submit_fetch, submit_guard) < 0 or not (
+    submit_start < submit_guard < submit_config_lookup < submit_fetch
 ):
-    report("request safety: disabled-state guard must run before configuration lookup or network request")
-
-if 'id="request-fields" disabled' not in html:
-    report("request safety: request controls must be disabled before JavaScript initialises")
-if "request-system connection is being restored" not in html:
-    report("request safety: clear public unavailable-state copy is missing")
-if "requestFields.disabled = !enabled" not in script or "requestAvailabilityNotice.hidden = enabled" not in script:
-    report("request safety: request availability UI is not controlled by the explicit flag")
-if "sessionStorage.removeItem(CONFIRMATION_KEY)" not in script:
-    report("request safety: stale success state must be cleared while requests are disabled")
-
-if "route.screen === 'result'" not in script or "history.replaceState" not in script:
-    report("routing: confirmation screen is not guarded against direct access")
-if "(!requestsAreEnabled() || !sessionStorage.getItem(CONFIRMATION_KEY))" not in script:
-    report("routing: confirmation must remain unavailable while requests are disabled")
-
-if 'href="#main-content" data-skip-link' not in html:
-    report("accessibility: skip link target or handling marker is missing")
-skip_handler = re.search(
-    r"function skipToMainContent\(event\)\s*\{(?P<body>.*?)\n\s*\}",
-    script,
-    flags=re.DOTALL,
-)
-if not skip_handler or "skipLink.addEventListener('click', skipToMainContent)" not in script:
-    report("accessibility: skip link must use explicit non-routing focus handling")
-elif "event.preventDefault();" not in skip_handler.group("body") or "mainContent.focus();" not in skip_handler.group("body"):
-    report("accessibility: skip-link handling must prevent hash routing and focus main content")
+    report("request safety: disabled guard must run before configuration lookup and network access")
 
 for marker in (
+    'id="request-fields" disabled',
+    "requestFields.disabled = !enabled",
+    "requestAvailabilityNotice.hidden = enabled",
+    "sessionStorage.removeItem(CONFIRMATION_KEY)",
+    "(!requestsAreEnabled() || !sessionStorage.getItem(CONFIRMATION_KEY))",
+):
+    if marker not in html and marker not in script:
+        report(f"request safety: required fail-closed marker is missing: {marker!r}")
+
+migration_digest = sha256(migration_bytes).hexdigest()
+if migration_digest != EXPECTED_MIGRATION_SHA256:
+    report(f"database: protected request migration changed ({migration_digest})")
+
+for marker in (
+    'href="#main-content" data-skip-link',
+    "function skipToMainContent",
+    "event.preventDefault()",
+    "mainContent.focus()",
     "function syncNavigationAccessibility",
     "primaryNav.toggleAttribute('inert', isClosedOnMobile)",
-    "link.setAttribute('tabindex', '-1')",
-    "link.removeAttribute('tabindex')",
     "primaryNav.setAttribute('aria-hidden', 'true')",
-    "syncNavigationAccessibility(!open)",
 ):
-    if marker not in script:
-        report(f"accessibility: closed mobile-navigation state is missing marker {marker!r}")
+    if marker not in html and marker not in script:
+        report(f"accessibility: required marker is missing: {marker!r}")
 
-close_menu_handler = re.search(
-    r"function closeMenu\([^)]*\)\s*\{(?P<body>.*?)\n\s*\}",
-    script,
-    flags=re.DOTALL,
-)
-if not close_menu_handler:
-    report("accessibility: mobile close-menu handler is missing")
-else:
-    close_menu_body = close_menu_handler.group("body")
-    focus_position = close_menu_body.find("menuToggle.focus();")
-    hidden_state_position = close_menu_body.find("syncNavigationAccessibility(false);")
-    if (
-        "primaryNav.contains(document.activeElement)" not in close_menu_body
-        or focus_position < 0
-        or hidden_state_position < 0
-        or focus_position > hidden_state_position
-    ):
-        report("accessibility: focus must leave the mobile menu before inert or aria-hidden is applied")
-
-normalised_migration = re.sub(r"\s+", " ", migration.casefold())
-required_sql = (
-    "create table if not exists public.arvena_mvp_requests",
-    "alter table public.arvena_mvp_requests enable row level security",
-    "alter table public.arvena_mvp_requests force row level security",
-    "revoke all on table public.arvena_mvp_requests from anon, authenticated",
-    "for insert to anon with check",
-)
-for statement in required_sql:
-    if statement not in normalised_migration:
-        report(f"database: required migration protection missing: {statement!r}")
-
-if not re.search(r"grant\s+insert\s*\([^;]+\)\s+on\s+table\s+public[.]arvena_mvp_requests\s+to\s+anon", migration, re.I | re.S):
-    report("database: anonymous column-level INSERT grant is missing")
-if re.search(r"grant\s+(select|update|delete|all)[^;]*\s+to\s+anon", migration, re.I | re.S):
-    report("database: anonymous users must not receive SELECT, UPDATE, DELETE, or ALL")
-if re.search(r"for\s+(select|update|delete)\s+to\s+anon", migration, re.I):
-    report("database: public read/update/delete RLS policy found")
-
-for excluded in ("PFDmeto", "PDFbiom", "PDFlife", "*.pdf", "supabase"):
+for excluded in (
+    ".env",
+    ".env.*",
+    ".git",
+    "PFDmeto",
+    "PDFbiom",
+    "PDFlife",
+    "*.pdf",
+    "supabase",
+    "scripts",
+    "beautiful-plants-natural-environment.jpg",
+):
     if excluded not in vercel_ignore:
-        report(f"deployment: legacy/internal path is not excluded: {excluded}")
+        report(f"deployment: internal or obsolete path is not excluded: {excluded}")
+
+if "https://*.supabase.co" in vercel_config:
+    report("deployment: CSP must not allow every Supabase project")
+if expected_supabase_url not in vercel_config:
+    report("deployment: CSP must allow only the assigned public Arvena Supabase host")
 
 node = shutil.which("node")
 if node:
     for relative_path in PUBLIC_JS:
         result = subprocess.run(
-            [node, "--check", os.path.join(ROOT, relative_path)],
+            [node, "--check", path(relative_path)],
             capture_output=True,
             text=True,
             check=False,
@@ -326,6 +420,12 @@ if node:
             detail = (result.stderr or result.stdout).strip().splitlines()
             report(f"js: node --check failed for {relative_path}: {detail[-1] if detail else 'unknown error'}")
 
+if exists("scripts/serve_preview.py"):
+    try:
+        compile(read("scripts/serve_preview.py"), path("scripts/serve_preview.py"), "exec")
+    except SyntaxError as error:
+        report(f"preview server: syntax check failed: {error.msg} at line {error.lineno}")
+
 if PROBLEMS:
     print(f"FAIL: {len(PROBLEMS)} problem(s) found")
     for problem in PROBLEMS:
@@ -333,9 +433,10 @@ if PROBLEMS:
     sys.exit(1)
 
 if not QUIET:
-    print("OK: Arvena Stage 1 public alignment checks passed")
+    print("OK: Arvena public platform integrity checks passed")
     print(
         f"    {len(REQUIRED_ROUTES)} public routes, {len(parser.ids)} unique element ids, "
-        "requests disabled, insert-only RLS migration preserved"
+        "2 genuine discovery records, 0 offers, 0 providers"
     )
+    print("    requests disabled, protected request migration preserved")
 sys.exit(0)

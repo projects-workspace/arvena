@@ -2,11 +2,16 @@
 .git
 .agents
 .codex
+.DS_Store
+**/.DS_Store
+.env
+.env.*
 venv
 PFDmeto
 PDFbiom
 PDFlife
 *.pdf
+beautiful-plants-natural-environment.jpg
 *.md
 merge_pdfs*.py
 translations.js

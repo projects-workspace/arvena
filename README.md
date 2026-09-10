@@ -1,98 +1,127 @@
 # Arvena
 
-Production: https://arvena-natural-product-discovery.vercel.app
+Arvena is an independent curated marketplace for high-quality products,
+technologies, integrated solutions and related services that support healthier,
+cleaner, more ecological, higher-quality and more thoughtfully organised living.
 
-Arvena is an independent curated marketplace for quality products,
-technologies and technical devices, systems, related professional services,
-integrated solutions, and larger turnkey implementations. Its purpose is to
-make better solutions for living easier to understand, evaluate, access, and
-implement.
+This repository contains the English public-platform foundation. It is designed
+to explain Arvena's full marketplace scope, guide people from a need to an
+appropriate type of solution, and provide reusable structures for real offers
+as their approved publication packages become available.
 
-The current English-only public release contains one published collection:
+Previously deployed public URL:
+`https://arvena-natural-product-discovery.vercel.app`. A URL or earlier
+deployment record is not evidence that the current branch has been deployed.
 
-`Home → Marketplace → Clean Water guide → editorial product-type profile → sourcing status`
+## Current product state
 
-The broader offer range describes Arvena's marketplace scope, not inventory
-that is already available. The release does not invent products, providers,
-prices, partners, services, or market availability. Clean Water is the only
-currently published collection.
+### Implemented in the public foundation
 
-The Clean Water request implementation and guarded confirmation route remain
-in source for restoration, but requests are currently disabled because the
-configured request-system hostname is unavailable. The public interface does
-not attempt a network request while this disabled state is active.
+- A broad marketplace identity covering products, technologies, services,
+  building and home systems, and integrated implementations.
+- Ten solution domains, with honest developing states where no content or
+  inventory has been published.
+- Need-first discovery and a reusable distinction between a need, a solution
+  class, a specific offer, and the work required for implementation.
+- The existing Clean Water educational guide and point-of-use filtration
+  solution-class profile, including evidence, limitations and safety context.
+- Public explanations for selection, independent editorial assessment,
+  craft/local/conscious sourcing, Arvena's identity, participation, contact,
+  and future development and accessibility directions.
+- Dependency-free static HTML, CSS and JavaScript with hash routing and
+  structured public content in `arvena-data.js`.
 
-## Architecture
+### Intentionally empty or developing
 
-The frontend is dependency-free static HTML, CSS, and JavaScript with hash
-routing. `arvena-data.js` is the structured editorial source for the solution,
-product-type profile, evidence, limitations, publication status, access status,
-and commercial disclosure.
+- No specific product, service, system or integrated offer is currently
+  published.
+- No provider profile, partnership, price, availability claim or external
+  purchase route is currently published.
+- Marketplace filters expose only dimensions supported by real public records;
+  developing domains are not presented as inventory.
 
-The only write path is a direct anonymous insert into the dedicated Arvena
-Supabase Data API. `supabase-config.js` accepts only a public project URL and a
-publishable/legacy anonymous key; it rejects service-role and secret keys. The
-database migration grants anonymous users INSERT access to the allowed columns
-only, with RLS validation and no public read/update/delete policy.
+### Not implemented in this repository
 
-`supabase-config.js` contains an explicit `requestsEnabled` flag. It is
-fail-closed: only the exact boolean value `true` can enable form controls and
-submission. The current value is `false`.
+- User authentication, Cabinet, preferences and saved offers.
+- Approved-provider associations, partner analytics and correction accounts.
+- Permission-gated questions, comments and moderation.
+- Commerce, payments, order management or a general seller portal.
 
-Legacy multilingual wellness material and PDFs remain in repository history for
-later editorial review, but they are neither linked from the MVP nor included in
-the Vercel upload.
+### Future direction, not current capability
 
-## Local development
+Arvena Verified, expanded research or laboratory capacity, coordinated turnkey
+delivery, product-development programmes, and a development/accessibility fund
+remain future directions. The public product must not imply that certification,
+subsidies, guaranteed reduced prices, an operating fund, a staffed laboratory or
+an investment programme already exists.
+
+## Safe local preview
+
+Use the allowlisted preview server. It binds only to `127.0.0.1`, serves the
+runtime HTML, CSS, JavaScript, favicon and approved image assets, and provides no
+directory listing or general access to the repository.
 
 ```sh
-python3 -m http.server 8000
+python3 scripts/serve_preview.py
 ```
 
-Open `http://127.0.0.1:8000`. All informational routes work without external
-configuration. The request route displays a clear unavailable state and keeps
-all submission controls disabled.
+Open `http://127.0.0.1:8000`. Choose another non-privileged loopback port when
+needed:
 
-## Preserved Supabase request boundary
+```sh
+python3 scripts/serve_preview.py --port 8080
+```
 
-The migration in `supabase/migrations/20260821000000_arvena_mvp_requests.sql`
-was applied to the dedicated Arvena project on 22 August 2026. That historical
-verification is recorded in `supabase/README.md`. As of 4 September 2026, the
-configured project hostname does not resolve, so it is not evidence of current
-request availability.
+Do not serve the repository root with `python3 -m http.server`. That generic
+server can expose ignored local files such as environment configuration, Git
+metadata, database sources and internal documents.
 
-The public journey does not create an Auth user. It uses the Data API `anon`
-role, which can insert only the ten form-controlled columns. RLS is enabled and
-forced; public and authenticated clients have no read, update, or delete access
-to submitted records. Full live verification is recorded in
-`supabase/README.md`.
+## Clean Water request boundary
 
-Never put a secret or service-role key in `supabase-config.js`. The browser must
-not be given public SELECT access to submitted email addresses.
+The protected Clean Water request migration, table and fixed browser payload
+remain in the repository. They are not part of marketplace catalogue
+development and must not be reused for accounts, participation or another
+solution area.
 
-Do not set `requestsEnabled` to `true` until the assigned Arvena project is
-confirmed and the complete browser-to-database journey is reverified.
+The public configuration keeps `requestsEnabled: false`. The form controls are
+disabled before JavaScript starts, submission returns before configuration or
+network access, stale confirmation state is cleared, and direct confirmation
+navigation redirects to the unavailable request page.
+
+This switch disables the official browser flow; it does not alter remote
+database privileges. Do not describe current remote database health or request
+availability without a fresh, explicitly authorised verification of the
+assigned Arvena project. Never place a secret or service-role key in public
+JavaScript or expose submitted contact information to browser clients.
 
 ## Verification
 
+Run the dependency-free source-integrity checks:
+
 ```sh
 python3 scripts/check_integrity.py
-python3 scripts/check_integrity.py --quiet
 ```
 
-The dependency-free checker verifies marketplace-first positioning, the Clean
-Water publication boundary, unavailable request state, accessibility markers,
-public routes, local assets, data bindings, form/schema alignment, the preserved
-insert-only RLS migration, deployment exclusions, duplicate HTML IDs, and
-JavaScript syntax when Node is available.
+Run the preview-server allow/deny tests. They start a temporary loopback server
+and verify public runtime files, HEAD behavior, environment and dotfile denial,
+path-traversal denial, internal-source denial, and arbitrary-path denial.
 
-Browser acceptance includes desktop and 390 × 844 mobile viewports, all seven
-routes, responsive and keyboard navigation, the disabled request path, the
-guarded confirmation route, and absence of console errors or request traffic.
+```sh
+python3 scripts/test_preview_server.py
+```
+
+Before a release, also run the application through this preview server and
+inspect all major routes on desktop and mobile. Check keyboard navigation,
+responsive overflow, links and actions, console/runtime errors, honest empty
+and future states, and the disabled request path.
 
 ## Deployment boundary
 
-`vercel.json` supplies security headers. `.vercelignore` prevents legacy PDFs,
-internal documentation, tooling, and repository metadata from entering the
-public deployment. This Stage 1 alignment batch does not deploy, commit, modify
-the request schema, or contact Supabase.
+`vercel.json` provides the public security headers and limits browser Supabase
+connections to the assigned, already-public Arvena project host.
+`.vercelignore` excludes environment files, repository metadata, internal
+documentation and scripts, database sources, legacy PDFs and the retired large
+botanical source image. The optimized assets under `assets/` remain public.
+
+No deployment, production promotion, remote migration or sourcing activation is
+performed by the local public-foundation work alone.

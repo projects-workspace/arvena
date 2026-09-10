@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Arvena — Curated Marketplace for Better Living</title>
-    <meta name="description" content="Curated products, technologies, systems, services and integrated solutions for healthier, cleaner, more ecological and better-organised living.">
+    <title>Arvena | Curated Marketplace for Better Living</title>
+    <meta name="description" content="An independent curated marketplace for products, technologies, systems and services that support healthier, cleaner and more thoughtfully organised living.">
     <meta name="theme-color" content="#2d4a3e">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Arvena — Curated Marketplace for Better Living">
-    <meta property="og:description" content="An independent curated marketplace for better products, technologies, systems, services and integrated solutions.">
+    <meta property="og:title" content="Arvena | Curated Marketplace for Better Living">
+    <meta property="og:description" content="Explore needs, solution approaches and carefully researched offers with evidence, limitations and access made clear.">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&amp;family=Raleway:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=22">
-    <script src="supabase-config.js?v=22" defer></script>
-    <script src="arvena-data.js?v=22" defer></script>
-    <script src="script.js?v=22" defer></script>
+    <link rel="stylesheet" href="style.css?v=23">
+    <script src="supabase-config.js?v=23" defer></script>
+    <script src="arvena-data.js?v=23" defer></script>
+    <script src="script.js?v=23" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main-content" data-skip-link>Skip to content</a>
@@ -38,10 +38,11 @@
         </button>
 
         <nav class="primary-nav" id="primary-navigation" aria-label="Primary navigation">
-            <a href="#/home" data-nav-route="home">Home</a>
-            <a href="#/explore" data-nav-route="explore">Marketplace</a>
-            <a href="#/solutions/clean-water" data-nav-route="clean-water">Clean Water</a>
-            <a href="#/methodology" data-nav-route="methodology">Methodology</a>
+            <a href="#/explore" data-route-link="explore" data-nav-route="explore">Explore</a>
+            <a href="#/solutions" data-route-link="solutions" data-nav-route="solutions">Solutions</a>
+            <a href="#/how-we-select" data-route-link="how-we-select" data-nav-route="methodology">How We Select</a>
+            <a href="#/about" data-route-link="about" data-nav-route="about">About</a>
+            <a href="#/participate" data-route-link="participate" data-nav-route="participate">Participate</a>
         </nav>
 
         <button class="theme-toggle" type="button" aria-pressed="false">
@@ -53,350 +54,456 @@
     </header>
 
     <main id="main-content" tabindex="-1">
-        <section class="screen screen-home" data-screen="home" aria-labelledby="home-title">
-            <div class="screen-inner hero-grid">
-                <div class="hero-copy">
-                    <p class="eyebrow">Independent curated marketplace</p>
-                    <h1 id="home-title">Better solutions.<br><em>Clearly selected.</em></h1>
-                    <p class="hero-lead">Arvena brings together quality products, technologies and technical devices, systems, professional services, integrated solutions and turnkey implementations for healthier, cleaner, more ecological, higher-quality and more thoughtfully organised living.</p>
-                    <div class="marketplace-intro">
-                        <strong>Marketplace first</strong>
-                        <p>Evaluation, evidence and practical knowledge support informed selection and access. This scope describes what Arvena is built to curate—not inventory already available.</p>
+        <section class="screen screen-home" id="screen-home" data-screen="home" aria-labelledby="home-title">
+            <div class="screen-inner screen-inner-wide">
+                <div class="home-hero">
+                    <div class="home-hero-copy">
+                        <p class="eyebrow">Independent curated marketplace</p>
+                        <h1 id="home-title">Better living starts with a better way to choose.</h1>
+                        <p class="hero-lead">Arvena connects real needs with carefully understood products, technologies, systems and services.</p>
+                        <div class="button-row">
+                            <a class="button button-primary" href="#/explore">Explore what is published</a>
+                            <a class="button button-secondary" href="#/solutions">Browse solution areas</a>
+                        </div>
                     </div>
-                    <div class="button-row">
-                        <a class="button button-primary" href="#/explore">Visit the marketplace</a>
-                        <a class="button button-secondary" href="#/methodology">How selection works</a>
-                    </div>
-                    <p class="microcopy">Clean Water is Arvena’s only currently published collection.</p>
+                    <figure class="home-hero-figure">
+                        <img src="assets/arvena-material-study.jpg" width="1800" height="1200" alt="A considered arrangement of glass, natural fibres, ceramics, metal and plants" fetchpriority="high" decoding="async">
+                        <figcaption>Materials and objects shown here express Arvena's scope. They are not published offers.</figcaption>
+                    </figure>
                 </div>
 
-                <aside class="hero-object" aria-label="Featured solution">
-                    <div class="water-orbit" aria-hidden="true">
-                        <span class="orbit orbit-one"></span>
-                        <span class="orbit orbit-two"></span>
-                        <svg viewBox="0 0 120 160">
-                            <path d="M60 8C47 34 22 61 22 98a38 38 0 0 0 76 0C98 61 73 34 60 8Z"/>
-                            <path d="M42 105c5 12 14 18 27 17"/>
-                        </svg>
+                <section class="home-journey" aria-labelledby="home-journey-title">
+                    <div class="section-heading">
+                        <p class="eyebrow">How the marketplace is organised</p>
+                        <h2 id="home-journey-title">From a need to a working result</h2>
+                        <p>Arvena keeps four different questions separate so that a useful idea is not mistaken for a suitable product or a complete implementation.</p>
                     </div>
-                    <p class="object-kicker">Current published collection</p>
-                    <h2>Clean Water at Home</h2>
-                    <p>Arvena’s first need-first marketplace path starts with your water and compares treatment approaches for a defined need—not a marketing promise.</p>
-                    <a class="text-link" href="#/solutions/clean-water">Explore Clean Water <span aria-hidden="true">→</span></a>
+                    <ol class="journey-chain">
+                        <li><span class="journey-label">Need</span><strong>What do you want to improve?</strong><p>A practical condition such as cleaner drinking water, healthier indoor air or lower resource use.</p></li>
+                        <li><span class="journey-label">Solution class</span><strong>Which approach could address it?</strong><p>A technology, method or service type explained independently of a particular brand.</p></li>
+                        <li><span class="journey-label">Specific offer</span><strong>Which exact option is worth considering?</strong><p>A researched product, service or system with its provider, evidence, strengths and limits made visible.</p></li>
+                        <li><span class="journey-label">Implementation</span><strong>What makes the intended result possible?</strong><p>Installation, professional input, maintenance and local conditions can matter as much as the object itself.</p></li>
+                    </ol>
+                </section>
+
+                <section class="home-domains" aria-labelledby="home-domains-title">
+                    <div class="section-heading">
+                        <p class="eyebrow">Solution areas</p>
+                        <h2 id="home-domains-title">Start with the part of life you want to improve</h2>
+                        <p>Clean Water is published now. The wider domain structure shows where Arvena is developing, without presenting future inventory as available today.</p>
+                    </div>
+                    <div class="domain-preview" id="home-domain-preview"></div>
+                    <a class="text-link" href="#/solutions">See all solution areas <span aria-hidden="true">→</span></a>
+                </section>
+
+                <section class="scale-spectrum" aria-labelledby="scale-spectrum-title">
+                    <div class="scale-spectrum-copy">
+                        <p class="eyebrow">A marketplace across scales</p>
+                        <h2 id="scale-spectrum-title">From one everyday object to the systems around a home</h2>
+                        <p>Arvena is designed to cover individual products, professional services, building technologies and integrated solutions. Each scale requires different evidence and a different route to implementation.</p>
+                    </div>
+                    <div class="scale-spectrum-track" role="list" aria-label="Arvena marketplace scale">
+                        <article role="listitem"><strong>Everyday products</strong><p>Objects and materials used in personal and household routines.</p></article>
+                        <article role="listitem"><strong>Technical systems</strong><p>Equipment, installation and maintenance considered together.</p></article>
+                        <article role="listitem"><strong>Integrated solutions</strong><p>Several compatible products, services and specialists working toward one result.</p></article>
+                    </div>
+                    <a class="button button-secondary" href="#/integrated-solutions">Understand integrated solutions</a>
+                </section>
+
+                <aside class="current-window" aria-labelledby="current-window-title">
+                    <div>
+                        <p class="eyebrow">Available to explore now</p>
+                        <h2 id="current-window-title">Clean Water is Arvena's first published solution area</h2>
+                        <p>Use a need-first guide and compare household treatment approaches. The published material explains a solution class, not a specific product recommendation.</p>
+                    </div>
+                    <a class="button button-primary" href="#/solutions/clean-water">Explore Clean Water</a>
                 </aside>
             </div>
-
-            <div class="principle-strip" aria-label="Arvena principles">
-                <span>Need before offer</span>
-                <span>Evidence in context</span>
-                <span>Limitations visible</span>
-                <span>Access made clear</span>
-            </div>
         </section>
 
-        <section class="screen" data-screen="explore" aria-labelledby="explore-title" hidden>
-            <div class="screen-inner">
-                <nav class="breadcrumbs" aria-label="Breadcrumb">
-                    <a href="#/home">Home</a><span aria-hidden="true">/</span><span>Marketplace</span>
-                </nav>
-                <header class="page-heading">
-                    <p class="eyebrow">Marketplace</p>
-                    <h1 id="explore-title">Curated offers, published only when ready</h1>
-                    <p>Arvena’s marketplace can include individual products, technologies and technical devices, systems, related professional services, integrated solutions and larger turnkey implementations.</p>
-                    <p>Arvena’s marketplace currently begins with Clean Water. Additional offers will appear only when real products, technologies, systems, services or implementations have been evaluated and are ready to publish.</p>
+        <section class="screen" id="screen-explore" data-screen="explore" aria-labelledby="explore-title" hidden>
+            <div class="screen-inner screen-inner-wide marketplace-stage">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>Explore</span></nav>
+                <header class="page-heading marketplace-heading">
+                    <p class="eyebrow">Marketplace discovery</p>
+                    <h1 id="explore-title">Explore what Arvena has actually published</h1>
+                    <p>Search across current guides and solution classes. Specific offers and providers appear only after an exact publication package is ready.</p>
                 </header>
 
-                <div class="explore-layout">
-                    <article class="category-card category-card-featured">
-                        <div class="category-symbol" aria-hidden="true">
-                            <svg viewBox="0 0 80 100"><path d="M40 5C31 25 14 43 14 67a26 26 0 0 0 52 0C66 43 49 25 40 5Z"/><path d="M29 69c4 7 9 10 17 10"/></svg>
-                        </div>
-                        <div>
-                            <p class="card-label">Current published collection</p>
-                            <h2>Clean Water</h2>
-                            <p>Understand your water and compare household treatment approaches through an evaluated information and solution path.</p>
-                            <ul class="inline-facts" aria-label="Water collection contents">
-                                <li>1 solution guide</li>
-                                <li>3 technologies</li>
-                                <li>1 editorial product-type profile</li>
-                            </ul>
-                            <a class="button button-primary" href="#/solutions/clean-water">Explore Clean Water</a>
-                        </div>
-                    </article>
+                <form class="catalogue-controls" role="search" aria-label="Filter published Arvena records">
+                    <div class="field catalogue-search-field">
+                        <label for="explore-search">Search published material</label>
+                        <input id="explore-search" type="search" name="search" autocomplete="off" placeholder="Try water, filtration or maintenance">
+                    </div>
+                    <div class="field">
+                        <label for="explore-domain-filter">Solution area</label>
+                        <select id="explore-domain-filter" name="domain"><option value="all">All published areas</option><option value="water">Water</option></select>
+                    </div>
+                    <div class="field">
+                        <label for="explore-type-filter">Content type</label>
+                        <select id="explore-type-filter" name="type"><option value="all">All types</option><option value="guide">Guides</option><option value="solution-class">Solution classes</option></select>
+                    </div>
+                    <button class="button button-secondary catalogue-clear" id="explore-clear" type="button">Clear filters</button>
+                </form>
 
-                    <aside class="scope-note">
-                        <span class="hand-line" aria-hidden="true"></span>
-                        <p class="eyebrow">Scope, not inventory</p>
-                        <h2>Quality before catalogue size</h2>
-                        <p>The wider offer range defines how Arvena can grow. It does not mean those offers, providers, prices or locations are available today.</p>
-                        <a class="text-link" href="#/methodology">Read the selection method <span aria-hidden="true">→</span></a>
-                    </aside>
+                <div class="catalogue-status" aria-live="polite" aria-atomic="true">
+                    <p id="explore-result-count">Published records are loading.</p>
+                    <p>Filters use current public data only.</p>
                 </div>
+                <div class="explore-results" id="explore-results"></div>
+                <section class="empty-state explore-empty" id="explore-empty" aria-labelledby="explore-empty-title" hidden>
+                    <p class="eyebrow">No matching published material</p>
+                    <h2 id="explore-empty-title">Try a broader search or clear the filters</h2>
+                    <p>Arvena does not create placeholder listings to make the catalogue appear larger.</p>
+                    <button class="button button-secondary" type="button" data-explore-clear>Clear filters</button>
+                </section>
+
+                <aside class="inventory-ledger" aria-labelledby="inventory-ledger-title">
+                    <div>
+                        <p class="eyebrow">Inventory boundary</p>
+                        <h2 id="inventory-ledger-title">Published knowledge is not the same as a published offer</h2>
+                        <p><strong>Scope is not inventory.</strong> Current discovery includes a Clean Water guide and a solution-class explanation. No specific offer or provider is currently published.</p>
+                    </div>
+                    <nav aria-label="Marketplace record types"><a href="#/offers">Specific offers</a><a href="#/providers">Providers</a><a href="#/how-we-select">Selection method</a></nav>
+                </aside>
             </div>
         </section>
 
-        <section class="screen" data-screen="clean-water" aria-labelledby="solution-title" hidden>
+        <section class="screen" id="screen-solutions" data-screen="solutions" aria-labelledby="solutions-title" hidden>
             <div class="screen-inner screen-inner-wide">
-                <nav class="breadcrumbs" aria-label="Breadcrumb">
-                    <a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/explore">Marketplace</a><span aria-hidden="true">/</span><span>Clean Water</span>
-                </nav>
-                <header class="page-heading page-heading-split">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>Solutions</span></nav>
+                <div class="solutions-intro">
+                    <header class="page-heading">
+                        <p class="eyebrow">Guided by needs</p>
+                        <h1 id="solutions-title">Solution areas connect everyday questions with practical approaches</h1>
+                        <p>Choose an area by the improvement you seek. Each area can contain educational guides, solution classes, specific offers and implementation knowledge at different stages of development.</p>
+                    </header>
+                    <figure class="solutions-landscape">
+                        <img src="assets/arvena-botanical-background.jpg" width="2200" height="1466" alt="Coastal grasses and flowering ground cover shaped by wind" loading="lazy" decoding="async">
+                        <figcaption>A visual expression of connected living systems. It does not represent a listed place, product or service.</figcaption>
+                    </figure>
+                </div>
+
+                <section class="domain-index-section" aria-labelledby="domain-index-title">
+                    <div class="section-heading"><h2 id="domain-index-title">Browse the full solution-area structure</h2><p>A developing area is part of Arvena's approved scope, but it has no published discovery record yet.</p></div>
+                    <div class="domain-index" id="solutions-domain-grid"></div>
+                </section>
+
+                <section class="developing-register" aria-labelledby="developing-register-title">
+                    <div><p class="eyebrow">Developing areas</p><h2 id="developing-register-title">Visible before they are populated, clearly marked until they are ready</h2></div>
+                    <div class="developing-domain-list" id="developing-domain-list"></div>
+                </section>
+
+                <aside class="hierarchy-reminder" aria-labelledby="hierarchy-reminder-title">
+                    <h2 id="hierarchy-reminder-title">An area is not an endorsement</h2>
+                    <p>Its presence shows where Arvena intends to research and curate. Only a published specific-offer profile can describe why an exact option was selected.</p>
+                    <a class="text-link" href="#/how-we-select">See how publication decisions work <span aria-hidden="true">→</span></a>
+                </aside>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-clean-water" data-screen="clean-water" aria-labelledby="solution-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/solutions">Solutions</a><span aria-hidden="true">/</span><span>Clean Water</span></nav>
+                <header class="water-heading">
                     <div>
-                        <p class="eyebrow">Current published collection · Water</p>
+                        <p class="eyebrow">Published solution area | Water</p>
                         <h1 id="solution-title">Cleaner drinking water at home</h1>
-                        <p>Clean Water is Arvena’s first published collection and a real example of its need-first marketplace approach. It is an evaluated information and solution path, not evidence that broader marketplace inventory is already available.</p>
+                        <p id="solution-problem">Choosing household water treatment without first defining the water-quality concern or checking product-specific claims.</p>
                     </div>
-                    <div class="editorial-note" aria-label="Arvena editorial interpretation and content date">
-                        <span>Arvena editorial interpretation</span>
-                        <strong data-bind="solution-updated-at">4 September 2026</strong>
-                        <small>Content last updated · Not a certification</small>
-                    </div>
+                    <aside class="editorial-note" aria-label="Publication context and content date">
+                        <span>Arvena editorial interpretation</span><strong id="solution-updated">4 September 2026</strong><small>Content last updated. This is not a certification.</small>
+                    </aside>
                 </header>
 
-                <div class="guide-callout">
-                    <span class="guide-number">01</span>
-                    <div>
-                        <h2>Start with what is actually in your water</h2>
-                        <p>Review the current report from your utility or use an appropriate accredited test. Taste, smell, and appearance do not reliably establish safety.</p>
-                    </div>
-                </div>
+                <aside class="water-start" aria-labelledby="water-start-title">
+                    <div class="water-start-mark" aria-hidden="true"></div>
+                    <div><h2 id="water-start-title">Start with what is actually in your water</h2><p>Review the current report from your utility or use an appropriate accredited test. Taste, smell and appearance do not reliably establish safety.</p></div>
+                </aside>
 
                 <section class="content-section" aria-labelledby="decision-path-title">
-                    <div class="section-heading">
-                        <p class="eyebrow">Decision path</p>
-                        <h2 id="decision-path-title">From uncertainty to a maintainable setup</h2>
-                    </div>
+                    <div class="section-heading"><p class="eyebrow">Decision path</p><h2 id="decision-path-title">From uncertainty to a maintainable setup</h2></div>
                     <ol class="step-path" id="solution-steps"></ol>
                 </section>
 
-                <section class="content-section" aria-labelledby="technology-title">
-                    <div class="section-heading">
-                        <p class="eyebrow">Technology comparison</p>
-                        <h2 id="technology-title">Three common approaches</h2>
-                        <p>Performance is product- and claim-specific. A technology name alone does not prove what a particular device removes.</p>
-                    </div>
-                    <div class="technology-grid" id="solution-technologies"></div>
+                <section class="content-section water-approaches" aria-labelledby="technology-title">
+                    <div class="section-heading"><p class="eyebrow">Solution approaches</p><h2 id="technology-title">Compare methods before models</h2><p>Performance is product-specific and claim-specific. A technology name alone does not establish what a particular device reduces.</p></div>
+                    <div class="technology-grid" id="technology-grid"></div>
+                </section>
+
+                <section class="water-safety" aria-labelledby="water-safety-title">
+                    <div><p class="eyebrow">Safety boundary</p><h2 id="water-safety-title">Local conditions remain decisive</h2></div>
+                    <p>During an advisory, emergency or uncertainty about drinking-water safety, follow the responsible local authority or a qualified professional. Arvena's educational material is not diagnosis or medical treatment.</p>
                 </section>
 
                 <section class="content-section next-step-panel" aria-labelledby="solution-next-title">
-                    <div>
-                        <p class="eyebrow">Next step</p>
-                        <h2 id="solution-next-title">Inspect the published product-type profile</h2>
-                        <p>See why external certification scope, maintenance and local water data matter. Specific models still require individual checking.</p>
-                    </div>
-                    <a class="button button-primary" href="#/products/certified-point-of-use-filter">View product-type profile</a>
+                    <div><p class="eyebrow">Related solution class</p><h2 id="solution-next-title">Point-of-use drinking-water filtration</h2><p>See why exact certification scope, maintenance and local water data matter before a particular model can be considered.</p></div>
+                    <a class="button button-primary" href="#/solution-classes/point-of-use-filtration">Open the solution class</a>
                 </section>
             </div>
         </section>
 
-        <section class="screen" data-screen="product" aria-labelledby="product-title" hidden>
+        <section class="screen" id="screen-solution-class" data-screen="solution-class" aria-labelledby="class-title" hidden>
             <div class="screen-inner screen-inner-wide">
-                <nav class="breadcrumbs" aria-label="Breadcrumb">
-                    <a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/explore">Marketplace</a><span aria-hidden="true">/</span><a href="#/solutions/clean-water">Clean Water</a><span aria-hidden="true">/</span><span>Product-type profile</span>
-                </nav>
-
-                <header class="product-header">
-                    <div>
-                        <div class="status-row">
-                            <span class="status-badge" data-bind="product-publication-status">Published editorial profile</span>
-                            <span class="evidence-badge">Specific models require checking</span>
-                        </div>
-                        <p class="eyebrow">Product type · Point of use</p>
-                        <h1 id="product-title" data-bind="product-title">Certified point-of-use water filter</h1>
-                        <p class="hero-lead" data-bind="product-description"></p>
-                    </div>
-                    <div class="product-mark" aria-hidden="true">
-                        <svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="62"/><path d="M75 25c-11 23-31 43-31 70a31 31 0 0 0 62 0c0-27-20-47-31-70Z"/><path d="M58 97c5 8 12 12 22 12"/></svg>
-                    </div>
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/solutions">Solutions</a><span aria-hidden="true">/</span><a href="#/solutions/clean-water">Clean Water</a><span aria-hidden="true">/</span><span>Solution class</span></nav>
+                <header class="solution-class-header">
+                    <div><p class="eyebrow">Solution class | Point of use</p><h1 id="class-title">Point-of-use drinking-water filtration</h1><p class="hero-lead" id="class-description">A household drinking-water filter selected by the contaminants it is independently certified to reduce, not by a generic purification promise.</p></div>
+                    <div class="class-distinction"><strong>This explains an approach</strong><p>It is not a product listing, provider endorsement or complete implementation package.</p></div>
                 </header>
 
-                <div class="profile-layout">
-                    <div class="profile-main">
-                        <section class="profile-section" aria-labelledby="selected-title">
-                            <p class="eyebrow">Why selected</p>
-                            <h2 id="selected-title">A claim can be checked</h2>
-                            <p data-bind="product-why-selected"></p>
-                        </section>
-
-                        <section class="profile-section" aria-labelledby="evidence-title">
-                            <p class="eyebrow">Evidence & basis</p>
-                            <h2 id="evidence-title">What supports this profile</h2>
-                            <div class="evidence-list" id="product-evidence"></div>
-                        </section>
-
-                        <section class="profile-section" aria-labelledby="limitations-title">
-                            <p class="eyebrow">Limitations</p>
-                            <h2 id="limitations-title">What this does not establish</h2>
-                            <ul class="limitation-list" id="product-limitations"></ul>
+                <div class="solution-class-layout">
+                    <div class="solution-class-main">
+                        <section class="profile-section" aria-labelledby="class-problem-title"><p class="eyebrow">Problem addressed</p><h2 id="class-problem-title">Where this approach may fit</h2><p id="class-problem">A defined drinking-water concern at one kitchen tap.</p></section>
+                        <section class="profile-section" aria-labelledby="class-included-title"><p class="eyebrow">Why it is included</p><h2 id="class-included-title">Specific claims can be inspected</h2><p id="class-why-included">A point-of-use system keeps the decision focused on drinking and cooking water. Certification and a performance data sheet make specific reduction claims inspectable, while a local water report keeps the choice tied to an actual need.</p></section>
+                        <section class="profile-section" aria-labelledby="class-evidence-title"><p class="eyebrow">Evidence and basis</p><h2 id="class-evidence-title">What supports this explanation</h2><div class="evidence-list" id="class-evidence"></div></section>
+                        <section class="profile-section" aria-labelledby="class-limitations-title"><p class="eyebrow">Limitations</p><h2 id="class-limitations-title">What this profile does not establish</h2><ul class="limitation-list" id="class-limitations"></ul></section>
+                        <section class="implementation-notes" aria-labelledby="implementation-notes-title">
+                            <div><p class="eyebrow">Implementation</p><h2 id="implementation-notes-title">The device is only part of the result</h2></div>
+                            <ul><li>Match the certified reduction claims to current local water information.</li><li>Check installation constraints, flow, capacity and any waste water.</li><li>Replace cartridges on schedule and follow the exact manufacturer's instructions.</li></ul>
                         </section>
                     </div>
 
-                    <aside class="profile-summary" aria-label="Product summary">
+                    <aside class="profile-summary class-summary" aria-label="Solution class summary">
                         <dl>
-                            <div><dt>Offer type</dt><dd data-bind="product-offer-type"></dd></div>
-                            <div><dt>Publication status</dt><dd data-bind="product-publication-status"></dd></div>
-                            <div><dt>Problem addressed</dt><dd data-bind="product-problem"></dd></div>
-                            <div><dt>Materials / system</dt><dd data-bind="product-materials"></dd></div>
-                            <div><dt>Price level</dt><dd data-bind="product-price"></dd></div>
-                            <div><dt>Model availability</dt><dd data-bind="product-availability"></dd></div>
-                            <div><dt>Access status</dt><dd data-bind="product-access-status"></dd></div>
-                            <div><dt>Commercial disclosure</dt><dd data-bind="product-commercial-disclosure"></dd></div>
-                            <div><dt>Content last updated</dt><dd data-bind="product-updated-at"></dd></div>
+                            <div><dt>Publication status</dt><dd id="class-publication">Published editorial profile</dd></div>
+                            <div><dt>Access status</dt><dd id="class-access">No specific offer is currently published</dd></div>
+                            <div><dt>Materials and system</dt><dd id="class-materials">Product-specific filter media and housing. Verify all wetted materials and replacement cartridges.</dd></div>
+                            <div><dt>Price</dt><dd id="class-price">No specific product or price is currently published</dd></div>
+                            <div><dt>Availability</dt><dd id="class-availability">No specific model or market availability is currently published</dd></div>
+                            <div><dt>Content updated</dt><dd id="class-updated">4 September 2026</dd></div>
+                            <div><dt>Commercial relationship</dt><dd id="class-disclosure">No seller, affiliate, sponsorship or distribution relationship is currently stated for this profile.</dd></div>
                         </dl>
                         <div class="summary-action">
-                            <p>No seller or purchase link is published for this product type.</p>
-                            <a class="button button-primary button-block" href="#/request">View sourcing status</a>
-                            <a class="text-link text-link-centred" href="#/solutions/clean-water">Back to the guide</a>
+                            <p>There is no seller or purchase link for this solution class.</p>
+                            <a class="button button-primary button-block" href="#/offers">Check specific-offer status</a>
+                            <a class="text-link text-link-centred" href="#/request">View preserved sourcing status</a>
+                            <a class="text-link text-link-centred" href="#/solutions/clean-water">Back to Clean Water</a>
                         </div>
                     </aside>
                 </div>
             </div>
         </section>
 
-        <section class="screen" data-screen="request" aria-labelledby="request-title" hidden>
+        <section class="screen" id="screen-offers" data-screen="offers" aria-labelledby="offers-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/explore">Explore</a><span aria-hidden="true">/</span><span>Offers</span></nav>
+                <header class="page-heading offers-heading"><p class="eyebrow">Specific offers</p><h1 id="offers-title">Exact products and services belong here only when their publication record is ready</h1><p>A solution class can explain a useful approach without implying that Arvena has selected a particular model, installer or seller.</p></header>
+
+                <section class="empty-state offer-empty-state" aria-labelledby="offer-empty-title">
+                    <div class="empty-state-count" aria-label="Published specific offers"><strong id="offer-count">0</strong><span>published specific offers</span></div>
+                    <div><h2 id="offer-empty-title">No specific offer is currently published</h2><p>Arvena will not use fictional products, generic placeholders or unverified claims to populate this marketplace.</p><div class="button-row"><a class="button button-primary" href="#/explore">Explore current material</a><a class="button button-secondary" href="#/solution-classes/point-of-use-filtration">View a solution class</a></div></div>
+                </section>
+
+                <section class="offer-publication-map" aria-labelledby="offer-publication-title">
+                    <div class="section-heading"><p class="eyebrow">Reusable offer profile</p><h2 id="offer-publication-title">What a published offer can make clear</h2><p>Optional sections appear only when relevant and supported. Unknown price or availability remains visibly unknown.</p></div>
+                    <dl class="publication-structure">
+                        <div><dt>Identity and provider</dt><dd>The exact product, service or system and the organisation behind it.</dd></div>
+                        <div><dt>Suitability</dt><dd>The need addressed, suitable contexts and required implementation.</dd></div>
+                        <div><dt>Selection basis</dt><dd>Why Arvena selected it, with claims tied to their evidence sources.</dd></div>
+                        <div><dt>Practical reality</dt><dd>Specifications, materials, safety, maintenance, lifetime, geography and access.</dd></div>
+                        <div><dt>Boundaries</dt><dd>Limitations, alternatives, unknowns and distinctions between producer statements and editorial conclusions.</dd></div>
+                        <div><dt>Trust record</dt><dd>Commercial disclosure, latest review date and a route for corrections.</dd></div>
+                        <div><dt>Account actions</dt><dd>Saving and controlled discussion appear only when the required account and contribution permissions are operating.</dd></div>
+                    </dl>
+                </section>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-providers" data-screen="providers" aria-labelledby="providers-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/explore">Explore</a><span aria-hidden="true">/</span><span>Providers</span></nav>
+                <div class="provider-boundary">
+                    <header class="page-heading"><p class="eyebrow">Providers</p><h1 id="providers-title">The people and organisations behind an offer need their own clear record</h1><p>A provider profile can explain who makes, supplies, installs or supports an offer. Independent research does not make a provider an Arvena partner.</p></header>
+                    <div class="provider-count-block" aria-label="Published providers"><strong id="provider-count">0</strong><span>published provider profiles</span></div>
+                </div>
+                <section class="empty-state provider-empty-state" aria-labelledby="provider-empty-title"><div><h2 id="provider-empty-title">No provider profile is currently published</h2><p>A profile will appear only with a real identity, relevant offer context and an explicit cooperation status.</p></div><a class="button button-secondary" href="#/participate/producers">Information for providers</a></section>
+                <section class="provider-status-key" aria-labelledby="provider-status-title">
+                    <div class="section-heading"><p class="eyebrow">Relationship clarity</p><h2 id="provider-status-title">Research, publication and cooperation are different states</h2></div>
+                    <div class="status-key-layout"><article><h3>Independently researched</h3><p>Arvena may assess public information about an offer without contact or a commercial relationship.</p></article><article><h3>Published provider</h3><p>A factual provider record may accompany a published offer. Publication alone does not mean partnership.</p></article><article><h3>Approved association</h3><p>If formal cooperation is established later, its scope and commercial context must be stated explicitly.</p></article></div>
+                </section>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-integrated" data-screen="integrated" aria-labelledby="integrated-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/solutions">Solutions</a><span aria-hidden="true">/</span><span>Integrated Solutions</span></nav>
+                <header class="page-heading integrated-heading"><p class="eyebrow">Integrated solutions</p><h1 id="integrated-title">A good outcome often depends on more than one product</h1><p>Integrated solution pages can show how products, services, specialists, installation and ongoing care fit together, while keeping responsibility and availability precise.</p></header>
+                <section class="systems-map" aria-labelledby="systems-map-title">
+                    <div class="systems-map-intro"><p class="eyebrow">Illustrative combination only</p><h2 id="systems-map-title">A household drinking-water setup</h2><p>This educational composition is not a purchasable package and is not coordinated or guaranteed by Arvena.</p></div>
+                    <ol class="system-layers"><li><strong>Understand the water</strong><p>Utility information or appropriate testing defines the concern.</p></li><li><strong>Select the treatment approach</strong><p>The solution class is matched to the actual need.</p></li><li><strong>Choose and install an exact system</strong><p>Product claims, local availability and competent installation are checked.</p></li><li><strong>Maintain the result</strong><p>Consumables, servicing and reassessment continue after installation.</p></li></ol>
+                </section>
+                <section class="integration-statuses" aria-labelledby="integration-status-title">
+                    <div class="section-heading"><p class="eyebrow">Availability language</p><h2 id="integration-status-title">Three statuses must never be confused</h2></div>
+                    <div class="integration-status-layout"><article><h3>Conceptual combination</h3><p>An editorial explanation of how compatible elements could fit together. It is not an offer.</p></article><article><h3>Third-party package</h3><p>A package available from an identified external provider, when independently checked and clearly disclosed.</p></article><article><h3>Arvena-coordinated implementation</h3><p>A future possibility. Arvena does not currently claim to operate or guarantee complete implementation packages.</p></article></div>
+                </section>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-methodology" data-screen="methodology" aria-labelledby="methodology-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>How We Select</span></nav>
+                <header class="selection-hero"><p class="eyebrow">How Arvena selects</p><h1 id="methodology-title">Curation should make a decision more understandable, not merely more persuasive</h1><p>Arvena supports its marketplace with claim-level research, transparent limitations and clear distinctions between evidence, producer statements and editorial conclusions.</p></header>
+                <section class="selection-sequence" aria-labelledby="selection-sequence-title">
+                    <div class="section-heading"><h2 id="selection-sequence-title">The publication path</h2></div>
+                    <ol><li><strong>Define the need and context</strong><p>Selection begins with the intended improvement, location, user and implementation conditions.</p></li><li><strong>Set criteria for the offer type</strong><p>A water filter, cleaning product, specialist service and building system cannot share one universal checklist.</p></li><li><strong>Check claims at the right level</strong><p>A broad technology principle does not prove an exact model claim. Evidence is attached to the claim it can support.</p></li><li><strong>Compare practical strengths and limits</strong><p>Safety, materials, maintenance, durability, environmental considerations, alternatives and uncertainty remain visible.</p></li><li><strong>Publish access and disclosure honestly</strong><p>Price, geography, availability and commercial relationships are stated only when known and current.</p></li><li><strong>Review and correct</strong><p>Material changes, new evidence and credible corrections can narrow, update or remove a conclusion.</p></li></ol>
+                </section>
+                <section class="evidence-taxonomy" aria-labelledby="evidence-taxonomy-title">
+                    <div class="section-heading"><p class="eyebrow">Evidence in context</p><h2 id="evidence-taxonomy-title">Different sources do different work</h2></div>
+                    <dl><div><dt>Independent research</dt><dd>Peer-reviewed work, accountable public guidance or independent technical material relevant to a defined claim.</dd></div><div><dt>External standards and testing</dt><dd>A recognised framework or result checked for the exact scope, model and claim it covers.</dd></div><div><dt>Producer statement</dt><dd>Information from the maker or provider, clearly attributed and not automatically treated as an independent conclusion.</dd></div><div><dt>User experience</dt><dd>Useful practical context when clearly identified. Popularity and comments are not evidence of safety or performance.</dd></div><div><dt>Arvena editorial assessment</dt><dd>An independent interpretation of the available evidence, uncertainties and tradeoffs. It is not a certification.</dd></div></dl>
+                </section>
+                <div class="methodology-split">
+                    <section class="uncertainty-panel" aria-labelledby="uncertainty-title"><p class="eyebrow">Uncertainty</p><h2 id="uncertainty-title">Unknown is a valid publication state</h2><p>Missing price, incomplete availability or a material evidence gap should be shown plainly. A recommendation can be narrowed or paused when the evidence does not support a broader conclusion.</p></section>
+                    <section class="correction-loop" aria-labelledby="correction-title"><p class="eyebrow">Corrections</p><h2 id="correction-title">Substantive changes return to editorial review</h2><p>Providers, specialists and readers may identify an error or changed fact. A correction is checked before public claims are updated.</p><a class="text-link" href="#/contact">See the current contact status <span aria-hidden="true">→</span></a></section>
+                </div>
+                <aside class="verified-boundary" aria-labelledby="verified-boundary-title"><div><p class="eyebrow">Future direction</p><h2 id="verified-boundary-title">Arvena Verified is not an existing certification</h2></div><p>A deeper methodology may be developed in the future. Current editorial selection must not be presented as formal Arvena verification or certification.</p></aside>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-craft" data-screen="craft" aria-labelledby="craft-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/solutions">Solutions</a><span aria-hidden="true">/</span><span>Craft, Local Production and Conscious Sourcing</span></nav>
+                <div class="craft-editorial">
+                    <figure class="craft-figure"><img src="assets/arvena-craft-process.jpg" width="1800" height="1200" alt="Hands shaping a wooden object at a workshop table with hand tools and clay" loading="lazy" decoding="async"><figcaption>A concept image for material and process questions. It is not a published maker, workshop or offer.</figcaption></figure>
+                    <header class="craft-heading"><p class="eyebrow">Craft, local production and conscious sourcing</p><h1 id="craft-title">The story of how something is made matters. It still needs to be examined.</h1><p>Arvena can give stronger visibility to makers, places, materials and processes while applying the same discipline used for any other offer.</p></header>
+                </div>
+                <section class="maker-lens" aria-labelledby="maker-lens-title">
+                    <div class="section-heading"><h2 id="maker-lens-title">A richer profile can look beyond the finished object</h2></div>
+                    <dl class="maker-lens-grid"><div><dt>Maker</dt><dd>Who makes it, what expertise is involved and who is accountable for the claims.</dd></div><div><dt>Place</dt><dd>Where materials, production and repair happen, stated at the level that can be verified.</dd></div><div><dt>Material</dt><dd>Composition, relevant safety, origin, finishes and what remains unknown.</dd></div><div><dt>Process</dt><dd>How it is made, maintained and repaired, without turning process language into proof of quality.</dd></div><div><dt>Durability</dt><dd>Expected use, care, replacement parts and practical lifetime where credible information exists.</dd></div><div><dt>Responsible sourcing</dt><dd>Environmental and social claims assessed specifically rather than inferred from a label or aesthetic.</dd></div></dl>
+                </section>
+                <aside class="craft-caution" aria-labelledby="craft-caution-title"><h2 id="craft-caution-title">Local, handmade, natural, organic and bio are not automatic proof</h2><p>These qualities can be relevant, but none automatically establishes that an offer is safe, healthy, durable, low-impact or socially responsible. Each material claim and practical outcome needs its own basis.</p></aside>
+                <section class="craft-offers" aria-labelledby="craft-offers-title"><div><p class="eyebrow">Selected offers</p><h2 id="craft-offers-title">No craft or local-production offer is published yet</h2><p>This editorial area is ready for real research packages. It will remain an honest developing state until then.</p></div><a class="button button-secondary" href="#/participate/producers">For makers and producers</a></section>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-about" data-screen="about" aria-labelledby="about-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>About</span></nav>
+                <header class="about-manifesto"><p class="eyebrow">About Arvena</p><h1 id="about-title">A marketplace for better choices across everyday life and the systems that support it</h1><p>Arvena is an independent curated marketplace for high-quality products, technologies, integrated solutions and related services that support healthier, cleaner, more ecological, higher-quality and more thoughtfully organised living.</p></header>
+                <section class="marketplace-first" aria-labelledby="marketplace-first-title"><div><h2 id="marketplace-first-title">Marketplace first</h2><p>Arvena exists to help people discover, understand and access useful real-world offers. Research and evaluation support that marketplace. They are not a separate purpose that replaces it.</p></div><blockquote><p>Selection becomes more useful when the need, the approach, the exact offer and the implementation remain distinct.</p></blockquote></section>
+                <section class="principle-ledger" aria-labelledby="principle-ledger-title">
+                    <div class="section-heading"><p class="eyebrow">Working principles</p><h2 id="principle-ledger-title">What should remain true as Arvena grows</h2></div>
+                    <div class="principle-ledger-grid"><article><h3>Independent judgment</h3><p>Selection should not become pay-to-play. Commercial relationships must be visible and separate from editorial conclusions.</p></article><article><h3>Evidence with context</h3><p>Evidence is attached to the claim it can support, with limitations and uncertainty kept readable.</p></article><article><h3>Practical usefulness</h3><p>A good option must make sense in real use, including access, installation, maintenance and local conditions.</p></article><article><h3>Ecology without vague claims</h3><p>Environmental considerations are specific, proportional and balanced against safety, durability and the intended result.</p></article><article><h3>Breadth with discipline</h3><p>Arvena can span simple products and complex systems without pretending every area already has inventory.</p></article></div>
+                </section>
+                <div class="about-actions"><a class="button button-primary" href="#/explore">Explore current publication</a><a class="button button-secondary" href="#/development">See the wider future direction</a></div>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-development" data-screen="development" aria-labelledby="development-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/about">About</a><span aria-hidden="true">/</span><span>Development, Research and Accessibility</span></nav>
+                <header class="development-heading">
+                    <div><p class="eyebrow">Development, research and accessibility</p><h1 id="development-title">A wider capacity can grow around the marketplace, but it is not operating yet</h1><p>Arvena's current work is public marketplace structure and careful editorial publication. The directions below describe future possibilities, not services available today.</p></div>
+                    <figure><img src="assets/arvena-material-study.jpg" width="1800" height="1200" alt="Glass, ceramics, natural fibres, metal and plants arranged for a material study" loading="lazy" decoding="async"><figcaption>A concept image for future material research. It is not a laboratory result or published offer.</figcaption></figure>
+                </header>
+                <section class="future-now-grid" aria-labelledby="future-now-title">
+                    <div class="current-capability"><p class="eyebrow">Current</p><h2 id="future-now-title">What exists in this phase</h2><ul><li>A public marketplace architecture organised by needs and solution classes.</li><li>Editorial explanations with claim-level sources, limitations and disclosure.</li><li>An initial Clean Water knowledge path and reusable publication structure.</li></ul></div>
+                    <div class="future-capability"><p class="eyebrow">Future direction</p><h2>What may be developed later</h2><ul><li>Deeper research capacity and a formal Arvena Verified methodology.</li><li>Support for useful producers, developers and new product development.</li><li>Closer coordination of products, specialists and implementation.</li><li>A development and accessibility funding mechanism for selected essentials.</li></ul></div>
+                </section>
+                <section class="accessibility-vision" aria-labelledby="accessibility-vision-title"><div><p class="eyebrow">Future accessibility ambition</p><h2 id="accessibility-vision-title">Support could help close an affordability gap</h2></div><div><p>A future mechanism could support useful creators and help selected essential solutions reach people without profit, at cost or below cost where funding covers the difference.</p><strong>There is no operational fund, subsidy programme or guaranteed reduced pricing today.</strong></div></section>
+                <aside class="future-boundaries" aria-label="Current boundaries"><p>Arvena does not currently claim an active certification, staffed laboratory, investment programme, operating development fund or available subsidy.</p></aside>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-participate" data-screen="participate" aria-labelledby="participate-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>Participate</span></nav>
+                <header class="participation-heading"><p class="eyebrow">Participate</p><h1 id="participate-title">Arvena can grow through relevant products, practical expertise and careful collaboration</h1><p>Participation begins with fit and evidence. No public application backend or open discussion system is currently enabled.</p></header>
+                <div class="participation-routes">
+                    <article class="participation-route participation-route-producers"><p class="eyebrow">Offer knowledge</p><h2>For producers and specialists</h2><p>Understand what Arvena needs to assess an offer, clarify claims or represent specialist knowledge responsibly.</p><a class="button button-primary" href="#/participate/producers">Read participation guidance</a></article>
+                    <article class="participation-route participation-route-work"><p class="eyebrow">Build with care</p><h2>Work with Arvena</h2><p>See the kinds of editorial, research, technical and implementation experience that may become relevant as the platform develops.</p><a class="button button-secondary" href="#/participate/work">See areas of contribution</a></article>
+                </div>
+                <section class="contribution-permission" aria-labelledby="contribution-permission-title"><div><p class="eyebrow">Contribution boundaries</p><h2 id="contribution-permission-title">An account alone will not grant public posting rights</h2></div><p>If questions and comments are enabled later, contribution will require explicit permission and editorial moderation. Producer statements, specialist explanations, editorial answers and user experience will be identified by source.</p></section>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-producers" data-screen="producers" aria-labelledby="producers-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/participate">Participate</a><span aria-hidden="true">/</span><span>For Producers and Specialists</span></nav>
+                <header class="producer-heading"><p class="eyebrow">For producers and specialists</p><h1 id="producers-title">Useful information makes a serious assessment possible</h1><p>Arvena may research an offer independently or receive information from its producer. Contact, publication and commercial cooperation remain separate decisions.</p></header>
+                <section class="submission-readiness" aria-labelledby="submission-readiness-title">
+                    <div class="section-heading"><h2 id="submission-readiness-title">Information that supports review</h2><p>There is no live submission form yet. This checklist describes the material a future review route may request.</p></div>
+                    <div class="readiness-columns"><ul><li>The exact offer identity, version and provider.</li><li>The need addressed and intended context of use.</li><li>Specific performance, material and safety claims.</li><li>Sources, test documents or standards relevant to each claim.</li></ul><ul><li>Known limitations, exclusions and maintenance needs.</li><li>Current geography, availability and verified pricing where applicable.</li><li>Media-use permission and commercial relationship information.</li><li>A responsible route for factual corrections and updates.</li></ul></div>
+                </section>
+                <div class="producer-principles"><article><h2>Publication is editorial</h2><p>A reply, free sample or commercial agreement is not a universal publication gate. Material evidence gaps can narrow or pause a recommendation.</p></article><article><h2>Partnership is explicit</h2><p>A researched or published provider is not automatically an Arvena partner. Any association and its scope must be stated clearly.</p></article></div>
+                <aside class="intake-status" aria-labelledby="intake-status-title"><div><p class="eyebrow">Current intake status</p><h2 id="intake-status-title">No public producer application channel is published yet</h2><p>Arvena will not show a pretend success flow while there is no functioning intake backend.</p></div><a class="button button-secondary" href="#/contact">View contact status</a></aside>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-work" data-screen="work" aria-labelledby="work-title" hidden>
+            <div class="screen-inner screen-inner-wide">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/participate">Participate</a><span aria-hidden="true">/</span><span>Work With Arvena</span></nav>
+                <header class="work-heading"><p class="eyebrow">Work with Arvena</p><h1 id="work-title">Building a trustworthy marketplace calls for several kinds of judgment</h1><p>Arvena is not publishing vacancies, paid commissions or an open application programme on this site today. These areas describe experience that may become relevant.</p></header>
+                <section class="contribution-fields" aria-labelledby="contribution-fields-title"><h2 id="contribution-fields-title" class="sr-only">Potential fields of contribution</h2><article><h3>Research and evidence</h3><p>Claim-level source review, standards interpretation and careful handling of uncertainty.</p></article><article><h3>Editorial and product knowledge</h3><p>Clear explanations that distinguish needs, solution classes, offers and implementation.</p></article><article><h3>Specialist practice</h3><p>Practical expertise in water, indoor environments, food systems, materials, energy, growing or buildings.</p></article><article><h3>Responsible production</h3><p>Deep knowledge of materials, making, maintenance, durability and accountable sourcing.</p></article><article><h3>Technology and access</h3><p>Building useful discovery, private user tools and secure provider capabilities without weakening trust.</p></article></section>
+                <section class="work-status" aria-labelledby="work-status-title"><div><p class="eyebrow">Current status</p><h2 id="work-status-title">No active opportunity or application form is published</h2></div><p>When a genuine route exists, Arvena can state its scope, terms and response expectations here. Until then, the page remains informational.</p><a class="text-link" href="#/contact">See contact and trust information <span aria-hidden="true">→</span></a></section>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-contact" data-screen="contact" aria-labelledby="contact-title" hidden>
+            <div class="screen-inner screen-inner-wide contact-trust-layout">
+                <div class="contact-column">
+                    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>Contact and Trust</span></nav>
+                    <p class="eyebrow">Contact</p><h1 id="contact-title">A verified public contact channel is not yet published</h1><p>There is currently no public email address, contact form or application intake on this site. Arvena will publish a real route here when messages can be received and handled responsibly.</p>
+                    <div class="contact-availability" role="status"><strong>No message is sent from this page</strong><p>This honest state avoids suggesting that an enquiry, correction or application has been submitted.</p></div>
+                    <nav class="contact-context-links" aria-label="Participation information"><a href="#/participate/producers">For producers and specialists</a><a href="#/participate/work">Work with Arvena</a></nav>
+                </div>
+                <aside class="trust-register" aria-labelledby="trust-register-title">
+                    <p class="eyebrow">Trust information</p><h2 id="trust-register-title">What visitors can rely on today</h2>
+                    <dl><div><dt>Public browsing</dt><dd>No registration is required to explore current public material.</dd></div><div><dt>Current inventory</dt><dd>Clean Water has a guide and solution-class profile. No specific offer or provider is published.</dd></div><div><dt>Purchases</dt><dd>Arvena does not currently sell products or claim to process orders.</dd></div><div><dt>Sourcing requests</dt><dd>The preserved Clean Water request route is disabled and cannot send information.</dd></div><div><dt>Future programmes</dt><dd>No Arvena certification, laboratory, operating fund, subsidy or investment programme is claimed.</dd></div></dl>
+                    <a class="text-link" href="#/how-we-select">Read how Arvena selects <span aria-hidden="true">→</span></a>
+                </aside>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-request" data-screen="request" aria-labelledby="request-title" hidden>
             <div class="screen-inner form-layout">
                 <div class="form-intro">
-                    <nav class="breadcrumbs" aria-label="Breadcrumb">
-                        <a href="#/products/certified-point-of-use-filter">Product profile</a><span aria-hidden="true">/</span><span>Request</span>
-                    </nav>
-                    <p class="eyebrow">Clean Water sourcing</p>
-                    <h1 id="request-title">Clean Water sourcing is temporarily unavailable</h1>
-                    <p id="request-intro">The request-system connection is being restored. The educational guide and product-type profile remain available, but this form cannot currently send information.</p>
-                    <div class="privacy-note">
-                        <strong>When requests resume</strong>
-                        <p>Only minimal contact and request context will be collected. Medical details should not be included.</p>
-                    </div>
+                    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/solution-classes/point-of-use-filtration">Solution class</a><span aria-hidden="true">/</span><span>Request</span></nav>
+                    <p class="eyebrow">Clean Water sourcing</p><h1 id="request-title">Clean Water sourcing is not currently open</h1><p id="request-intro">The educational guide and solution-class profile remain available, but this request form is disabled and will not send information.</p>
+                    <div class="privacy-note"><strong>If requests open later</strong><p>Only minimal contact and request context will be collected. Medical details should not be included.</p></div>
                 </div>
-
                 <form class="request-form" id="water-request-form" aria-describedby="request-availability-notice" novalidate>
-                    <div class="availability-notice" id="request-availability-notice" role="status">
-                        <strong>Sourcing temporarily unavailable</strong>
-                        <p>Clean Water sourcing requests are temporarily unavailable while the request-system connection is being restored. This form is disabled and will not send information.</p>
-                    </div>
-
+                    <div class="availability-notice" id="request-availability-notice" role="status"><strong>Sourcing not currently open</strong><p>Clean Water sourcing requests are not currently open. This form is disabled and will not send information.</p></div>
                     <fieldset class="request-fields" id="request-fields" disabled>
                         <legend class="sr-only">Clean Water sourcing request details</legend>
                         <div class="field-row">
-                            <div class="field">
-                                <label for="request-email">Email</label>
-                                <input id="request-email" name="email" type="email" autocomplete="email" maxlength="254" required>
-                                <span class="field-hint">Where Arvena can reply</span>
-                            </div>
-                            <div class="field">
-                                <label for="request-country">Country or region</label>
-                                <input id="request-country" name="country" type="text" autocomplete="country-name" minlength="2" maxlength="80" required>
-                                <span class="field-hint">Used to check availability</span>
-                            </div>
+                            <div class="field"><label for="request-email">Email</label><input id="request-email" name="email" type="email" autocomplete="email" maxlength="254" required><span class="field-hint">Where Arvena can reply</span></div>
+                            <div class="field"><label for="request-country">Country or region</label><input id="request-country" name="country" type="text" autocomplete="country-name" minlength="2" maxlength="80" required><span class="field-hint">Used to check availability</span></div>
                         </div>
-
-                        <div class="field">
-                            <label for="request-concern">What should the option address?</label>
-                            <select id="request-concern" name="concern" required>
-                                <option value="">Choose one</option>
-                                <option value="taste-odor">Taste or odour</option>
-                                <option value="lead-metals">Lead or other metals</option>
-                                <option value="microorganisms">Microorganisms</option>
-                                <option value="broad-unknown">I need help interpreting my water data</option>
-                                <option value="plastic-contact">Reducing plastic contact</option>
-                                <option value="other">Another defined concern</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label for="request-notes">Useful context <span>(optional)</span></label>
-                            <textarea id="request-notes" name="notes" rows="5" maxlength="1000" placeholder="For example: utility report available, rented home, under-sink installation not possible."></textarea>
-                            <span class="field-hint"><span id="notes-count">0</span>/1000 characters</span>
-                        </div>
-
-                        <div class="honeypot" aria-hidden="true">
-                            <label for="request-website">Website</label>
-                            <input id="request-website" name="website" type="text" tabindex="-1" autocomplete="off">
-                        </div>
-
-                        <label class="consent-row" for="request-consent">
-                            <input id="request-consent" name="consent" type="checkbox" required>
-                            <span>I agree that Arvena may store this information and email me about this request.</span>
-                        </label>
-
+                        <div class="field"><label for="request-concern">What should the option address?</label><select id="request-concern" name="concern" required><option value="">Choose one</option><option value="taste-odor">Taste or odour</option><option value="lead-metals">Lead or other metals</option><option value="microorganisms">Microorganisms</option><option value="broad-unknown">I need help interpreting my water data</option><option value="plastic-contact">Reducing plastic contact</option><option value="other">Another defined concern</option></select></div>
+                        <div class="field"><label for="request-notes">Useful context <span>(optional)</span></label><textarea id="request-notes" name="notes" rows="5" maxlength="1000" placeholder="For example: utility report available, rented home, under-sink installation not possible."></textarea><span class="field-hint"><span id="notes-count">0</span>/1000 characters</span></div>
+                        <div class="honeypot" aria-hidden="true"><label for="request-website">Website</label><input id="request-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+                        <label class="consent-row" for="request-consent"><input id="request-consent" name="consent" type="checkbox" required><span>I agree that Arvena may store this information and email me about this request.</span></label>
                         <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
-                        <button class="button button-primary button-block" type="submit" id="request-submit">Sourcing temporarily unavailable</button>
-                        <p class="form-footnote">The form will be re-enabled only after the request-system connection and complete submission path pass verification.</p>
+                        <button class="button button-primary button-block" type="submit" id="request-submit">Sourcing not currently open</button>
+                        <p class="form-footnote">This form remains disabled unless a separate activation is authorised and the complete submission path is reverified.</p>
                     </fieldset>
                 </form>
             </div>
         </section>
 
-        <section class="screen" data-screen="result" aria-labelledby="result-title" hidden>
+        <section class="screen" id="screen-result" data-screen="result" aria-labelledby="result-title" hidden>
             <div class="screen-inner result-layout">
-                <div class="result-mark" aria-hidden="true">
-                    <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52"/><path d="m34 61 17 17 36-39"/></svg>
-                </div>
-                <p class="eyebrow">Confirmed result</p>
-                <h1 id="result-title">Your request was recorded</h1>
-                <p>The Arvena database accepted the request. Keep the reference below if you need to follow up.</p>
-                <div class="confirmation-code"><span>Reference</span><strong id="confirmation-reference">—</strong></div>
-                <div class="button-row button-row-centred">
-                    <a class="button button-primary" href="#/home">Return home</a>
-                    <a class="button button-secondary" href="#/solutions/clean-water">Review the guide</a>
-                </div>
+                <div class="result-mark" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52"/><path d="m34 61 17 17 36-39"/></svg></div>
+                <p class="eyebrow">Confirmed result</p><h1 id="result-title">Your request was recorded</h1><p>The Arvena database accepted the request. Keep the reference below if you need to follow up.</p>
+                <div class="confirmation-code"><span>Reference</span><strong id="confirmation-reference">Not available</strong></div>
+                <div class="button-row button-row-centred"><a class="button button-primary" href="#/home">Return home</a><a class="button button-secondary" href="#/solutions/clean-water">Review the guide</a></div>
             </div>
         </section>
 
-        <section class="screen" data-screen="methodology" aria-labelledby="methodology-title" hidden>
-            <div class="screen-inner screen-inner-wide">
-                <nav class="breadcrumbs" aria-label="Breadcrumb">
-                    <a href="#/home">Home</a><span aria-hidden="true">/</span><span>Methodology</span>
-                </nav>
-                <header class="page-heading">
-                    <p class="eyebrow">Marketplace methodology</p>
-                    <h1 id="methodology-title">How Arvena supports marketplace selection</h1>
-                    <p>Arvena’s evaluation is editorial and evidence-informed. It helps explain and select marketplace offers; it does not replace the marketplace or constitute a formal certification programme.</p>
-                </header>
-
-                <div class="method-grid">
-                    <article><span>01</span><h2>Define the need</h2><p>Begin with the practical problem and the local conditions that affect a suitable product, service, system or implementation.</p></article>
-                    <article><span>02</span><h2>Adapt the criteria</h2><p>Evaluate each offer type with relevant criteria instead of applying one universal checklist.</p></article>
-                    <article><span>03</span><h2>Check evidence and limits</h2><p>Distinguish external standards, technical testing, product documentation and editorial assessment. Keep uncertainty and maintenance needs visible.</p></article>
-                    <article><span>04</span><h2>Explain access</h2><p>Publish access information only when the specific offer, availability and any commercial relationship can be stated transparently.</p></article>
-                </div>
-
-                <section class="content-section evidence-key" aria-labelledby="evidence-key-title">
-                    <div class="section-heading">
-                        <p class="eyebrow">Evidence labels</p>
-                        <h2 id="evidence-key-title">Context, not a universal score</h2>
-                    </div>
-                    <dl>
-                        <div><dt>Public-health guidance</dt><dd>Guidance from an accountable public-health body.</dd></div>
-                        <div><dt>External technical standard</dt><dd>A third-party testing or certification framework; certification must be checked for the exact model and claim.</dd></div>
-                        <div><dt>Product documentation</dt><dd>Manufacturer information that requires independent checking where material.</dd></div>
-                        <div><dt>Arvena editorial assessment</dt><dd>An Arvena interpretation of the page’s evidence and limitations, not a certification, formal verification, or approval of any model.</dd></div>
-                    </dl>
-                </section>
-
-                <div class="disclaimer-panel">
-                    <strong>Scope and safety</strong>
-                    <p>Arvena provides marketplace selection and educational information, not diagnosis or medical treatment. Limitations, uncertainty and material commercial relationships should remain visible. During advisories, emergencies or uncertainty about drinking-water safety, follow the responsible local authority or a qualified professional.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="screen" data-screen="not-found" aria-labelledby="not-found-title" hidden>
+        <section class="screen" id="screen-not-found" data-screen="not-found" aria-labelledby="not-found-title" hidden>
             <div class="screen-inner result-layout">
-                <p class="eyebrow">404</p>
-                <h1 id="not-found-title">This path is not available</h1>
-                <p>Clean Water is Arvena’s only currently published collection.</p>
-                <a class="button button-primary" href="#/home">Return home</a>
+                <p class="eyebrow">Page not found</p><h1 id="not-found-title">This path is not available</h1><p>Return to the marketplace or browse the complete solution-area structure.</p>
+                <div class="button-row button-row-centred"><a class="button button-primary" href="#/explore">Explore the marketplace</a><a class="button button-secondary" href="#/solutions">Browse solutions</a></div>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
-        <p><strong>Arvena</strong> · Curated marketplace · understand → evaluate → access → implement</p>
-        <p><a href="#/methodology">Methodology & safety</a> <span aria-hidden="true">·</span> <span>English-first MVP</span></p>
+        <div class="footer-identity"><a class="brand footer-brand" href="#/home" aria-label="Arvena home"><span>Arvena</span></a><p>An independent curated marketplace for better living.</p></div>
+        <nav class="footer-nav" aria-label="Footer navigation"><a href="#/explore">Explore</a><a href="#/solutions">Solutions</a><a href="#/how-we-select">How We Select</a><a href="#/craft-local">Craft and Local</a><a href="#/development">Development and Accessibility</a><a href="#/contact">Contact and Trust</a></nav>
+        <p class="footer-boundary">Current public browsing requires no account. Clean Water sourcing remains disabled.</p>
     </footer>
 
-    <noscript>
-        <div class="noscript-message">Arvena needs JavaScript to move through this marketplace experience. Clean Water sourcing requests are currently unavailable.</div>
-    </noscript>
+    <noscript><div class="noscript-message">Arvena needs JavaScript to move through this marketplace experience. Clean Water sourcing requests are not currently open.</div></noscript>
 </body>
 </html>

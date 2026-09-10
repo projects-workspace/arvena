@@ -2,13 +2,26 @@
 
 (function () {
     const ROUTES = Object.freeze({
-        '/home': { screen: 'home', nav: 'home', title: 'Arvena — Curated Marketplace for Better Living' },
-        '/explore': { screen: 'explore', nav: 'explore', title: 'Marketplace — Arvena' },
-        '/solutions/clean-water': { screen: 'clean-water', nav: 'clean-water', title: 'Clean Water — Arvena Marketplace' },
-        '/products/certified-point-of-use-filter': { screen: 'product', nav: 'clean-water', title: 'Point-of-use water filter profile — Arvena' },
-        '/request': { screen: 'request', nav: 'clean-water', title: 'Clean Water sourcing status — Arvena' },
-        '/result': { screen: 'result', nav: 'clean-water', title: 'Request confirmed — Arvena' },
-        '/methodology': { screen: 'methodology', nav: 'methodology', title: 'Marketplace selection method — Arvena' }
+        '/home': { screen: 'home', nav: 'home', title: 'Arvena | Curated marketplace for better living' },
+        '/explore': { screen: 'explore', nav: 'explore', title: 'Explore | Arvena' },
+        '/solutions': { screen: 'solutions', nav: 'solutions', title: 'Solution areas | Arvena' },
+        '/solutions/clean-water': { screen: 'clean-water', nav: 'solutions', title: 'Clean Water | Arvena' },
+        '/solution-classes/point-of-use-filtration': { screen: 'solution-class', nav: 'solutions', title: 'Point-of-use filtration | Arvena' },
+        '/products/certified-point-of-use-filter': { screen: 'solution-class', nav: 'solutions', title: 'Point-of-use filtration | Arvena' },
+        '/offers': { screen: 'offers', nav: 'explore', title: 'Offers | Arvena' },
+        '/providers': { screen: 'providers', nav: 'explore', title: 'Providers | Arvena' },
+        '/integrated-solutions': { screen: 'integrated', nav: 'solutions', title: 'Integrated solutions | Arvena' },
+        '/how-we-select': { screen: 'methodology', nav: 'how-we-select', title: 'How Arvena selects | Arvena' },
+        '/methodology': { screen: 'methodology', nav: 'how-we-select', title: 'How Arvena selects | Arvena' },
+        '/craft-local': { screen: 'craft', nav: 'solutions', title: 'Craft, local production and conscious sourcing | Arvena' },
+        '/about': { screen: 'about', nav: 'about', title: 'About | Arvena' },
+        '/development': { screen: 'development', nav: 'about', title: 'Development, research and accessibility | Arvena' },
+        '/participate': { screen: 'participate', nav: 'participate', title: 'Participate | Arvena' },
+        '/participate/producers': { screen: 'producers', nav: 'participate', title: 'For producers and specialists | Arvena' },
+        '/participate/work': { screen: 'work', nav: 'participate', title: 'Work with Arvena | Arvena' },
+        '/contact': { screen: 'contact', nav: 'participate', title: 'Contact | Arvena' },
+        '/request': { screen: 'request', nav: 'solutions', title: 'Clean Water sourcing status | Arvena' },
+        '/result': { screen: 'result', nav: 'solutions', title: 'Request confirmed | Arvena' }
     });
 
     const DEFAULT_ROUTE = '/home';
@@ -16,10 +29,10 @@
     const CONFIRMATION_KEY = 'arvena-confirmation-reference';
     const THEME_KEY = 'arvena-theme';
     const SUBMISSION_COOLDOWN_MS = 45 * 1000;
-    const REQUEST_UNAVAILABLE_MESSAGE = 'Clean Water sourcing requests are temporarily unavailable while the request-system connection is being restored.';
+    const REQUEST_UNAVAILABLE_MESSAGE = 'Clean Water sourcing requests are not currently open.';
 
-    const screens = Array.from(document.querySelectorAll('[data-screen]'));
-    const navLinks = Array.from(document.querySelectorAll('[data-nav-route]'));
+    const screens = Array.from(document.querySelectorAll('[data-screen], .screen[id^="screen-"]'));
+    const navLinks = Array.from(document.querySelectorAll('[data-route-link], [data-nav-route]'));
     const skipLink = document.querySelector('[data-skip-link]');
     const menuToggle = document.querySelector('.menu-toggle');
     const primaryNav = document.querySelector('.primary-nav');
@@ -30,7 +43,7 @@
     const formStatus = document.getElementById('form-status');
     const requestFields = document.getElementById('request-fields');
     const requestAvailabilityNotice = document.getElementById('request-availability-notice');
-    const requestAvailabilityText = requestAvailabilityNotice.querySelector('p');
+    const requestAvailabilityText = requestAvailabilityNotice?.querySelector('p') || null;
     const requestTitle = document.getElementById('request-title');
     const requestIntro = document.getElementById('request-intro');
     const submitButton = document.getElementById('request-submit');
@@ -39,16 +52,42 @@
     const confirmationReference = document.getElementById('confirmation-reference');
     let hasHandledInitialRoute = false;
 
+    const exploreSearch = document.getElementById('explore-search');
+    const exploreDomainFilter = document.getElementById('explore-domain-filter');
+    const exploreTypeFilter = document.getElementById('explore-type-filter');
+    const exploreForm = document.querySelector('#screen-explore .catalogue-controls');
+    const exploreResults = document.getElementById('explore-results');
+    const exploreResultCount = document.getElementById('explore-result-count');
+    const exploreEmpty = document.getElementById('explore-empty');
+    const exploreClear = document.getElementById('explore-clear');
+
     function getData() {
-        return window.ARVENA_DATA || { solutions: [], products: [] };
+        const data = window.ARVENA_DATA || {};
+        return {
+            meta: data.meta || {},
+            domains: Array.isArray(data.domains) ? data.domains : [],
+            discoveryRecords: Array.isArray(data.discoveryRecords) ? data.discoveryRecords : [],
+            offers: Array.isArray(data.offers) ? data.offers : [],
+            providers: Array.isArray(data.providers) ? data.providers : []
+        };
     }
 
-    function findSolution() {
-        return getData().solutions.find((item) => item.slug === 'clean-water-at-home');
+    function findDiscoveryRecord(recordType, slug) {
+        return getData().discoveryRecords.find((record) => (
+            record.recordType === recordType && record.slug === slug
+        ));
     }
 
-    function findProduct() {
-        return getData().products.find((item) => item.slug === 'certified-point-of-use-filter');
+    function findCleanWaterGuide() {
+        return findDiscoveryRecord('guide', 'clean-water-at-home');
+    }
+
+    function findPointOfUseSolutionClass() {
+        return findDiscoveryRecord('solution-class', 'point-of-use-filtration');
+    }
+
+    function byId(id, legacyId = '') {
+        return document.getElementById(id) || (legacyId ? document.getElementById(legacyId) : null);
     }
 
     function setText(bindName, value) {
@@ -57,105 +96,347 @@
         });
     }
 
-    function renderStructuredContent() {
-        const solution = findSolution();
-        const product = findProduct();
+    function setTextById(id, value, legacyBindName = '') {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value || '';
+        if (legacyBindName) setText(legacyBindName, value);
+    }
 
-        if (!solution || !product) return;
+    function recordTypeLabel(recordType) {
+        return recordType === 'solution-class' ? 'Solution class' : 'Guide';
+    }
 
-        setText('solution-updated-at', solution.updatedAt);
+    function recordRoute(record) {
+        return record.recordType === 'solution-class'
+            ? '#/solution-classes/point-of-use-filtration'
+            : '#/solutions/clean-water';
+    }
+
+    function createDomainCard(domain, compact = false) {
+        const article = document.createElement('article');
+        article.className = `domain-card domain-card--${domain.status}${compact ? ' domain-card--compact' : ''}`;
+
+        const status = document.createElement('span');
+        status.className = 'domain-card-status';
+        status.textContent = domain.status === 'published' ? 'Published' : 'Developing';
+
+        const title = document.createElement('h3');
+        title.textContent = domain.title;
+
+        const description = document.createElement('p');
+        description.className = 'domain-card-copy';
+        description.textContent = domain.description;
+
+        article.append(status, title, description);
+
+        if (domain.status === 'published' && domain.slug === 'water') {
+            const link = document.createElement('a');
+            link.className = 'domain-card-link';
+            link.href = '#/solutions/clean-water';
+            link.textContent = 'Explore Clean Water';
+            article.append(link);
+        }
+
+        return article;
+    }
+
+    function renderDomains() {
+        const domains = getData().domains;
+        const homePreview = document.getElementById('home-domain-preview');
+        const solutionGrid = document.getElementById('solutions-domain-grid');
+        const developingList = document.getElementById('developing-domain-list');
+
+        if (homePreview) {
+            homePreview.replaceChildren(...domains.map((domain) => createDomainCard(domain, true)));
+        }
+        if (solutionGrid) {
+            solutionGrid.replaceChildren(...domains.map((domain) => createDomainCard(domain)));
+        }
+        if (developingList) {
+            const itemTag = developingList.matches('ul, ol') ? 'li' : 'span';
+            const items = domains
+                .filter((domain) => domain.status === 'developing')
+                .map((domain) => {
+                    const item = document.createElement(itemTag);
+                    item.textContent = domain.title;
+                    return item;
+                });
+            developingList.replaceChildren(...items);
+        }
+    }
+
+    function populateFilter(select, entries, defaultLabel) {
+        if (!select) return;
+        select.replaceChildren();
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = defaultLabel;
+        select.append(defaultOption);
+
+        entries.forEach(({ value, label }) => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = label;
+            select.append(option);
+        });
+    }
+
+    function createDiscoveryCard(record, domainBySlug) {
+        const article = document.createElement('article');
+        article.className = 'discovery-card';
+
+        const meta = document.createElement('div');
+        meta.className = 'discovery-card-meta';
+
+        const type = document.createElement('span');
+        type.className = 'discovery-card-type';
+        type.textContent = recordTypeLabel(record.recordType);
+
+        const status = document.createElement('span');
+        status.className = 'status-badge';
+        status.textContent = record.publicationStatus === 'published' ? 'Published' : 'Developing';
+        meta.append(type, status);
+
+        const title = document.createElement('h3');
+        title.textContent = record.title;
+
+        const domain = document.createElement('p');
+        domain.className = 'discovery-card-domain';
+        domain.textContent = domainBySlug.get(record.domainSlug)?.title || '';
+
+        const summary = document.createElement('p');
+        summary.className = 'discovery-card-copy';
+        summary.textContent = record.description || record.problem || '';
+
+        const link = document.createElement('a');
+        link.className = 'text-link';
+        link.href = recordRoute(record);
+        link.textContent = record.recordType === 'solution-class' ? 'Explore solution class' : 'Read guide';
+
+        article.append(meta, title, domain, summary, link);
+        return article;
+    }
+
+    function searchableRecordText(record) {
+        const approachText = Array.isArray(record.approaches)
+            ? record.approaches.map((approach) => `${approach.name} ${approach.usefulFor} ${approach.limitation}`).join(' ')
+            : '';
+        return [record.title, record.problem, record.description, record.whyIncluded, approachText]
+            .filter(Boolean)
+            .join(' ')
+            .toLocaleLowerCase('en');
+    }
+
+    function renderExploreResults() {
+        if (!exploreResults) return;
+
+        const data = getData();
+        const query = (exploreSearch?.value || '').trim().toLocaleLowerCase('en');
+        const domainValue = exploreDomainFilter?.value || '';
+        const typeValue = exploreTypeFilter?.value || '';
+        const domainBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
+        const matchingRecords = data.discoveryRecords.filter((record) => (
+            (!query || searchableRecordText(record).includes(query))
+            && (!domainValue || record.domainSlug === domainValue)
+            && (!typeValue || record.recordType === typeValue)
+        ));
+
+        exploreResults.replaceChildren(...matchingRecords.map((record) => createDiscoveryCard(record, domainBySlug)));
+
+        if (exploreResultCount) {
+            exploreResultCount.textContent = `${matchingRecords.length} ${matchingRecords.length === 1 ? 'result' : 'results'}`;
+        }
+        if (exploreEmpty) exploreEmpty.hidden = matchingRecords.length > 0;
+    }
+
+    function setupExplore() {
+        const data = getData();
+        const domainBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
+        const domainSlugs = [...new Set(data.discoveryRecords.map((record) => record.domainSlug))];
+        const recordTypes = [...new Set(data.discoveryRecords.map((record) => record.recordType))];
+
+        populateFilter(
+            exploreDomainFilter,
+            domainSlugs.map((slug) => ({ value: slug, label: domainBySlug.get(slug)?.title || slug })),
+            'All published domains'
+        );
+        populateFilter(
+            exploreTypeFilter,
+            recordTypes.map((recordType) => ({ value: recordType, label: recordTypeLabel(recordType) })),
+            'All record types'
+        );
+
+        [exploreSearch, exploreDomainFilter, exploreTypeFilter].forEach((control) => {
+            if (!control) return;
+            control.addEventListener(control === exploreSearch ? 'input' : 'change', renderExploreResults);
+        });
+        if (exploreForm) {
+            exploreForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                renderExploreResults();
+            });
+        }
+        const clearControls = [exploreClear, ...document.querySelectorAll('[data-explore-clear]')]
+            .filter((control, index, controls) => control && controls.indexOf(control) === index);
+        clearControls.forEach((control) => {
+            control.addEventListener('click', () => {
+                if (exploreSearch) exploreSearch.value = '';
+                if (exploreDomainFilter) exploreDomainFilter.value = '';
+                if (exploreTypeFilter) exploreTypeFilter.value = '';
+                renderExploreResults();
+                if (exploreSearch) exploreSearch.focus();
+            });
+        });
+
+        renderExploreResults();
+    }
+
+    function createEvidenceItem(evidence) {
+        const article = document.createElement('article');
+        article.className = 'evidence-item';
+
+        const meta = document.createElement('div');
+        meta.className = 'evidence-item-meta';
+        const type = document.createElement('span');
+        const confidence = document.createElement('strong');
+        type.textContent = evidence.type;
+        confidence.textContent = evidence.confidence;
+        meta.append(type, confidence);
+
+        const content = document.createElement('div');
+        const explanation = document.createElement('p');
+        const source = document.createElement('a');
+        explanation.textContent = evidence.explanation;
+        source.className = 'evidence-source';
+        source.href = evidence.sourceUrl;
+        source.textContent = evidence.sourceTitle;
+        if (evidence.sourceUrl.startsWith('http')) {
+            source.target = '_blank';
+            source.rel = 'noopener noreferrer';
+            const indicator = document.createElement('span');
+            indicator.className = 'external-link-indicator';
+            indicator.setAttribute('aria-hidden', 'true');
+            indicator.textContent = ' ↗';
+            const accessLabel = document.createElement('span');
+            accessLabel.className = 'sr-only';
+            accessLabel.textContent = ' (opens in a new tab)';
+            source.append(indicator, accessLabel);
+            source.dataset.externalReady = 'true';
+        }
+        content.append(explanation, source);
+        article.append(meta, content);
+        return article;
+    }
+
+    function renderCleanWaterGuide(guide) {
+        if (!guide) return;
+
+        setTextById('solution-title', guide.title);
+        setTextById('solution-problem', guide.problem);
+        setTextById('solution-updated', guide.updatedAt, 'solution-updated-at');
 
         const steps = document.getElementById('solution-steps');
-        steps.replaceChildren(...solution.steps.map((step) => {
-            const item = document.createElement('li');
-            const title = document.createElement('h3');
-            const text = document.createElement('p');
-            title.textContent = step.title;
-            text.textContent = step.text;
-            item.append(title, text);
-            return item;
-        }));
+        if (steps) {
+            steps.replaceChildren(...guide.steps.map((step) => {
+                const item = document.createElement('li');
+                const title = document.createElement('h3');
+                const text = document.createElement('p');
+                title.textContent = step.title;
+                text.textContent = step.text;
+                item.append(title, text);
+                return item;
+            }));
+        }
 
-        const technologies = document.getElementById('solution-technologies');
-        technologies.replaceChildren(...solution.technologies.map((technology) => {
-            const article = document.createElement('article');
-            article.className = 'technology-card';
+        const approaches = byId('technology-grid', 'solution-technologies');
+        if (approaches) {
+            approaches.replaceChildren(...guide.approaches.map((approach) => {
+                const article = document.createElement('article');
+                article.className = 'technology-card';
 
-            const level = document.createElement('span');
-            level.className = 'technology-level';
-            level.textContent = technology.level;
+                const level = document.createElement('span');
+                level.className = 'technology-level';
+                level.textContent = approach.level;
 
-            const title = document.createElement('h3');
-            title.textContent = technology.name;
+                const title = document.createElement('h3');
+                title.textContent = approach.name;
 
-            const details = document.createElement('dl');
-            const usefulTerm = document.createElement('dt');
-            const usefulDefinition = document.createElement('dd');
-            const limitTerm = document.createElement('dt');
-            const limitDefinition = document.createElement('dd');
-            usefulTerm.textContent = 'Potential fit';
-            usefulDefinition.textContent = technology.usefulFor;
-            limitTerm.textContent = 'Important limit';
-            limitDefinition.textContent = technology.limitation;
-            details.append(usefulTerm, usefulDefinition, limitTerm, limitDefinition);
-            article.append(level, title, details);
-            return article;
-        }));
+                const details = document.createElement('dl');
+                const usefulTerm = document.createElement('dt');
+                const usefulDefinition = document.createElement('dd');
+                const limitTerm = document.createElement('dt');
+                const limitDefinition = document.createElement('dd');
+                usefulTerm.textContent = 'Potential fit';
+                usefulDefinition.textContent = approach.usefulFor;
+                limitTerm.textContent = 'Important limit';
+                limitDefinition.textContent = approach.limitation;
+                details.append(usefulTerm, usefulDefinition, limitTerm, limitDefinition);
+                article.append(level, title, details);
+                return article;
+            }));
+        }
+    }
 
-        setText('product-title', product.title);
-        setText('product-description', product.description);
-        setText('product-why-selected', product.whySelected);
-        setText('product-offer-type', product.offerType);
-        setText('product-publication-status', product.publicationStatus);
-        setText('product-problem', product.problem);
-        setText('product-materials', product.materials);
-        setText('product-price', product.priceLevel);
-        setText('product-availability', product.availability);
-        setText('product-access-status', product.accessStatus);
-        setText('product-commercial-disclosure', product.commercialDisclosure);
-        setText('product-updated-at', product.updatedAt);
+    function renderSolutionClass(solutionClass) {
+        if (!solutionClass) return;
 
-        const evidenceList = document.getElementById('product-evidence');
-        evidenceList.replaceChildren(...product.evidence.map((evidence) => {
-            const article = document.createElement('article');
-            article.className = 'evidence-item';
+        setTextById('class-title', solutionClass.title, 'product-title');
+        setTextById('class-description', solutionClass.description, 'product-description');
+        setTextById('class-problem', solutionClass.problem, 'product-problem');
+        setTextById('class-why-included', solutionClass.whyIncluded, 'product-why-selected');
+        setTextById('class-materials', solutionClass.materials, 'product-materials');
+        setTextById('class-publication', solutionClass.publicationLabel, 'product-publication-status');
+        setTextById('class-access', solutionClass.accessStatus, 'product-access-status');
+        setTextById('class-price', solutionClass.priceState.statement, 'product-price');
+        setTextById('class-availability', solutionClass.availabilityState.statement, 'product-availability');
+        setTextById('class-updated', solutionClass.updatedAt, 'product-updated-at');
+        setTextById('class-disclosure', solutionClass.commercialDisclosure, 'product-commercial-disclosure');
+        setText('product-offer-type', 'Solution class');
 
-            const meta = document.createElement('div');
-            meta.className = 'evidence-item-meta';
-            const type = document.createElement('span');
-            const confidence = document.createElement('strong');
-            type.textContent = evidence.type;
-            confidence.textContent = evidence.confidence;
-            meta.append(type, confidence);
+        const evidenceList = byId('class-evidence', 'product-evidence');
+        if (evidenceList) {
+            evidenceList.replaceChildren(...solutionClass.evidence.map(createEvidenceItem));
+        }
 
-            const content = document.createElement('div');
-            const explanation = document.createElement('p');
-            const source = document.createElement('a');
-            explanation.textContent = evidence.explanation;
-            source.className = 'evidence-source';
-            source.href = evidence.sourceUrl;
-            source.textContent = `${evidence.sourceTitle} →`;
-            if (evidence.sourceUrl.startsWith('http')) {
-                source.target = '_blank';
-                source.rel = 'noreferrer';
-            }
-            content.append(explanation, source);
-            article.append(meta, content);
-            return article;
-        }));
+        const limitations = byId('class-limitations', 'product-limitations');
+        if (limitations) {
+            limitations.replaceChildren(...solutionClass.limitations.map((limitation) => {
+                const item = document.createElement('li');
+                item.textContent = limitation;
+                return item;
+            }));
+        }
+    }
 
-        const limitations = document.getElementById('product-limitations');
-        limitations.replaceChildren(...product.limitations.map((limitation) => {
-            const item = document.createElement('li');
-            item.textContent = limitation;
-            return item;
-        }));
+    function enhanceExternalLinks() {
+        document.querySelectorAll('a[href^="http"]').forEach((link) => {
+            if (link.dataset.externalReady === 'true') return;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            const accessLabel = document.createElement('span');
+            accessLabel.className = 'sr-only';
+            accessLabel.textContent = ' (opens in a new tab)';
+            link.append(accessLabel);
+            link.dataset.externalReady = 'true';
+        });
+    }
+
+    function renderStructuredContent() {
+        const data = getData();
+        renderDomains();
+        renderCleanWaterGuide(findCleanWaterGuide());
+        renderSolutionClass(findPointOfUseSolutionClass());
+        setTextById('offer-count', String(data.offers.length));
+        setTextById('provider-count', String(data.providers.length));
+        enhanceExternalLinks();
     }
 
     function normaliseRoute() {
         const rawHash = window.location.hash.replace(/^#/, '');
         if (!rawHash || rawHash === '/') return DEFAULT_ROUTE;
-        return rawHash.startsWith('/') ? rawHash : `/${rawHash}`;
+        const path = (rawHash.startsWith('/') ? rawHash : `/${rawHash}`).split('?')[0];
+        return path.length > 1 ? path.replace(/\/+$/, '') : path;
     }
 
     function requestsAreEnabled() {
@@ -164,34 +445,36 @@
     }
 
     function applyRequestAvailability() {
+        if (!form || !requestFields || !submitButton) return;
         const enabled = requestsAreEnabled();
         requestFields.disabled = !enabled;
         submitButton.disabled = !enabled;
-        requestAvailabilityNotice.hidden = enabled;
-        requestAvailabilityText.textContent = `${REQUEST_UNAVAILABLE_MESSAGE} This form is disabled and will not send information.`;
+        if (requestAvailabilityNotice) requestAvailabilityNotice.hidden = enabled;
+        if (requestAvailabilityText) requestAvailabilityText.textContent = `${REQUEST_UNAVAILABLE_MESSAGE} This form is disabled and will not send information.`;
         form.dataset.requestsEnabled = String(enabled);
         form.setAttribute('aria-disabled', String(!enabled));
 
         if (enabled) {
             form.removeAttribute('aria-describedby');
-            requestTitle.textContent = 'Request a Clean Water option';
-            requestIntro.textContent = 'Tell Arvena what you need to investigate. This records a Clean Water sourcing request; it does not promise a product or replace water-quality or public-health advice.';
+            if (requestTitle) requestTitle.textContent = 'Request a Clean Water option';
+            if (requestIntro) requestIntro.textContent = 'Tell Arvena what you need to investigate. This records a Clean Water sourcing request; it does not promise a product or replace water-quality or public-health advice.';
             submitButton.textContent = 'Send sourcing request';
             return;
         }
 
-        form.setAttribute('aria-describedby', 'request-availability-notice');
-        requestTitle.textContent = 'Clean Water sourcing is temporarily unavailable';
-        requestIntro.textContent = 'The request-system connection is being restored. The educational guide and product-type profile remain available, but this form cannot currently send information.';
-        submitButton.textContent = 'Sourcing temporarily unavailable';
+        if (requestAvailabilityNotice) form.setAttribute('aria-describedby', 'request-availability-notice');
+        if (requestTitle) requestTitle.textContent = 'Clean Water sourcing requests are not currently open';
+        if (requestIntro) requestIntro.textContent = 'The educational guide and solution-class profile remain available. This form is disabled and will not send information.';
+        submitButton.textContent = 'Requests not open';
         sessionStorage.removeItem(CONFIRMATION_KEY);
         setFormStatus('');
     }
 
-    function syncNavigationAccessibility(isOpen = primaryNav.classList.contains('is-open')) {
+    function syncNavigationAccessibility(isOpen = primaryNav?.classList.contains('is-open') || false) {
+        if (!primaryNav) return;
         const isClosedOnMobile = mobileNavigationQuery.matches && !isOpen;
         primaryNav.toggleAttribute('inert', isClosedOnMobile);
-        navLinks.forEach((link) => {
+        navLinks.filter((link) => primaryNav.contains(link)).forEach((link) => {
             if (isClosedOnMobile) {
                 link.setAttribute('tabindex', '-1');
             } else {
@@ -207,6 +490,7 @@
 
     function skipToMainContent(event) {
         event.preventDefault();
+        if (!mainContent) return;
         mainContent.focus();
         mainContent.scrollIntoView({ block: 'start' });
     }
@@ -217,14 +501,45 @@
         if (restoreFocus || focusIsInsideMobileMenu) menuToggle.focus();
         primaryNav.classList.remove('is-open');
         menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.querySelector('.sr-only').textContent = 'Open navigation';
+        const menuLabel = menuToggle.querySelector('.sr-only');
+        if (menuLabel) menuLabel.textContent = 'Open navigation';
         document.body.classList.remove('nav-open');
         syncNavigationAccessibility(false);
     }
 
+    function screenNameCandidates(screenName) {
+        const legacyNames = {
+            'solution-class': 'product'
+        };
+        return [screenName, `screen-${screenName}`, legacyNames[screenName]].filter(Boolean);
+    }
+
+    function findScreen(screenName) {
+        const candidates = screenNameCandidates(screenName);
+        return screens.find((screen) => (
+            candidates.includes(screen.id) || candidates.includes(screen.dataset.screen)
+        )) || null;
+    }
+
+    function focusRouteHeading(screen) {
+        const heading = screen?.querySelector('h1');
+        if (!heading) {
+            if (mainContent) mainContent.focus({ preventScroll: true });
+            return;
+        }
+
+        document.querySelectorAll('[data-route-focus="true"]').forEach((element) => {
+            element.removeAttribute('data-route-focus');
+        });
+        heading.setAttribute('tabindex', '-1');
+        heading.setAttribute('data-route-focus', 'true');
+        heading.addEventListener('blur', () => heading.removeAttribute('data-route-focus'), { once: true });
+        heading.focus({ preventScroll: true });
+    }
+
     function showRoute({ moveFocus = true } = {}) {
         let routePath = normaliseRoute();
-        let route = ROUTES[routePath] || { screen: 'not-found', nav: '', title: 'Page not found — Arvena' };
+        let route = ROUTES[routePath] || { screen: 'not-found', nav: '', title: 'Page not found | Arvena' };
 
         if (route.screen === 'result' && (!requestsAreEnabled() || !sessionStorage.getItem(CONFIRMATION_KEY))) {
             routePath = '/request';
@@ -232,12 +547,24 @@
             window.history.replaceState(null, '', '#/request');
         }
 
+        let activeScreen = findScreen(route.screen);
+        if (!activeScreen && route.screen !== 'not-found') {
+            route = { screen: 'not-found', nav: '', title: 'Page not found | Arvena' };
+            activeScreen = findScreen('not-found');
+        }
+
         screens.forEach((screen) => {
-            screen.hidden = screen.dataset.screen !== route.screen;
+            screen.hidden = screen !== activeScreen;
         });
 
         navLinks.forEach((link) => {
-            if (link.dataset.navRoute === route.nav) {
+            const key = link.dataset.routeLink || link.dataset.navRoute || '';
+            const hrefPath = (link.getAttribute('href') || '').replace(/^#/, '');
+            const isCurrent = key === route.nav
+                || key === routePath
+                || key === routePath.replace(/^\//, '')
+                || hrefPath === routePath;
+            if (isCurrent) {
                 link.setAttribute('aria-current', 'page');
             } else {
                 link.removeAttribute('aria-current');
@@ -250,19 +577,13 @@
 
         if (route.screen === 'result') {
             const reference = sessionStorage.getItem(CONFIRMATION_KEY);
-            confirmationReference.textContent = reference || 'Not available';
+            if (confirmationReference) confirmationReference.textContent = reference || 'Not available';
         }
 
         const shouldMoveFocus = moveFocus && hasHandledInitialRoute;
         hasHandledInitialRoute = true;
         if (shouldMoveFocus) {
-            const heading = document.querySelector(`[data-screen="${route.screen}"] h1`);
-            if (heading) {
-                heading.setAttribute('tabindex', '-1');
-                heading.focus({ preventScroll: true });
-            } else if (mainContent) {
-                mainContent.focus({ preventScroll: true });
-            }
+            focusRouteHeading(activeScreen);
         }
     }
 
@@ -274,8 +595,10 @@
 
     function applyTheme(theme) {
         document.documentElement.dataset.theme = theme;
-        themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
-        themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Use light theme' : 'Use dark theme');
+        if (themeToggle) {
+            themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+            themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Use light theme' : 'Use dark theme');
+        }
     }
 
     function toggleTheme() {
@@ -285,9 +608,11 @@
     }
 
     function toggleMenu() {
+        if (!menuToggle || !primaryNav) return;
         const open = menuToggle.getAttribute('aria-expanded') === 'true';
         menuToggle.setAttribute('aria-expanded', String(!open));
-        menuToggle.querySelector('.sr-only').textContent = open ? 'Open navigation' : 'Close navigation';
+        const menuLabel = menuToggle.querySelector('.sr-only');
+        if (menuLabel) menuLabel.textContent = open ? 'Open navigation' : 'Close navigation';
         primaryNav.classList.toggle('is-open', !open);
         document.body.classList.toggle('nav-open', !open);
         syncNavigationAccessibility(!open);
@@ -298,6 +623,7 @@
     }
 
     function setFormStatus(message, state = '') {
+        if (!formStatus) return;
         formStatus.textContent = message;
         formStatus.className = 'form-status';
         if (state) formStatus.classList.add(`is-${state}`);
@@ -453,31 +779,32 @@
         } finally {
             const enabled = requestsAreEnabled();
             submitButton.disabled = !enabled;
-            submitButton.textContent = enabled ? 'Send sourcing request' : 'Sourcing temporarily unavailable';
+            submitButton.textContent = enabled ? 'Send sourcing request' : 'Requests not open';
         }
     }
 
     renderStructuredContent();
+    setupExplore();
     applyTheme(getInitialTheme());
     applyRequestAvailability();
     syncNavigationAccessibility(false);
     showRoute({ moveFocus: false });
 
     window.addEventListener('hashchange', () => showRoute());
-    skipLink.addEventListener('click', skipToMainContent);
-    themeToggle.addEventListener('click', toggleTheme);
-    menuToggle.addEventListener('click', toggleMenu);
-    primaryNav.addEventListener('click', (event) => {
+    if (skipLink) skipLink.addEventListener('click', skipToMainContent);
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+    if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+    if (primaryNav) primaryNav.addEventListener('click', (event) => {
         if (event.target.closest('a')) closeMenu();
     });
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && primaryNav.classList.contains('is-open')) {
+        if (event.key === 'Escape' && primaryNav?.classList.contains('is-open')) {
             closeMenu({ restoreFocus: true });
         }
     });
     mobileNavigationQuery.addEventListener('change', () => closeMenu());
-    notesField.addEventListener('input', () => {
-        notesCount.textContent = String(notesField.value.length);
+    if (notesField) notesField.addEventListener('input', () => {
+        if (notesCount) notesCount.textContent = String(notesField.value.length);
     });
-    form.addEventListener('submit', submitRequest);
+    if (form) form.addEventListener('submit', submitRequest);
 })();
