@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import mimetypes
@@ -23,6 +24,10 @@ PUBLIC_ROOT_FILES = frozenset(
         "supabase-config.js",
         "arvena-data.js",
         "script.js",
+        "platform.js",
+        "platform-config.js",
+        "editorial.js",
+        "supabase-client.js",
         "favicon.svg",
     }
 )
@@ -123,6 +128,12 @@ class PreviewRequestHandler(BaseHTTPRequestHandler):
             self._send_not_found(include_body=include_body)
             return
 
+        if public_file.name == "supabase-config.js" and getattr(self.server, "platform_config", None):
+            body = ("window.ARVENA_SUPABASE_CONFIG = Object.freeze(" + json.dumps(self.server.platform_config) + ");").encode()
+
+        if public_file.name == "platform-config.js" and getattr(self.server, "platform_config", None):
+            body = b"window.ARVENA_PLATFORM_ENABLED = true;"
+
         content_type = mimetypes.guess_type(public_file.name)[0] or "application/octet-stream"
         if (
             content_type.startswith("text/")
@@ -167,9 +178,18 @@ def valid_port(raw_value: str) -> int:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=valid_port, default=8000, help="loopback port (default: 8000)")
+    parser.add_argument("--local-platform-config", type=Path, help="Private local-test config; only loopback API URLs are accepted")
     args = parser.parse_args()
 
     server = PreviewHTTPServer((LOOPBACK_HOST, args.port), PreviewRequestHandler)
+    if args.local_platform_config:
+        config = json.loads(args.local_platform_config.read_text())
+        parsed = urlsplit(config.get("url", ""))
+        if parsed.scheme != "http" or parsed.hostname != "127.0.0.1":
+            parser.error("Local test config must use http://127.0.0.1")
+        if set(config) != {"url", "publishableKey", "requestsEnabled", "table"} or config["requestsEnabled"] is not False:
+            parser.error("Local test config must preserve disabled sourcing and contain public configuration only")
+        server.platform_config = config
     print(f"Arvena preview: http://{LOOPBACK_HOST}:{args.port}/")
     print("Only allowlisted public runtime files are available. Press Ctrl-C to stop.")
     try:

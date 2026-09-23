@@ -16,7 +16,11 @@
     <link rel="stylesheet" href="style.css?v=23">
     <script src="supabase-config.js?v=23" defer></script>
     <script src="arvena-data.js?v=23" defer></script>
-    <script src="script.js?v=23" defer></script>
+    <script src="platform-config.js?v=1" defer></script>
+    <script src="supabase-client.js?v=1" defer></script>
+    <script src="platform.js?v=1" defer></script>
+    <script src="script.js?v=24" defer></script>
+    <script src="editorial.js?v=1" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main-content" data-skip-link>Skip to content</a>
@@ -45,6 +49,7 @@
             <a href="#/participate" data-route-link="participate" data-nav-route="participate">Participate</a>
         </nav>
 
+        <a class="account-link" href="#/cabinet">Cabinet</a>
         <button class="theme-toggle" type="button" aria-pressed="false">
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 3a9 9 0 1 0 9 9c0-.5 0-1-.1-1.5A7 7 0 0 1 12 3Z"/>
@@ -294,6 +299,7 @@
                     <div><h2 id="offer-empty-title">No specific offer is currently published</h2><p>Arvena will not use fictional products, generic placeholders or unverified claims to populate this marketplace.</p><div class="button-row"><a class="button button-primary" href="#/explore">Explore current material</a><a class="button button-secondary" href="#/solution-classes/point-of-use-filtration">View a solution class</a></div></div>
                 </section>
 
+                <div id="published-offers" class="catalogue-grid"></div>
                 <section class="offer-publication-map" aria-labelledby="offer-publication-title">
                     <div class="section-heading"><p class="eyebrow">Reusable offer profile</p><h2 id="offer-publication-title">What a published offer can make clear</h2><p>Optional sections appear only when relevant and supported. Unknown price or availability remains visibly unknown.</p></div>
                     <dl class="publication-structure">
@@ -317,6 +323,7 @@
                     <div class="provider-count-block" aria-label="Published providers"><strong id="provider-count">0</strong><span>published provider profiles</span></div>
                 </div>
                 <section class="empty-state provider-empty-state" aria-labelledby="provider-empty-title"><div><h2 id="provider-empty-title">No provider profile is currently published</h2><p>A profile will appear only with a real identity, relevant offer context and an explicit cooperation status.</p></div><a class="button button-secondary" href="#/participate/producers">Information for providers</a></section>
+                <div id="published-providers" class="catalogue-grid"></div>
                 <section class="provider-status-key" aria-labelledby="provider-status-title">
                     <div class="section-heading"><p class="eyebrow">Relationship clarity</p><h2 id="provider-status-title">Research, publication and cooperation are different states</h2></div>
                     <div class="status-key-layout"><article><h3>Independently researched</h3><p>Arvena may assess public information about an offer without contact or a commercial relationship.</p></article><article><h3>Published provider</h3><p>A factual provider record may accompany a published offer. Publication alone does not mean partnership.</p></article><article><h3>Approved association</h3><p>If formal cooperation is established later, its scope and commercial context must be stated explicitly.</p></article></div>
@@ -494,6 +501,14 @@
             <div class="screen-inner result-layout">
                 <p class="eyebrow">Page not found</p><h1 id="not-found-title">This path is not available</h1><p>Return to the marketplace or browse the complete solution-area structure.</p>
                 <div class="button-row button-row-centred"><a class="button button-primary" href="#/explore">Explore the marketplace</a><a class="button button-secondary" href="#/solutions">Browse solutions</a></div>
+            </div>
+        </section>
+    <section class="screen" id="screen-platform" data-screen="platform" aria-labelledby="platform-title" hidden>
+            <div class="screen-inner screen-inner-wide platform-shell">
+                <nav class="platform-nav" aria-label="Account navigation"><a href="#/cabinet">Saved</a><a href="#/cabinet/interests">Interests</a><a href="#/cabinet/account">Account</a><a href="#/provider-space" data-provider-link hidden>Provider space</a><a href="#/editorial" data-editor-link hidden>Editorial</a></nav>
+                <h1 id="platform-title" tabindex="-1">Your Cabinet</h1>
+                <p id="platform-status" role="status" aria-live="polite"></p>
+                <div id="platform-content"></div>
             </div>
         </section>
     </main>

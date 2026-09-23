@@ -2,6 +2,11 @@
 
 (function () {
     const ROUTES = Object.freeze({
+        '/cabinet': { screen: 'platform', nav: '', title: 'Cabinet | Arvena' },
+        '/cabinet/account': { screen: 'platform', nav: '', title: 'Account | Arvena' },
+        '/cabinet/interests': { screen: 'platform', nav: '', title: 'Interests | Arvena' },
+        '/provider-space': { screen: 'platform', nav: '', title: 'Provider space | Arvena' },
+        '/editorial': { screen: 'platform', nav: '', title: 'Editorial | Arvena' },
         '/home': { screen: 'home', nav: 'home', title: 'Arvena | Curated marketplace for better living' },
         '/explore': { screen: 'explore', nav: 'explore', title: 'Explore | Arvena' },
         '/solutions': { screen: 'solutions', nav: 'solutions', title: 'Solution areas | Arvena' },
@@ -66,7 +71,7 @@
         return {
             meta: data.meta || {},
             domains: Array.isArray(data.domains) ? data.domains : [],
-            discoveryRecords: Array.isArray(data.discoveryRecords) ? data.discoveryRecords : [],
+            discoveryRecords: [...(data.discoveryRecords || []), ...(window.ArvenaPlatform?.discoveryRecords() || [])],
             offers: Array.isArray(data.offers) ? data.offers : [],
             providers: Array.isArray(data.providers) ? data.providers : []
         };
@@ -103,10 +108,11 @@
     }
 
     function recordTypeLabel(recordType) {
-        return recordType === 'solution-class' ? 'Solution class' : 'Guide';
+        return recordType === 'offer' ? 'Offer' : recordType === 'solution-class' ? 'Solution class' : 'Guide';
     }
 
     function recordRoute(record) {
+        if (record.recordType === 'offer') return '#/offers/' + record.slug;
         return record.recordType === 'solution-class'
             ? '#/solution-classes/point-of-use-filtration'
             : '#/solutions/clean-water';
@@ -212,7 +218,7 @@
         const link = document.createElement('a');
         link.className = 'text-link';
         link.href = recordRoute(record);
-        link.textContent = record.recordType === 'solution-class' ? 'Explore solution class' : 'Read guide';
+        link.textContent = record.recordType === 'offer' ? 'View offer' : record.recordType === 'solution-class' ? 'Explore solution class' : 'Read guide';
 
         article.append(meta, title, domain, summary, link);
         return article;
@@ -539,7 +545,7 @@
 
     function showRoute({ moveFocus = true } = {}) {
         let routePath = normaliseRoute();
-        let route = ROUTES[routePath] || { screen: 'not-found', nav: '', title: 'Page not found | Arvena' };
+        let route = ROUTES[routePath] || (window.ArvenaPlatform?.matches(routePath) ? { screen: 'platform', nav: '', title: 'Arvena' } : null) || { screen: 'not-found', nav: '', title: 'Page not found | Arvena' };
 
         if (route.screen === 'result' && (!requestsAreEnabled() || !sessionStorage.getItem(CONFIRMATION_KEY))) {
             routePath = '/request';
@@ -572,6 +578,7 @@
         });
 
         document.title = route.title;
+        if (route.screen === 'platform') window.ArvenaPlatform.render(routePath);
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
         closeMenu();
 
@@ -790,6 +797,14 @@
     syncNavigationAccessibility(false);
     showRoute({ moveFocus: false });
 
+    window.addEventListener('arvena:catalogue', () => {
+        const values = [exploreDomainFilter.value, exploreTypeFilter.value];
+        const data = getData();
+        populateFilter(exploreDomainFilter, [...new Set(data.discoveryRecords.map(r => r.domainSlug))].map(value => ({value, label: data.domains.find(d => d.slug === value)?.title || value})), 'All published domains');
+        populateFilter(exploreTypeFilter, [...new Set(data.discoveryRecords.map(r => r.recordType))].map(value => ({value, label: recordTypeLabel(value)})), 'All record types');
+        [exploreDomainFilter, exploreTypeFilter].forEach((e,i) => { e.value=values[i]; });
+        renderExploreResults();
+    });
     window.addEventListener('hashchange', () => showRoute());
     if (skipLink) skipLink.addEventListener('click', skipToMainContent);
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
