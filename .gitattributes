@@ -1,0 +1,2 @@
+# Generated upstream bundle contains significant trailing spaces inside strings.
+supabase-client.js linguist-generated=true whitespace=-blank-at-eol
