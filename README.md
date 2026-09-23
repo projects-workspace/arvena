@@ -68,8 +68,9 @@ and confirmation routes. The old product-type and methodology routes remain alia
 
 Implemented against Supabase Auth and an additive PostgreSQL migration:
 
-- Email/password registration, login, confirmation/reset support through the
-  official pinned Supabase client, persistent sessions and logout.
+- Email/password login, persistent sessions and logout through the official pinned
+  Supabase client. Registration and confirmation/reset support is implemented but
+  its public controls stay unavailable pending email-delivery configuration.
 - Private Cabinet saves and minimal domain/region preferences. Preference
   replacement is atomic; duplicate saves are idempotent.
 - Trusted provider associations, own published-listing access, daily aggregate
@@ -84,12 +85,15 @@ Implemented against Supabase Auth and an additive PostgreSQL migration:
   Optimistic revision checks reject stale changes. Immutable editorial events
   retain decision attribution and snapshots of published copy.
 
-The extension is **disabled in the committed public configuration** until its
-migration is applied and verified in the assigned Arvena project. Local Auth,
-Data API and browser tests use an isolated Supabase stack and explicit loopback
-configuration, never a replacement cloud project. No real offers/providers or
-editor accounts have been created remotely. Registration alone grants no provider,
-posting or editorial permission.
+The extension is **enabled in the development branch** after remote migration,
+RLS and functional verification against the existing Arvena project. Registration
+and password-reset controls remain unavailable under the separate email-readiness
+flag; custom SMTP and confirmation/reset redirects are a separate task. Email
+confirmation stays enabled at Supabase. Confirmed accounts can sign in.
+No real offers/providers or permanent editor accounts have been created remotely.
+All seven disposable remote test accounts and their associated records were
+removed after verification. Registration alone grants no provider, posting or
+editorial permission. No production deployment was performed.
 
 Commerce, payments, orders, general seller tools, automated research and
 AI-generated recommendations are outside this implementation.
@@ -210,11 +214,42 @@ JavaScript or expose submitted contact information to browser clients.
   requests and preserves the two public educational records.
 - The browser client can be rebuilt with `sh scripts/build_client.sh`; this is
   dependency maintenance, not a required site build step.
-- **Remote boundary:** repository configuration points to Arvena project
-  `qkwffuwvioiikumddoie`. The current connector denies access and the authenticated
-  CLI account does not include this project. The new migration has not been applied
-  remotely, and remote Auth/email/redirect settings have not been verified. No
-  production deployment or domain change is part of this work.
+- **Remote verification, 23 September 2026:** authenticated Safari Dashboard
+  independently identified Arvena `qkwffuwvioiikumddoie`, Frankfurt (`eu-central-1`).
+  Applied the unchanged `20260923073824_marketplace_platform` migration through
+  SQL Editor after collision checks. Its SHA-256 is
+  `143c93dd48a2723bfc1076bb5be1e4784364f95a2606a70dd68eff87b77eb0e9`.
+  All 16 new public tables have RLS; no public API function uses SECURITY DEFINER.
+  The protected request table's columns, constraints and policy fingerprint were
+  identical before application, after application and after synthetic cleanup.
+- **Remote Auth/Data API:** 62 assertions passed with two normal users plus two
+  provider, contributor, specialist and editorial contexts. Verified denied
+  cross-user saves/preferences, anonymous private access, provider self-claim,
+  cross-provider memberships/analytics/corrections, unauthorized posting and
+  moderation, out-of-scope and revoked contributions, and unpublished-content
+  privacy. Human approval, publication, correction review and measured aggregates
+  passed. Four additional anonymous SELECT denials passed, and a rollback-only
+  rejected-contribution test confirmed rejected content is not public. Synthetic
+  accounts were provisioned as confirmed test identities; this
+  does not establish public signup or email delivery.
+- **Remote browser smoke:** desktop/390px/320px routes and real backend flows for
+  login, reload-persistent sessions, logout, saves, preferences, provider corrections,
+  submissions and moderation passed with zero console/runtime errors. The separate
+  email-readiness guard was checked while confirmed-account login remained working.
+  No synthetic users, providers, offers, packages, contributions, corrections,
+  privileges, saves or measured activity remained after cleanup.
+- **Auth configuration:** email signup is allowed at the service, email confirmation
+  is required, custom SMTP is off, Site URL is `http://localhost:3000`, and no redirect
+  URLs are configured. The reserved-address signup probe was rejected with
+  `email_address_invalid`; no signup account or session was created. General email
+  onboarding, confirmation delivery and reset redirects remain unverified and are
+  deliberately not exposed in the application until the separate email setup task.
+- The CLI remains authenticated to a different account and is not linked here.
+  Dashboard access was used without extracting or rotating credentials. The remote
+  migration-history table was absent before application and was not created or
+  repaired incidentally; application was verified from schema and API behavior.
+  Do not replay the migration merely because CLI history is absent. No production
+  deployment, domain change or unrelated project mutation was performed.
 
 ### Repeatable local checks
 
@@ -250,13 +285,14 @@ performed by the local public-foundation work alone.
 
 ## Operating the extension
 
-The platform switch is separate from `requestsEnabled`, which stays false.
-Before setting `ARVENA_PLATFORM_ENABLED` true, establish authenticated access to
-Arvena `qkwffuwvioiikumddoie`, inspect schema/migration metadata without reading
-historical requests, review the additive migration and apply it transactionally.
-Do not incidentally repair the protected request migration history. Verify grants,
-RLS, Auth email confirmation/reset delivery and allowed redirect origins before
-activation. Production deployment requires separate authorization.
+`ARVENA_PLATFORM_ENABLED` is true in this development branch after remote
+verification. `requestsEnabled` stays false and Batch B3 remains inactive.
+`ARVENA_EMAIL_DELIVERY_ENABLED` stays false: registration and password-reset
+controls become available only after the separate custom-SMTP and redirect setup
+is verified. Keep Supabase email confirmation enabled. Production deployment
+requires separate authorization; changing these branch files does not deploy them.
+The remote migration is already applied. Do not replay it or repair unrelated
+migration history without first reconciling current schema metadata.
 
 The migration is additive and seeds only the ten existing domain identities and
 one educational solution-class relationship. It contains no real offers, providers,
@@ -290,9 +326,9 @@ views are not unique people and outbound clicks are not purchases. No historical
 counts or sales estimates are inferred.
 
 Public participation remains informational: no verified general contact channel
-is configured. Provider corrections use the authenticated internal route. External
-Auth email configuration, a verified general contact channel and approved human
-research packages remain external dependencies.
+is configured. Provider corrections use the authenticated internal route. Custom SMTP and verified confirmation/reset redirect URLs, a verified general
+contact channel and approved human research packages remain external dependencies.
+The user deferred email setup to a separate task.
 
 ## Isolated integration verification
 
@@ -318,9 +354,11 @@ outside the repository and must not be committed or deployed.
 Start the allowlisted preview with
 `python3 scripts/serve_preview.py --port 8001 --local-platform-config /private/tmp/arvena-local-config.json`.
 This explicit local mode substitutes public loopback configuration in responses
-without changing the protected configuration file or committed activation switch.
+without changing the protected configuration file or committed activation flags.
+This isolated local mode enables its own test email controls; it does not configure
+remote SMTP or weaken remote email confirmation.
 Install Playwright 1.58.2 in a temporary directory, set `ARVENA_BROWSER_MODULES` to
 its `node_modules`, and run `node scripts/test_platform_browser.cjs`. The browser
 suite uses installed Chrome and local synthetic accounts. Stop the isolated stack
-without retaining test data after verification. The normal preview command never
-enables the extension automatically.
+without retaining test data after verification. The normal preview command uses the committed activation flags and the existing
+public Arvena configuration.

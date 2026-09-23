@@ -130,23 +130,28 @@
         } catch(e) { if(epoch===generation) status(e.message,true); }
     }
     function renderLogin(root) {
+        const emailReady=window.ARVENA_EMAIL_DELIVERY_ENABLED === true;
         root.append(el('p','Sign in to save offers and choose your interests. Posting and provider access require separate approval.'));
         const form=el('form',null,{class:'platform-form'});
         const email=field(form,'Email','email','email');email.autocomplete='email';
         const password=field(form,'Password','password','password');password.minLength=10;password.autocomplete='current-password';
-        select(form,'Account action','action',[['login','Sign in'],['signup','Create account']],'login');
+        select(form,'Account action','action',emailReady?[['login','Sign in'],['signup','Create account']]:[['login','Sign in']],'login');
         submit(form,'Continue',async data=>{
+            if(data.get('action')==='signup'&&!emailReady)throw new Error('New account registration is not open yet.');
             const credentials={email:data.get('email'),password:data.get('password')};
             const response=data.get('action')==='signup'?await client.auth.signUp({...credentials,options:{emailRedirectTo:location.origin+location.pathname}}):await client.auth.signInWithPassword(credentials);
             if(response.error) throw response.error;
             if(!response.data.session) status('Check your email to confirm your account, then sign in.');
             else {user=response.data.user;await render('/cabinet');location.hash='/cabinet';}
         });
-        root.append(form,button('Send password reset email',async()=>{
+        root.append(form);
+        if(emailReady)root.append(button('Send password reset email',async()=>{
             if(!email.reportValidity()) return;
             const {error}=await client.auth.resetPasswordForEmail(email.value,{redirectTo:location.origin+location.pathname});if(error)throw error;
             status('If an account exists, check its email for a reset link.');
-        }),el('p','Your email and sign-in session are handled by Supabase Auth. Arvena stores only your selected interests, broad region and saved offers.'));
+        }));
+        else root.append(el('p','New account registration and password reset are not open yet. Existing confirmed accounts can sign in.'));
+        root.append(el('p','Your email and sign-in session are handled by Supabase Auth. Arvena stores only your selected interests, broad region and saved offers.'));
     }
     function renderAccount(root) {
         root.append(el('p','Signed in as '+user.email),el('p','Your account identifier: '+user.id),el('p','You may share this identifier with an Arvena editor when requesting an approved provider or contribution association. It grants no access by itself.'));

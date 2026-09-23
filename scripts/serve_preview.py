@@ -132,7 +132,7 @@ class PreviewRequestHandler(BaseHTTPRequestHandler):
             body = ("window.ARVENA_SUPABASE_CONFIG = Object.freeze(" + json.dumps(self.server.platform_config) + ");").encode()
 
         if public_file.name == "platform-config.js" and getattr(self.server, "platform_config", None):
-            body = b"window.ARVENA_PLATFORM_ENABLED = true;"
+            body = b"window.ARVENA_PLATFORM_ENABLED = true; window.ARVENA_EMAIL_DELIVERY_ENABLED = true;"
 
         content_type = mimetypes.guess_type(public_file.name)[0] or "application/octet-stream"
         if (
