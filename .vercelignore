@@ -18,3 +18,6 @@ translations.js
 pdf-matrix.js
 scripts
 supabase
+
+# Team handoffs and research working material are never deployment assets.
+docs

@@ -3560,3 +3560,37 @@ blockquote {
  .site-header .brand { font-size: .96rem; }
  .site-header .brand-mark { width: 24px; height: 24px; }
 }
+
+/* Public knowledge extends the existing editorial visual system. */
+.context-directory { margin: 3rem 0 4rem; }
+.context-index, .knowledge-links { list-style: none; padding: 0; }
+.context-index { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.5rem; }
+.context-index li { border-bottom: 1px solid var(--color-border); }
+.context-index a { display: block; padding: 1.1rem 0; font-family: var(--font-heading); font-size: 1.3rem; text-decoration-thickness: 1px; }
+.knowledge-page .page-heading { max-width: 850px; }
+.knowledge-page .page-heading h1 { font-size: clamp(2rem, 5vw, 4.5rem); }
+.knowledge-section { margin: 3rem 0; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+.knowledge-section h2 { margin-bottom: 1rem; }
+.knowledge-section p, .knowledge-section li { max-width: 72ch; }
+.knowledge-section > a { display: inline-block; margin: .5rem 1.5rem .5rem 0; }
+.knowledge-section ul, .knowledge-section ol { padding-left: 1.3rem; }
+.knowledge-section li { margin-bottom: .5rem; }
+.knowledge-section .knowledge-links { padding-left: 0; columns: 2; column-gap: 3rem; }
+.knowledge-links li { break-inside: avoid; padding: .35rem 0; }
+.knowledge-ledger { margin: 0; }
+.knowledge-ledger > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--color-border); }
+.knowledge-ledger dt { font-family: var(--font-heading); font-size: 1.4rem; color: var(--color-primary); }
+.knowledge-ledger dd { margin: 0; max-width: 70ch; }
+.methodology-depth details { padding: 1.25rem 0; border-bottom: 1px solid var(--color-border); }
+.methodology-depth summary { cursor: pointer; font-family: var(--font-heading); font-size: 1.4rem; color: var(--color-primary); }
+.methodology-depth p { max-width: 72ch; margin-top: 1rem; }
+#offer-catalogue-status a { margin-right: 1.5rem; }
+#provider-catalogue-status { margin: 1.5rem 0; }
+@media (max-width: 600px) {
+    .context-index { grid-template-columns: minmax(0, 1fr); }
+    .knowledge-ledger > div { grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+    .knowledge-section .knowledge-links { columns: 1; }
+    .knowledge-section { margin: 2rem 0; }
+}
+.knowledge-section a, .context-index a { color: var(--color-secondary); text-underline-offset: .2em; }
+.knowledge-section a:hover, .context-index a:hover { color: var(--color-primary-strong); }

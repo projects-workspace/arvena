@@ -18,8 +18,10 @@
     <script src="arvena-data.js?v=23" defer></script>
     <script src="platform-config.js?v=1" defer></script>
     <script src="supabase-client.js?v=1" defer></script>
-    <script src="platform.js?v=1" defer></script>
-    <script src="script.js?v=24" defer></script>
+    <script src="platform.js?v=2" defer></script>
+    <script src="knowledge-data.js?v=1" defer></script>
+    <script src="knowledge.js?v=1" defer></script>
+    <script src="script.js?v=25" defer></script>
     <script src="editorial.js?v=1" defer></script>
 </head>
 <body>
@@ -95,7 +97,7 @@
                     <div class="section-heading">
                         <p class="eyebrow">Solution areas</p>
                         <h2 id="home-domains-title">Start with the part of life you want to improve</h2>
-                        <p>Clean Water is published now. The wider domain structure shows where Arvena is developing, without presenting future inventory as available today.</p>
+                        <p>Explore ten topic maps and everyday contexts. Clean Water also has a guide and solution-class profile; knowledge and available offers are shown separately.</p>
                     </div>
                     <div class="domain-preview" id="home-domain-preview"></div>
                     <a class="text-link" href="#/solutions">See all solution areas <span aria-hidden="true">→</span></a>
@@ -132,7 +134,7 @@
                 <header class="page-heading marketplace-heading">
                     <p class="eyebrow">Marketplace discovery</p>
                     <h1 id="explore-title">Explore what Arvena has actually published</h1>
-                    <p>Search across current guides and solution classes. Specific offers and providers appear only after an exact publication package is ready.</p>
+                    <p>Search topic maps, context overviews, guides, solution classes and published offers. Specific offers and providers appear only after an exact publication package is ready.</p>
                 </header>
 
                 <form class="catalogue-controls" role="search" aria-label="Filter published Arvena records">
@@ -167,7 +169,7 @@
                     <div>
                         <p class="eyebrow">Inventory boundary</p>
                         <h2 id="inventory-ledger-title">Published knowledge is not the same as a published offer</h2>
-                        <p><strong>Scope is not inventory.</strong> Current discovery includes a Clean Water guide and a solution-class explanation. No specific offer or provider is currently published.</p>
+                        <p><strong>Scope is not inventory.</strong> Knowledge includes topic maps, context overviews and the Clean Water material. Offer availability comes from the live catalogue and is shown separately.</p>
                     </div>
                     <nav aria-label="Marketplace record types"><a href="#/offers">Specific offers</a><a href="#/providers">Providers</a><a href="#/how-we-select">Selection method</a></nav>
                 </aside>
@@ -189,13 +191,14 @@
                     </figure>
                 </div>
 
+                <section class="context-directory" aria-labelledby="context-index-title"><h2 id="context-index-title">Start with everyday life</h2><p>Contexts connect existing directions. One record can be linked from several places.</p><ul id="context-index" class="context-index"></ul></section>
                 <section class="domain-index-section" aria-labelledby="domain-index-title">
-                    <div class="section-heading"><h2 id="domain-index-title">Browse the full solution-area structure</h2><p>A developing area is part of Arvena's approved scope, but it has no published discovery record yet.</p></div>
+                    <div class="section-heading"><h2 id="domain-index-title">Browse the full solution-area structure</h2><p>Each direction has an initial map of subjects, approaches and research questions. A topic map is not a completed research review.</p></div>
                     <div class="domain-index" id="solutions-domain-grid"></div>
                 </section>
 
                 <section class="developing-register" aria-labelledby="developing-register-title">
-                    <div><p class="eyebrow">Developing areas</p><h2 id="developing-register-title">Visible before they are populated, clearly marked until they are ready</h2></div>
+                    <div><h2 id="developing-register-title">Detailed research will extend these maps</h2><p>These directions have topic maps now. Further reviews require approved research material.</p></div>
                     <div class="developing-domain-list" id="developing-domain-list"></div>
                 </section>
 
@@ -299,6 +302,7 @@
                     <div><h2 id="offer-empty-title">No specific offer is currently published</h2><p>Arvena will not use fictional products, generic placeholders or unverified claims to populate this marketplace.</p><div class="button-row"><a class="button button-primary" href="#/explore">Explore current material</a><a class="button button-secondary" href="#/solution-classes/point-of-use-filtration">View a solution class</a></div></div>
                 </section>
 
+                <div id="offer-catalogue-status" class="knowledge-section" role="status" aria-live="polite"></div>
                 <div id="published-offers" class="catalogue-grid"></div>
                 <section class="offer-publication-map" aria-labelledby="offer-publication-title">
                     <div class="section-heading"><p class="eyebrow">Reusable offer profile</p><h2 id="offer-publication-title">What a published offer can make clear</h2><p>Optional sections appear only when relevant and supported. Unknown price or availability remains visibly unknown.</p></div>
@@ -323,7 +327,7 @@
                     <div class="provider-count-block" aria-label="Published providers"><strong id="provider-count">0</strong><span>published provider profiles</span></div>
                 </div>
                 <section class="empty-state provider-empty-state" aria-labelledby="provider-empty-title"><div><h2 id="provider-empty-title">No provider profile is currently published</h2><p>A profile will appear only with a real identity, relevant offer context and an explicit cooperation status.</p></div><a class="button button-secondary" href="#/participate/producers">Information for providers</a></section>
-                <div id="published-providers" class="catalogue-grid"></div>
+                <div id="provider-catalogue-status" role="status" aria-live="polite"></div><div id="published-providers" class="catalogue-grid"></div>
                 <section class="provider-status-key" aria-labelledby="provider-status-title">
                     <div class="section-heading"><p class="eyebrow">Relationship clarity</p><h2 id="provider-status-title">Research, publication and cooperation are different states</h2></div>
                     <div class="status-key-layout"><article><h3>Independently researched</h3><p>Arvena may assess public information about an offer without contact or a commercial relationship.</p></article><article><h3>Published provider</h3><p>A factual provider record may accompany a published offer. Publication alone does not mean partnership.</p></article><article><h3>Approved association</h3><p>If formal cooperation is established later, its scope and commercial context must be stated explicitly.</p></article></div>
@@ -349,20 +353,26 @@
         <section class="screen" id="screen-methodology" data-screen="methodology" aria-labelledby="methodology-title" hidden>
             <div class="screen-inner screen-inner-wide">
                 <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>How We Select</span></nav>
-                <header class="selection-hero"><p class="eyebrow">How Arvena selects</p><h1 id="methodology-title">Curation should make a decision more understandable, not merely more persuasive</h1><p>Arvena supports its marketplace with claim-level research, transparent limitations and clear distinctions between evidence, producer statements and editorial conclusions.</p></header>
+                <header class="selection-hero"><p class="eyebrow">How Arvena selects</p><h1 id="methodology-title">We search widely. We check specifically. We explain clearly.</h1><p>We recommend only within what could actually be established. Our starting point is a real need: sometimes the useful answer is repair, maintenance, a simpler way of using something, or no purchase at all.</p></header>
                 <section class="selection-sequence" aria-labelledby="selection-sequence-title">
                     <div class="section-heading"><h2 id="selection-sequence-title">The publication path</h2></div>
-                    <ol><li><strong>Define the need and context</strong><p>Selection begins with the intended improvement, location, user and implementation conditions.</p></li><li><strong>Set criteria for the offer type</strong><p>A water filter, cleaning product, specialist service and building system cannot share one universal checklist.</p></li><li><strong>Check claims at the right level</strong><p>A broad technology principle does not prove an exact model claim. Evidence is attached to the claim it can support.</p></li><li><strong>Compare practical strengths and limits</strong><p>Safety, materials, maintenance, durability, environmental considerations, alternatives and uncertainty remain visible.</p></li><li><strong>Publish access and disclosure honestly</strong><p>Price, geography, availability and commercial relationships are stated only when known and current.</p></li><li><strong>Review and correct</strong><p>Material changes, new evidence and credible corrections can narrow, update or remove a conclusion.</p></li></ol>
+                    <ol><li><strong>Understand the need</strong><p>Define the situation, desired improvement and limits.</p></li><li><strong>Map approaches</strong><p>Consider scientific, engineering, traditional, local and simple options, including changes without a purchase.</p></li><li><strong>Explain the basics</strong><p>Prepare educational material with sources and boundaries.</p></li><li><strong>Find candidates</strong><p>Give particular research attention to small producers, makers, independent creators and open developments, while considering larger producers too.</p></li><li><strong>Research and check</strong><p>Investigate exact claims, versions, conditions, sources and practical requirements; obtain relevant specialist review where needed.</p></li><li><strong>Make a human decision</strong><p>A responsible person decides what can be stated, recommended for a defined scenario, kept as a research note or left unpublished.</p></li><li><strong>Prepare the public package</strong><p>Separate approved text, sources, media rights and disclosures from the private dossier.</p></li><li><strong>Publish and verify</strong><p>Technical publication implements the approved version. AI preparation is not a primary source or human approval.</p></li><li><strong>Revisit and correct</strong><p>New sources, changed versions or substantiated corrections can narrow, revise or withdraw a conclusion.</p></li></ol><p>This is our adopted workflow, not a claim that every investigation is complete or a full expert network already operates.</p>
                 </section>
                 <section class="evidence-taxonomy" aria-labelledby="evidence-taxonomy-title">
                     <div class="section-heading"><p class="eyebrow">Evidence in context</p><h2 id="evidence-taxonomy-title">Different sources do different work</h2></div>
-                    <dl><div><dt>Independent research</dt><dd>Peer-reviewed work, accountable public guidance or independent technical material relevant to a defined claim.</dd></div><div><dt>External standards and testing</dt><dd>A recognised framework or result checked for the exact scope, model and claim it covers.</dd></div><div><dt>Producer statement</dt><dd>Information from the maker or provider, clearly attributed and not automatically treated as an independent conclusion.</dd></div><div><dt>User experience</dt><dd>Useful practical context when clearly identified. Popularity and comments are not evidence of safety or performance.</dd></div><div><dt>Arvena editorial assessment</dt><dd>An independent interpretation of the available evidence, uncertainties and tradeoffs. It is not a certification.</dd></div></dl>
+                    <dl><div><dt>Independent research</dt><dd>Peer-reviewed work, accountable public guidance or independent technical material relevant to a defined claim.</dd></div><div><dt>External standards and testing</dt><dd>A recognised framework or result checked for the exact scope, model and claim it covers.</dd></div><div><dt>Producer statement</dt><dd>Information from the maker or provider, clearly attributed and not automatically treated as an independent conclusion.</dd></div><div><dt>User experience</dt><dd>Useful practical context when clearly identified. Popularity and comments are not evidence of safety or performance.</dd></div><div><dt>Traditional use</dt><dd>Documented history and cultural context, distinguished from testing of a specific effect.</dd></div><div><dt>Unknown or conflicting information</dt><dd>Missing, limited, contradictory and contrary evidence remain distinguishable. Openness to study does not give every approach equal support.</dd></div><div><dt>Arvena editorial assessment</dt><dd>An independent interpretation of the available evidence, uncertainties and tradeoffs. It is not a certification.</dd></div></dl>
+                </section>
+                <section class="methodology-depth" aria-label="Selection criteria and independence">
+                    <details open><summary>Specific claims, practical choices</summary><p>A conclusion applies to an exact claim, version and set of conditions, not to an entire brand or field. We consider total cost, access, durability, maintenance, repair and simpler alternatives. The weight of each criterion depends on the category.</p><p>Natural origin, an unusual idea, a famous institution or the size of a producer cannot substitute for checking. Research notes are not recommendations. Category and market requirements remain separate from Arvena’s editorial assessment.</p></details>
+                    <details><summary>Provenance, ownership and interests</summary><p>Relevant questions include who developed and made the solution, who owns the brand, who funded the work and what commercial interests Arvena or its contributors have. Relationships need sources and dates; unknown ownership stays unknown.</p><p>A commercial relationship is not proof of misconduct, and an independent author can also be mistaken. Cooperation does not buy a positive conclusion. Arvena may recommend an external offer without selling or delivering it.</p></details>
+                    <details><summary>Traditional knowledge and permitted use</summary><p>Agree consent for recording, translation, publication and intended use. Preserve authorship and cultural context, and protect sensitive or restricted knowledge. Documenting a practice does not establish its technical or therapeutic effect.</p></details>
                 </section>
                 <div class="methodology-split">
                     <section class="uncertainty-panel" aria-labelledby="uncertainty-title"><p class="eyebrow">Uncertainty</p><h2 id="uncertainty-title">Unknown is a valid publication state</h2><p>Missing price, incomplete availability or a material evidence gap should be shown plainly. A recommendation can be narrowed or paused when the evidence does not support a broader conclusion.</p></section>
                     <section class="correction-loop" aria-labelledby="correction-title"><p class="eyebrow">Corrections</p><h2 id="correction-title">Substantive changes return to editorial review</h2><p>Providers, specialists and readers may identify an error or changed fact. A correction is checked before public claims are updated.</p><a class="text-link" href="#/contact">See the current contact status <span aria-hidden="true">→</span></a></section>
                 </div>
-                <aside class="verified-boundary" aria-labelledby="verified-boundary-title"><div><p class="eyebrow">Future direction</p><h2 id="verified-boundary-title">Arvena Verified is not an existing certification</h2></div><p>A deeper methodology may be developed in the future. Current editorial selection must not be presented as formal Arvena verification or certification.</p></aside>
+                <aside class="verified-boundary" aria-labelledby="verified-boundary-title"><div><p class="eyebrow">Future direction</p><h2 id="verified-boundary-title">Arvena Verified is not an existing certification</h2></div><p>This methodology does not claim an operating certification, laboratory, fund or clinical research programme. No universal numerical evidence score replaces a claim-level explanation.</p></aside>
+                <section class="knowledge-section"><h2>Version and corrections</h2><p>Public methodology v1.0 · Edited 25 September 2026. Initial adaptation of the research and collaboration framework v1.0, especially its public explanation, and the initial directions map v0.1. This editorial date is not a date of scientific review.</p><p>Substantive corrections require human review and a traceable record. The public contact channel is being prepared; assigned provider representatives can use their existing correction route for their own listings. Login does not grant editing or publication rights.</p><a href="#/participate">How participation works</a></section>
             </div>
         </section>
 
@@ -379,6 +389,7 @@
                 </section>
                 <aside class="craft-caution" aria-labelledby="craft-caution-title"><h2 id="craft-caution-title">Local, handmade, natural, organic and bio are not automatic proof</h2><p>These qualities can be relevant, but none automatically establishes that an offer is safe, healthy, durable, low-impact or socially responsible. Each material claim and practical outcome needs its own basis.</p></aside>
                 <section class="craft-offers" aria-labelledby="craft-offers-title"><div><p class="eyebrow">Selected offers</p><h2 id="craft-offers-title">No craft or local-production offer is published yet</h2><p>This editorial area is ready for real research packages. It will remain an honest developing state until then.</p></div><a class="button button-secondary" href="#/participate/producers">For makers and producers</a></section>
+<section class="knowledge-section"><h2>Provenance is a question, not a quality seal</h2><p>Consider materials, process, skill, production variation and transparent origin. Handmade or local production is not automatically superior. Keep the maker’s statements separate from tested properties and disclose relevant commercial relationships. Consent and attribution matter when documenting traditional practice.</p><p>Context adaptation v1.0 · Edited 25 September 2026, from Arvena’s research framework and initial directions map. This is an editorial scope overview, not a completed product investigation.</p><a href="#/how-we-select">Read the selection methodology</a></section>
             </div>
         </section>
 
@@ -392,6 +403,7 @@
                     <div class="principle-ledger-grid"><article><h3>Independent judgment</h3><p>Selection should not become pay-to-play. Commercial relationships must be visible and separate from editorial conclusions.</p></article><article><h3>Evidence with context</h3><p>Evidence is attached to the claim it can support, with limitations and uncertainty kept readable.</p></article><article><h3>Practical usefulness</h3><p>A good option must make sense in real use, including access, installation, maintenance and local conditions.</p></article><article><h3>Ecology without vague claims</h3><p>Environmental considerations are specific, proportional and balanced against safety, durability and the intended result.</p></article><article><h3>Breadth with discipline</h3><p>Arvena can span simple products and complex systems without pretending every area already has inventory.</p></article></div>
                 </section>
                 <div class="about-actions"><a class="button button-primary" href="#/explore">Explore current publication</a><a class="button button-secondary" href="#/development">See the wider future direction</a></div>
+<section class="knowledge-section"><h2>Independent search, specific judgment</h2><p>We pay particular research attention to small producers, local makers, independent developers and open designs that can be difficult to discover. This is a search priority, not automatic preference in our conclusions. Useful offers from larger producers are considered too. A proportionate answer can be repair, maintenance or keeping what works.</p><a href="#/how-we-select">Read the selection methodology</a></section>
             </div>
         </section>
 
@@ -408,6 +420,7 @@
                 </section>
                 <section class="accessibility-vision" aria-labelledby="accessibility-vision-title"><div><p class="eyebrow">Future accessibility ambition</p><h2 id="accessibility-vision-title">Support could help close an affordability gap</h2></div><div><p>A future mechanism could support useful creators and help selected essential solutions reach people without profit, at cost or below cost where funding covers the difference.</p><strong>There is no operational fund, subsidy programme or guaranteed reduced pricing today.</strong></div></section>
                 <aside class="future-boundaries" aria-label="Current boundaries"><p>Arvena does not currently claim an active certification, staffed laboratory, investment programme, operating development fund or available subsidy.</p></aside>
+<section class="knowledge-section"><h2>From a missing solution to a research question</h2><p>Future work could include reproducing tests, collaboration with specialists, developing missing solutions and improving access. Each activity needs a defined question, appropriate people, permissions and resources. No operating laboratory, fund, guaranteed financing or clinical trial programme is offered here.</p><a href="#/how-we-select">Read the selection methodology</a></section>
             </div>
         </section>
 
@@ -419,7 +432,8 @@
                     <article class="participation-route participation-route-producers"><p class="eyebrow">Offer knowledge</p><h2>For producers and specialists</h2><p>Understand what Arvena needs to assess an offer, clarify claims or represent specialist knowledge responsibly.</p><a class="button button-primary" href="#/participate/producers">Read participation guidance</a></article>
                     <article class="participation-route participation-route-work"><p class="eyebrow">Build with care</p><h2>Work with Arvena</h2><p>See the kinds of editorial, research, technical and implementation experience that may become relevant as the platform develops.</p><a class="button button-secondary" href="#/participate/work">See areas of contribution</a></article>
                 </div>
-                <section class="contribution-permission" aria-labelledby="contribution-permission-title"><div><p class="eyebrow">Contribution boundaries</p><h2 id="contribution-permission-title">An account alone will not grant public posting rights</h2></div><p>If questions and comments are enabled later, contribution will require explicit permission and editorial moderation. Producer statements, specialist explanations, editorial answers and user experience will be identified by source.</p></section>
+                <section class="contribution-permission" aria-labelledby="contribution-permission-title"><div><p class="eyebrow">Contribution boundaries</p><h2 id="contribution-permission-title">An account alone will not grant public posting rights</h2></div><p>The existing contribution workflow requires explicit scope permissions and editorial moderation. Producer statements, specialist explanations, editorial answers and user experience will be identified by source.</p></section>
+<section class="knowledge-section"><h2>A useful contribution starts with specifics</h2><p>Identify the material or need, the exact statement, your proposed correction or contribution and its source. General public intake is being prepared. Existing scoped contributors and provider representatives use their assigned workflows; registration alone grants no publication rights.</p><a href="#/how-we-select">Read the selection methodology</a></section>
             </div>
         </section>
 
@@ -433,6 +447,7 @@
                 </section>
                 <div class="producer-principles"><article><h2>Publication is editorial</h2><p>A reply, free sample or commercial agreement is not a universal publication gate. Material evidence gaps can narrow or pause a recommendation.</p></article><article><h2>Partnership is explicit</h2><p>A researched or published provider is not automatically an Arvena partner. Any association and its scope must be stated clearly.</p></article></div>
                 <aside class="intake-status" aria-labelledby="intake-status-title"><div><p class="eyebrow">Current intake status</p><h2 id="intake-status-title">No public producer application channel is published yet</h2><p>Arvena will not show a pretend success flow while there is no functioning intake backend.</p></div><a class="button button-secondary" href="#/contact">View contact status</a></aside>
+<section class="knowledge-section"><h2>What collaboration means</h2><p>Provide the exact identity and version, the claims and their original sources, known limitations, provenance, ownership and relevant funding or commercial interests. A correction should identify the published claim, proposed change and supporting information. Cooperation, payment or a sample does not buy a recommendation. Assigned representatives can submit corrections for their own listings in Provider space; this is not a general public intake channel.</p><a href="#/how-we-select">Read the selection methodology</a></section>
             </div>
         </section>
 
@@ -442,6 +457,7 @@
                 <header class="work-heading"><p class="eyebrow">Work with Arvena</p><h1 id="work-title">Building a trustworthy marketplace calls for several kinds of judgment</h1><p>Arvena is not publishing vacancies, paid commissions or an open application programme on this site today. These areas describe experience that may become relevant.</p></header>
                 <section class="contribution-fields" aria-labelledby="contribution-fields-title"><h2 id="contribution-fields-title" class="sr-only">Potential fields of contribution</h2><article><h3>Research and evidence</h3><p>Claim-level source review, standards interpretation and careful handling of uncertainty.</p></article><article><h3>Editorial and product knowledge</h3><p>Clear explanations that distinguish needs, solution classes, offers and implementation.</p></article><article><h3>Specialist practice</h3><p>Practical expertise in water, indoor environments, food systems, materials, energy, growing or buildings.</p></article><article><h3>Responsible production</h3><p>Deep knowledge of materials, making, maintenance, durability and accountable sourcing.</p></article><article><h3>Technology and access</h3><p>Building useful discovery, private user tools and secure provider capabilities without weakening trust.</p></article></section>
                 <section class="work-status" aria-labelledby="work-status-title"><div><p class="eyebrow">Current status</p><h2 id="work-status-title">No active opportunity or application form is published</h2></div><p>When a genuine route exists, Arvena can state its scope, terms and response expectations here. Until then, the page remains informational.</p><a class="text-link" href="#/contact">See contact and trust information <span aria-hidden="true">→</span></a></section>
+<section class="knowledge-section"><h2>Ways to contribute</h2><p>Researchers, engineers, practitioners, independent testers, journalists, makers, field researchers and holders of traditional knowledge may contribute by agreement. Useful contributions include a source, a substantiated challenge, a methodological correction, permitted field material or a clearly described need for a solution that does not yet exist. These are potential roles, not a claim of an operating team. Consent, authorship, cultural context and permitted use must accompany field material.</p><a href="#/how-we-select">Read the selection methodology</a></section>
             </div>
         </section>
 
@@ -455,7 +471,7 @@
                 </div>
                 <aside class="trust-register" aria-labelledby="trust-register-title">
                     <p class="eyebrow">Trust information</p><h2 id="trust-register-title">What visitors can rely on today</h2>
-                    <dl><div><dt>Public browsing</dt><dd>No registration is required to explore current public material.</dd></div><div><dt>Current inventory</dt><dd>Clean Water has a guide and solution-class profile. No specific offer or provider is published.</dd></div><div><dt>Purchases</dt><dd>Arvena does not currently sell products or claim to process orders.</dd></div><div><dt>Sourcing requests</dt><dd>The preserved Clean Water request route is disabled and cannot send information.</dd></div><div><dt>Future programmes</dt><dd>No Arvena certification, laboratory, operating fund, subsidy or investment programme is claimed.</dd></div></dl>
+                    <dl><div><dt>Public browsing</dt><dd>No registration is required to explore current public material.</dd></div><div><dt>Current inventory</dt><dd>Ten topic maps and everyday contexts accompany the Clean Water guide and solution-class profile. Check the catalogue for current offers and providers.</dd></div><div><dt>Purchases</dt><dd>Arvena does not currently sell products or claim to process orders.</dd></div><div><dt>Sourcing requests</dt><dd>The preserved Clean Water request route is disabled and cannot send information.</dd></div><div><dt>Future programmes</dt><dd>No Arvena certification, laboratory, operating fund, subsidy or investment programme is claimed.</dd></div></dl>
                     <a class="text-link" href="#/how-we-select">Read how Arvena selects <span aria-hidden="true">→</span></a>
                 </aside>
             </div>
@@ -497,6 +513,13 @@
             </div>
         </section>
 
+        <section class="screen" id="screen-knowledge" data-screen="knowledge" aria-labelledby="knowledge-title" hidden>
+            <div class="screen-inner screen-inner-wide knowledge-page">
+                <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/solutions">Solutions</a></nav>
+                <header class="page-heading"><h1 id="knowledge-title">Knowledge</h1><p id="knowledge-description"></p><p id="knowledge-status" class="status-badge"></p></header>
+                <div id="knowledge-content"></div>
+            </div>
+        </section>
         <section class="screen" id="screen-not-found" data-screen="not-found" aria-labelledby="not-found-title" hidden>
             <div class="screen-inner result-layout">
                 <p class="eyebrow">Page not found</p><h1 id="not-found-title">This path is not available</h1><p>Return to the marketplace or browse the complete solution-area structure.</p>

@@ -4,7 +4,7 @@
     const client = window.ArvenaSupabase.createClient(config.url, config.publishableKey, {
         auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' }
     });
-    let user = null, offers = [], providers = [], ready = false, generation = 0;
+    let user = null, offers = [], providers = [], ready = false, generation = 0, catalogueState = 'loading', catalogueRequest = null;
     const el = (tag, text, attrs = {}) => {
         const node = document.createElement(tag);
         if (text !== undefined && text !== null) node.textContent = String(text);
@@ -64,25 +64,41 @@
         card.append(el('p',o.offer_type.replaceAll('-',' '),{class:'discovery-card-type'}),el('h3',o.title),el('p',o.publication.need),link('View offer','#/offers/'+o.slug));
         return card;
     }
-    async function loadCatalogue() {
-        if (window.ARVENA_PLATFORM_ENABLED !== true) { ready=false; return; }
-        try {
-            [offers,providers]=await Promise.all([
-                result(table('offers').select('*').eq('status','published').order('title')),
-                result(table('providers').select('*').eq('status','published').order('name'))
-            ]);
-            ready=true;
-            document.getElementById('published-offers').replaceChildren(...offers.map(offerCard));
-            document.getElementById('published-providers').replaceChildren(...providers.map(p => {
-                const n=el('article',null,{class:'discovery-card'}); n.append(el('h3',p.name),el('p',p.summary),link('View provider','#/providers/'+p.slug)); return n;
-            }));
-            document.querySelector('.offer-empty-state').hidden=offers.length>0;
-            document.querySelector('.provider-empty-state').hidden=providers.length>0;
-            document.getElementById('offer-count').textContent=offers.length;
-            document.getElementById('provider-count').textContent=providers.length;
-            if(offers.length) document.querySelector('.inventory-ledger p:last-child').textContent='Browse published offers alongside educational guides. Each offer states its selection basis, limits and latest review date.';
-            window.dispatchEvent(new Event('arvena:catalogue'));
-        } catch { ready=false; }
+    function notifyCatalogue() {
+        window.dispatchEvent(new Event('arvena:catalogue'));
+        const readyNow = catalogueState === 'ready';
+        document.querySelector('.provider-empty-state').hidden = !readyNow || providers.length > 0;
+        document.getElementById('provider-count').textContent = readyNow ? providers.length : 'Unknown';
+        const notice = document.getElementById('provider-catalogue-status');
+        notice.replaceChildren();
+        if (!readyNow) {
+            notice.append(el('p', catalogueState === 'loading' ? 'Checking published providers…' : 'Provider catalogue unavailable. Availability could not be checked.'));
+            if (catalogueState !== 'loading') notice.append(button('Retry catalogue', loadCatalogue));
+        }
+        document.getElementById('published-providers').replaceChildren(...providers.map(p => {
+            const n=el('article',null,{class:'discovery-card'}); n.append(el('h3',p.name),el('p',p.summary),link('View provider','#/providers/'+p.slug)); return n;
+        }));
+    }
+    function loadCatalogue() {
+        if (catalogueRequest) return catalogueRequest;
+        offers=[]; providers=[]; ready=false;
+        catalogueState=window.ARVENA_PLATFORM_ENABLED === true ? 'loading' : 'unavailable';
+        notifyCatalogue();
+        if (window.ARVENA_PLATFORM_ENABLED !== true) return Promise.resolve();
+        catalogueRequest=(async () => {
+            try {
+                const [nextOffers,nextProviders]=await Promise.all([
+                    result(table('offers').select('*').eq('status','published').order('title')),
+                    result(table('providers').select('*').eq('status','published').order('name'))
+                ]);
+                // Defence in depth; RLS remains the authority for access.
+                offers=nextOffers.filter(o=>o.status==='published');
+                providers=nextProviders.filter(p=>p.status==='published');
+                ready=true; catalogueState='ready';
+            } catch { offers=[];providers=[];ready=false;catalogueState='unavailable'; }
+            finally { catalogueRequest=null;notifyCatalogue(); }
+        })();
+        return catalogueRequest;
     }
     const init=window.ARVENA_PLATFORM_ENABLED !== true ? Promise.resolve() : client.auth.getSession().then(({data,error}) => { if(error) throw error; user=data.session?.user || null; }).catch(()=>{ user=null; }).then(loadCatalogue);
     client.auth.onAuthStateChange((event, session)=>{
@@ -97,6 +113,7 @@
         document.querySelector('[data-editor-link]').hidden=true;
         document.querySelector('[data-provider-link]').hidden=true;
         await init;
+        if (catalogueRequest) await catalogueRequest;
         if(epoch!==generation) return;
         status();
         const title=path.startsWith('/offers/')?'Offer':path.startsWith('/providers/')?'Provider':path.startsWith('/editorial')?'Editorial desk':path==='/provider-space'?'Provider space':path==='/cabinet/interests'?'Your interests':path==='/cabinet/account'?'Your account':'Your Cabinet';
@@ -237,7 +254,8 @@
         if(own.length){const form=el('form',null,{class:'platform-form'});form.append(el('h2','Submit a correction'));select(form,'Listing','offer_id',own.map(o=>[o.id,o.title]),own[0].id);const body=field(form,'Correction or updated information','body','textarea');body.minLength=10;body.maxLength=10000;field(form,'Documentation URL (optional, HTTPS)','url','url','',false);submit(form,'Send for editorial review',async data=>{const url=data.get('url');if(url&&!safeURL(url))throw new Error('Use an HTTPS documentation URL.');await result(table('corrections').insert({offer_id:data.get('offer_id'),body:data.get('body'),documentation_url:url||null}));await render('/provider-space');status('Correction submitted.');});root.append(form);}
         root.append(el('h2','Your correction submissions'));if(!corrections.length)root.append(el('p','No corrections submitted.'));corrections.forEach(c=>root.append(el('article',c.status+': '+c.body+(c.editorial_note?' · '+c.editorial_note:''),{class:'platform-row'})));
     }
-    window.ArvenaPlatform={client,table,result,el,link,button,field,select,submit,status,safeURL,render,matches,loadCatalogue,
+    window.ArvenaPlatform={client,table,result,el,link,button,field,select,submit,status,safeURL,render,matches,loadCatalogue,offerCard,
+        get catalogueState(){return catalogueState;},
         get user(){return user;},get offers(){return offers;},get providers(){return providers;},
         discoveryRecords:()=>offers.map(o=>({recordType:'offer',slug:o.slug,title:o.title,domainSlug:o.domain_slug,publicationStatus:'published',description:o.publication.need}))};
 })();

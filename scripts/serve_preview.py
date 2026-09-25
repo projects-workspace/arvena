@@ -23,6 +23,8 @@ PUBLIC_ROOT_FILES = frozenset(
         "style.css",
         "supabase-config.js",
         "arvena-data.js",
+        "knowledge-data.js",
+        "knowledge.js",
         "script.js",
         "platform.js",
         "platform-config.js",

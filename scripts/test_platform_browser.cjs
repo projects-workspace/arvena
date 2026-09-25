@@ -5,7 +5,7 @@ const fixture=JSON.parse(fs.readFileSync('/private/tmp/arvena-browser-fixtures.j
  const browser=await chromium.launch({channel:'chrome',headless:true});
  const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
- const goto=async path=>{await page.goto('http://127.0.0.1:8001/#'+path);await page.waitForFunction(()=>window.ArvenaPlatform);if(/^\/(cabinet|editorial|provider-space|offers\/|providers\/)/.test(path))await page.waitForFunction(()=>document.getElementById('platform-status').textContent!=='Loading…');};
+ const goto=async path=>{await page.goto('http://127.0.0.1:8001/#'+path);await page.waitForFunction(()=>window.ArvenaPlatform?.catalogueState==='ready');if(/^\/(cabinet|editorial|provider-space|offers\/|providers\/)/.test(path))await page.waitForFunction(()=>document.getElementById('platform-status').textContent!=='Loading…');};
  const login=async name=>{await goto('/cabinet');await page.locator('#platform-content').getByLabel('Email',{exact:true}).fill(fixture.credentials[name].email);await page.getByLabel('Password',{exact:true}).fill(fixture.credentials[name].password);await page.getByRole('button',{name:'Continue',exact:true}).click();await page.getByText('Keep useful offers together.').waitFor();};
  const logout=async()=>{await goto('/cabinet/account');await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.locator('#platform-content').getByLabel('Email',{exact:true}).waitFor();};
  await goto('/home');await page.waitForFunction(()=>document.querySelector('#published-offers')?.children.length>0);
@@ -16,7 +16,7 @@ const fixture=JSON.parse(fs.readFileSync('/private/tmp/arvena-browser-fixtures.j
  }
  await page.setViewportSize({width:1440,height:1000});await goto('/explore');
  await page.locator('#explore-search').fill('LOCAL TEST ONLY');await page.locator('#explore-search').press('Enter');assert.equal(await page.locator('#explore-results .discovery-card').count(),1);
- await page.locator('#explore-clear').click();assert.equal(await page.locator('#explore-results .discovery-card').count(),3);
+ await page.locator('#explore-clear').click();assert.equal(await page.locator('#explore-results .discovery-card').count(),await page.evaluate(()=>window.ARVENA_DATA.discoveryRecords.length+window.ArvenaKnowledge.records().length+window.ArvenaPlatform.offers.length));
  await login('a');await goto('/offers/'+fixture.offer.slug);await page.getByRole('button',{name:'Save offer',exact:true}).click();await page.getByRole('button',{name:'Remove save',exact:true}).waitFor();
  await goto('/cabinet');await page.getByRole('link',{name:fixture.offer.title,exact:true}).waitFor();await page.reload();await page.getByRole('link',{name:fixture.offer.title,exact:true}).waitFor();
  fs.mkdirSync('/private/tmp/arvena-review',{recursive:true});await page.evaluate(()=>{document.activeElement?.blur();window.scrollTo(0,0);});await page.screenshot({path:'/private/tmp/arvena-review/desktop.png',fullPage:true});

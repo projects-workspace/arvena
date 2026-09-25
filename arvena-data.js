@@ -13,8 +13,8 @@
     const publicContent = {
         meta: {
             language: 'en',
-            contentUpdatedAt: '4 September 2026',
-            inventoryStatement: 'Clean Water is the only currently published solution area. The published records explain a need and a solution class. No specific offer or provider is currently published.'
+            contentUpdatedAt: '25 September 2026',
+            inventoryStatement: 'Ten direction maps and everyday contexts accompany the detailed Clean Water material. Knowledge is distinct from specific offers; current offer and provider availability comes from the published catalogue.'
         },
         domains: [
             {

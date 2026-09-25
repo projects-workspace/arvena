@@ -4,6 +4,7 @@
 from hashlib import sha256
 from html.parser import HTMLParser
 import os
+import json
 import re
 import shutil
 import subprocess
@@ -16,7 +17,7 @@ QUIET = "--quiet" in sys.argv[1:]
 UNKNOWN_ARGS = [arg for arg in sys.argv[1:] if arg != "--quiet"]
 PROBLEMS = []
 
-PUBLIC_JS = ("supabase-config.js", "arvena-data.js", "script.js", "platform.js", "platform-config.js", "editorial.js", "supabase-client.js")
+PUBLIC_JS = ("supabase-config.js", "arvena-data.js", "knowledge-data.js", "knowledge.js", "script.js", "platform.js", "platform-config.js", "editorial.js", "supabase-client.js")
 ACTIVE_PUBLIC_FILES = ("index.html", "style.css", *PUBLIC_JS, "vercel.json")
 REQUIRED_ROUTES = (
     "/cabinet",
@@ -49,6 +50,7 @@ REQUIRED_ALIASES = (
 )
 EXPECTED_SCREENS = {
     "home",
+    "knowledge",
     "explore",
     "solutions",
     "clean-water",
@@ -237,9 +239,26 @@ for route in (*REQUIRED_ROUTES, *REQUIRED_ALIASES):
     if route not in script:
         report(f"routing: required route or alias {route!r} missing from script.js")
 
-known_routes = {*REQUIRED_ROUTES, *REQUIRED_ALIASES}
+knowledge = json.loads(read("knowledge-data.js").split("window.ARVENA_KNOWLEDGE = ", 1)[1].rstrip(";\n"))
+knowledge_topics = knowledge["domains"] + knowledge["contexts"]
+knowledge_routes = {topic["route"] for topic in knowledge_topics}
+known_routes = {*REQUIRED_ROUTES, *REQUIRED_ALIASES, *knowledge_routes}
+if len(knowledge["domains"]) != 10 or len(knowledge["contexts"]) != 8:
+    report("knowledge: preserve ten root domains and eight context entry points")
+if len({t["id"] for t in knowledge_topics}) != len(knowledge_topics):
+    report("knowledge: duplicate stable identities")
+for topic in knowledge["domains"]:
+    if topic["slug"] not in data or topic["route"] != "/solutions/" + topic["slug"]:
+        report("knowledge: root domain identity mismatch")
+    if not all(topic.get(k) for k in ("description", "sections", "approaches", "questions", "knowledgeStatus")):
+        report("knowledge: incomplete direction map")
+for topic in knowledge_topics:
+    if any(slug not in {d["slug"] for d in knowledge["domains"]} for slug in topic["domainSlugs"]):
+        report("knowledge: unknown domain link")
+if "docs" not in vercel_ignore.splitlines():
+    report("privacy: team documentation must be excluded from deployment")
 for linked_route in sorted(set(parser.hash_routes)):
-    if linked_route not in known_routes:
+    if linked_route.split("?")[0] not in known_routes:
         report(f"routing: HTML links to an unknown route: {linked_route!r}")
 
 for route in REQUIRED_ROUTES:
@@ -440,8 +459,8 @@ if PROBLEMS:
 if not QUIET:
     print("OK: Arvena public platform integrity checks passed")
     print(
-        f"    {len(REQUIRED_ROUTES)} public routes, {len(parser.ids)} unique element ids, "
-        "2 genuine discovery records, 0 offers, 0 providers"
+        f"    {len(set(REQUIRED_ROUTES) | knowledge_routes)} public routes, {len(parser.ids)} unique element ids, "
+        "18 local knowledge records (10 maps, 6 contexts, 2 detailed records), 0 static offers/providers"
     )
     print("    requests disabled, protected request migration preserved")
 sys.exit(0)
