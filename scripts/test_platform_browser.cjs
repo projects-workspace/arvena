@@ -32,7 +32,7 @@ const fixture=JSON.parse(fs.readFileSync('/private/tmp/arvena-browser-fixtures.j
  const item=page.locator('.platform-detail').filter({hasText:'Browser verified local question for moderation.'});
  await item.getByRole('button',{name:'Record moderation decision'}).click();await page.getByText('Moderation recorded.',{exact:true}).waitFor();
  await item.getByLabel('Decision',{exact:true}).selectOption('published');await item.getByRole('button',{name:'Record moderation decision'}).click();await page.getByText('Moderation recorded.',{exact:true}).waitFor();
- await goto('/editorial/packages');await page.getByRole('heading',{name:'Updated test package',exact:true}).waitFor();await page.evaluate(()=>{document.activeElement?.blur();window.scrollTo(0,0);});await page.screenshot({path:'/private/tmp/arvena-review/editorial.png',fullPage:true});
+ await goto('/editorial/packages');await page.getByRole('button',{name:/^Updated test package ·/}).click();await page.getByRole('heading',{name:'Updated test package',exact:true}).waitFor();await page.evaluate(()=>{document.activeElement?.blur();window.scrollTo(0,0);});await page.screenshot({path:'/private/tmp/arvena-review/editorial.png',fullPage:true});
  await page.setViewportSize({width:320,height:900});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'editorial mobile overflow');
  await goto('/editorial/access');await page.getByRole('heading',{name:'Contribution permission',exact:true}).waitFor();assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'access mobile overflow');
  await logout();await goto('/offers/'+fixture.offer.slug);await page.getByText('Browser verified local question for moderation.',{exact:true}).waitFor();

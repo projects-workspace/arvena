@@ -48,6 +48,7 @@ class PreviewServerTests(unittest.TestCase):
             "/knowledge.js",
             "/knowledge-data.js",
             "/script.js",
+            "/publishing.js",
             "/favicon.svg",
             "/assets/arvena-botanical-background.jpg",
             "/assets/arvena-craft-process.jpg",

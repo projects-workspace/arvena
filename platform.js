@@ -58,7 +58,7 @@
     }
     async function result(query) { const {data,error}=await query; if(error) throw new Error(error.message); return data; }
     const table = name => client.from('arvena_'+name);
-    function safeURL(value) { try { const url=new URL(value); return url.protocol==='https:' ? url.href : null; } catch { return null; } }
+    function safeURL(value) { try { const url=new URL(value); return url.protocol==='https:' && !url.username && !url.password ? url.href : null; } catch { return null; } }
     function offerCard(o) {
         const card=el('article',null,{class:'discovery-card'});
         card.append(el('p',o.offer_type.replaceAll('-',' '),{class:'discovery-card-type'}),el('h3',o.title),el('p',o.publication.need),link('View offer','#/offers/'+o.slug));
@@ -192,6 +192,29 @@
             await client.rpc('arvena_record_event',{p_offer:offer.id,p_kind:kind,p_session:id});
         } catch { /* Measurement must not prevent access. */ }
     }
+    function mediaURL(path) {
+        if(!/^[a-f0-9-]{36}\.(jpg|png|webp)$/.test(path||''))return null;
+        return config.url.replace(/\/$/,'')+'/storage/v1/object/public/arvena-public-media/'+path;
+    }
+    function appendImages(root,images,title,legacy) {
+        const gallery=el('div',null,{class:'publication-images'});
+        (Array.isArray(images)?images:[]).forEach(item=>{const url=mediaURL(item.path);if(url)gallery.append(el('img',null,{src:url,alt:item.alt||title,loading:'lazy',class:'platform-offer-image'}));});
+        if(!gallery.children.length && /^\/assets\/[\w.-]+$/.test(legacy||''))gallery.append(el('img',null,{src:legacy,alt:title,class:'platform-offer-image'}));
+        if(gallery.children.length)root.append(gallery);
+    }
+    function appendProviderDetails(root,p) {
+        root.append(el('p',p.summary||'',{class:'platform-lead'}));appendImages(root,p.images,p.name);
+        root.append(el('h2','Relationship with Arvena'),el('p',p.relationship||''));
+        if(safeURL(p.website)){const a=link('Provider website',safeURL(p.website));a.rel='noopener noreferrer';a.target='_blank';root.append(a);}
+    }
+    function appendOfferDetails(root,p,title) {
+        appendImages(root,p.images,title,p.media);
+        const labels={suitability:'Suitability',selection_rationale:'Why Arvena selected it',mechanism:'How it works',specifications:'Specifications',manufacturer_claims:'Manufacturer statements',editorial_conclusion:'Arvena editorial conclusion',unknowns:'What remains unknown',strengths:'Strengths',limitations:'Limitations',safety:'Safety',materials:'Materials',environment:'Environmental considerations',lifetime:'Lifetime',maintenance:'Maintenance',alternatives:'Alternatives',geography:'Availability and geography',price:'Price',implementation:'Implementation requirements',commercial_disclosure:'Commercial disclosure',last_review_date:'Last editorial review'};
+        Object.entries(labels).forEach(([key,label])=>{if(p[key]){const section=el('section',null,{class:'platform-detail'});section.append(el('h2',label),el('p',typeof p[key]==='string'?p[key]:JSON.stringify(p[key])));root.append(section);}});
+        if(p.claims?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Claims and sources'));
+            p.claims.forEach(c=>{const article=el('article',null,{class:'platform-row'});article.append(el('h3',c.claim),el('p','Source type: '+c.source_type),el('p','Conditions: '+c.conditions),el('p','Checked: '+c.checked_on),el('p','Limitations: '+c.limitations),el('p','Arvena conclusion: '+c.editorial_conclusion));const url=safeURL(c.source);if(url){const a=link('Read source',url);a.rel='noopener noreferrer';a.target='_blank';article.append(a);}section.append(article);});root.append(section);}
+        if(p.sources?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Sources and reading'));p.sources.forEach(source=>{const url=safeURL(source.url);if(url){const a=link(source.title,url);a.target='_blank';a.rel='noopener noreferrer';const row=el('p');row.append(a);section.append(row);}});root.append(section);}
+    }
     async function renderOffer(root,slug) {
         const offer=offers.find(o=>o.slug===slug);if(!offer){document.getElementById('platform-title').textContent='Offer not found';return root.append(el('p','This offer is not currently published.'),link('Explore','#/explore'));}
         document.getElementById('platform-title').textContent=offer.title;document.title=offer.title+' | Arvena';
@@ -208,11 +231,7 @@
             });actions.append(save);
         }
         const access=safeURL(p.access_url);if(access){const a=link('Visit provider / access offer',access);a.rel='noopener noreferrer';a.target='_blank';a.addEventListener('click',()=>event(offer,'outbound'));actions.append(a);}root.append(actions);
-        if(p.media && /^\/assets\/[\w.-]+$/.test(p.media))root.append(el('img',null,{src:p.media,alt:offer.title,class:'platform-offer-image'}));
-        const labels={suitability:'Suitability',selection_rationale:'Why Arvena selected it',mechanism:'How it works',specifications:'Specifications',manufacturer_claims:'Manufacturer statements',editorial_conclusion:'Arvena editorial conclusion',unknowns:'What remains unknown',strengths:'Strengths',limitations:'Limitations',safety:'Safety',materials:'Materials',environment:'Environmental considerations',lifetime:'Lifetime',maintenance:'Maintenance',alternatives:'Alternatives',geography:'Availability and geography',price:'Price',implementation:'Implementation requirements',commercial_disclosure:'Commercial disclosure',last_review_date:'Last editorial review'};
-        Object.entries(labels).forEach(([key,label])=>{if(p[key]){const section=el('section',null,{class:'platform-detail'});section.append(el('h2',label),el('p',typeof p[key]==='string'?p[key]:JSON.stringify(p[key])));root.append(section);}});
-        if(p.claims?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Claims and sources'));
-            p.claims.forEach(c=>{const article=el('article',null,{class:'platform-row'});article.append(el('h3',c.claim),el('p','Source type: '+c.source_type),el('p','Conditions: '+c.conditions),el('p','Checked: '+c.checked_on),el('p','Limitations: '+c.limitations),el('p','Arvena conclusion: '+c.editorial_conclusion));const url=safeURL(c.source);if(url){const a=link('Read source',url);a.rel='noopener noreferrer';a.target='_blank';article.append(a);}section.append(article);});root.append(section);}
+        appendOfferDetails(root,p,offer.title);
         await renderDiscussion(root,offer);void event(offer,'view');
     }
     async function renderDiscussion(root,offer) {
@@ -238,8 +257,7 @@
     function renderProvider(root,slug) {
         const provider=providers.find(p=>p.slug===slug);if(!provider)return root.append(el('p','This provider is not currently published.'));
         document.getElementById('platform-title').textContent=provider.name;
-        root.append(el('p',provider.summary,{class:'platform-lead'}),el('h2','Relationship with Arvena'),el('p',provider.relationship));
-        if(safeURL(provider.website))root.append(link('Provider website',safeURL(provider.website)));
+        appendProviderDetails(root,provider);
         root.append(el('h2','Published offers'));offers.filter(o=>o.provider_id===provider.id).forEach(o=>root.append(offerCard(o)));
     }
     async function renderProviderSpace(root,members) {
@@ -255,6 +273,7 @@
         root.append(el('h2','Your correction submissions'));if(!corrections.length)root.append(el('p','No corrections submitted.'));corrections.forEach(c=>root.append(el('article',c.status+': '+c.body+(c.editorial_note?' · '+c.editorial_note:''),{class:'platform-row'})));
     }
     window.ArvenaPlatform={client,table,result,el,link,button,field,select,submit,status,safeURL,render,matches,loadCatalogue,offerCard,
+        mediaURL,appendOfferDetails,appendProviderDetails,
         get catalogueState(){return catalogueState;},
         get user(){return user;},get offers(){return offers;},get providers(){return providers;},
         discoveryRecords:()=>offers.map(o=>({recordType:'offer',slug:o.slug,title:o.title,domainSlug:o.domain_slug,publicationStatus:'published',description:o.publication.need}))};

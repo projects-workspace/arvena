@@ -8,6 +8,8 @@ Arvena is an independent curated marketplace for high-quality products, technolo
 
 ## 2. Major capabilities
 
+- **M1 simple owner publishing — implemented, activation gated.** Offers/providers have draft, saved preview, explicit owner publication, update and unpublish flows. Ordinary listings require identity, description and disclosure rather than a research dossier or claim ledger. Optional public sources, practical fields and rights-cleared image uploads are supported. Existing dossiers and publication history are preserved. The shared `ARVENA_OWNER_PUBLISHING_ENABLED` flag stays false until the additive migration and Storage policies are verified in the intended project. Full service-backed browser acceptance remains incomplete; see the current verification below.
+
 - **Public methodology and knowledge — implemented in the working branch.** Ten direction maps and eight context entry points preserve all domain slugs. Home and Kitchen reuse domain pages; Craft reuses its existing page. Five standalone contexts cover clothing, rest, fields/measurement, traditional knowledge/new developments and changes without buying. How We Select explains the adopted method, claim-level support, independence, human decisions and corrections. Topic maps are not completed research. There are 18 local knowledge records, including the two existing detailed Clean Water records, and 38 canonical routes plus two aliases and dynamic platform routes.
 - **Knowledge/catalogue connections — implemented.** Search distinguishes knowledge and offers. Domain/class filters and explicit contextual offer links use the existing published catalogue. Loading, empty, unavailable/retry and populated states are distinct. Refresh/navigation updates publication visibility; no real-time subscription is claimed. No static offers or providers were added.
 - **Catalogue — connected in this development branch.** Published offers and provider profiles load from Supabase. The repository contains no specific offers/providers; the last remote check on 23 September 2026 found none after synthetic-data cleanup. Remote data was not rechecked today.
@@ -25,10 +27,12 @@ The public site is a static HTML/CSS/JavaScript application; `script.js` routes 
 - `arvena-data.js` — stable domain identities and the two detailed Clean Water records.
 - `knowledge-data.js`, `knowledge.js` — selected public direction/context maps, stable links, reading layouts and filtered catalogue connections. These contain no internal dossiers.
 - `docs/RESEARCH_PUBLICATION_HANDOFF.md` — internal team package guide, actual IDs/routes, database field mapping and blank approval template; `docs/METHODOLOGY_SCOPE.md` records the implemented/deferred scope. Docs are excluded from local serving and deployment uploads.
-- `platform.js`, `editorial.js`, `platform-config.js` — account/catalogue behavior, editorial workflows and feature gates.
+- `platform.js`, `editorial.js`, `publishing.js`, `platform-config.js` — account/catalogue behavior, gated simple owner publishing, retained legacy tools and feature gates. `docs/OWNER_PUBLISHING.md` contains the operator/local-test procedure.
 - `supabase-config.js`, `supabase/migrations/20260821000000_arvena_mvp_requests.sql`, `supabase/migrations/20260923073824_marketplace_platform.sql` — protected request config and separate database contracts.
 - `scripts/check_integrity.py` — route, content and protected-contract checks; `scripts/serve_preview.py` — allowlisted loopback preview.
 - `scripts/test_platform.cjs`, `scripts/test_platform_browser.cjs` — isolated Auth/Data API and browser integration checks using synthetic fixtures. `scripts/test_knowledge_browser.cjs` covers direction/context routes, published/draft/withdrawn links, filters, unavailable/retry states and privacy using intercepted local fixtures.
+- `supabase/migrations/20261012095731_simple_owner_publishing.sql` — additive owner operations, private provider drafts, provider images and the owner-uploaded public image bucket. Historical migrations are unchanged.
+- `scripts/test_owner_publishing.cjs`, `scripts/test_owner_publishing_browser.cjs`, `scripts/owner_publishing_fixtures.cjs` — M1 service/security tests and browser tests with explicitly separated real-service and HTTP-fixture modes.
 - `README.md` — local preview and check commands. `supabase/README.md` — database-specific operating notes and dated verification.
 
 ## 5. Current limitations and decisions
@@ -37,7 +41,21 @@ No specific offer, provider, price, availability, partnership or purchase route 
 
 Keep the Clean Water request table, migration and fixed payload contract intact; do not reuse that path for accounts, participation or another domain. Batch B3 remains inactive. The extension migration's application and remote checks are recorded on 23 September 2026. The CLI was recorded as linked to a different account and the remote migration-history table was absent then; do not replay the migration solely to repair CLI history. Reconcile schema state before any separately authorized remote operation. The branch is not evidence that these changes reached production.
 
-## 6. Verification checkpoint
+## 6. Current verification — M1, 12 October 2026
+
+Branch `feat/arvena-stage1-alignment`; source baseline `c578da98e488d2474610e23444d59bc46407f680`. M1 is source/local work, not a live release or a completed full-stack browser acceptance.
+
+- Integrity and syntax checks pass; protected sourcing configuration/payload and both historical migrations remain unchanged. All four preview-server tests pass.
+- A new isolated local Arvena stack on API 58321 / DB 58322 applied only the marketplace foundation and additive M1 migration. The existing 60 Auth/Data API checks and an earlier run of 41 new M1 checks passed against its real services, including publication, stale revisions, private drafts/dossiers, storage permissions, provider withdrawal and immediate permission revocation. The M1 denial helper was subsequently tightened so infrastructure errors cannot count as expected permission/validation failures; this final service-suite version still requires rerunning after Docker recovers.
+- The M1 browser suite passes 19 checks with intercepted HTTP fixtures: provider creation, two different offers and image selections, saved preview/approval, updates, unpublishing, ordinary-user UI denial, desktop/390px/320px and dark theme. This mode does not verify Auth, real Storage transport or RLS. The fixture serves only the selected repository image samples; screenshots contain synthetic listings.
+- The existing knowledge browser suite passes 358 assertions across 35 routes using its intercepted service fixtures. Browser runs use bundled Chromium and block the external font CDN. Screens were visually reviewed; this is not a full accessibility certification.
+- Real-service browser attempts published a provider and two offers, but did not complete the entire acceptance flow. They exposed a URL-autofill race, now corrected and covered by the passing browser fixtures. Repeated Auth/Storage/gateway timeouts and then an unresponsive Docker daemon prevented a clean combined rerun. Temporary hostname/upstream recovery attempts were limited to the disposable Arvena containers; no other project stack or macOS network settings were changed.
+- Shared owner publishing, email and sourcing activation remain closed as documented. The feature branch has an explicit Vercel Git auto-deployment guard. The Vercel connector could not read the saved project/team; live Supabase verification could not resume because the mapped Chrome launch did not expose a Chrome extension connection. Native Full Screen is unverified and is not treated as a page-operation approval gate.
+- The three task preview servers were stopped and task-generated temporary credential/configuration files were removed. Cleanup of only the disposable Arvena Docker stack was requested but timed out; its stopped/removed state is unconfirmed. No global Docker restart or other-project cleanup was attempted.
+
+No remote migration, live content publication, email setup, paid service, merge or production deployment was performed. The pre-existing AGENTS.md, README.md and supabase/README.md edits remain outside M1 delivery. M2–M7 are not implemented by this milestone.
+
+## 7. Previous methodology checkpoint — 25 September 2026
 
 **Review date:** 25 September 2026. **Branch:** `feat/arvena-stage1-alignment`. **Starting implementation commit:** `73959c3edcf7d807abc0609ea9f37415ea5512fe`; no later implementation commits were present at task start. The methodology/knowledge implementation commit is `0d72750`; final report commit `f8684fb94fa8c67d0cac3bbe23991c194682ee6d` was pushed normally to the same feature branch. This is a source/local checkpoint, not a production release claim.
 

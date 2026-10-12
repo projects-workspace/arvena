@@ -56,6 +56,7 @@
     const notesCount = document.getElementById('notes-count');
     const confirmationReference = document.getElementById('confirmation-reference');
     let hasHandledInitialRoute = false;
+    let lastRouteHash = location.hash;
 
     const exploreSearch = document.getElementById('explore-search');
     const exploreDomainFilter = document.getElementById('explore-domain-filter');
@@ -548,6 +549,10 @@
     }
 
     function showRoute({ moveFocus = true } = {}) {
+        if(hasHandledInitialRoute && location.hash !== lastRouteHash && window.ArvenaPublishing && !window.ArvenaPublishing.canLeave()) {
+            history.replaceState(null, '', lastRouteHash || '#/home'); return;
+        }
+        lastRouteHash = location.hash;
         let routePath = normaliseRoute();
         const topic = window.ArvenaKnowledge?.atRoute(routePath);
         let route = ROUTES[routePath] || (topic ? { screen: 'knowledge', nav: 'solutions', title: topic.title + ' | Arvena' } : null) || (window.ArvenaPlatform?.matches(routePath) ? { screen: 'platform', nav: '', title: 'Arvena' } : null) || { screen: 'not-found', nav: '', title: 'Page not found | Arvena' };

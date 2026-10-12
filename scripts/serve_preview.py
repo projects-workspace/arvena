@@ -29,6 +29,7 @@ PUBLIC_ROOT_FILES = frozenset(
         "platform.js",
         "platform-config.js",
         "editorial.js",
+        "publishing.js",
         "supabase-client.js",
         "favicon.svg",
     }
@@ -134,7 +135,7 @@ class PreviewRequestHandler(BaseHTTPRequestHandler):
             body = ("window.ARVENA_SUPABASE_CONFIG = Object.freeze(" + json.dumps(self.server.platform_config) + ");").encode()
 
         if public_file.name == "platform-config.js" and getattr(self.server, "platform_config", None):
-            body = b"window.ARVENA_PLATFORM_ENABLED = true; window.ARVENA_EMAIL_DELIVERY_ENABLED = true;"
+            body = ("window.ARVENA_PLATFORM_ENABLED = true; window.ARVENA_EMAIL_DELIVERY_ENABLED = true; window.ARVENA_OWNER_PUBLISHING_ENABLED = " + str(getattr(self.server, "owner_publishing", False)).lower() + ";").encode()
 
         content_type = mimetypes.guess_type(public_file.name)[0] or "application/octet-stream"
         if (
@@ -181,7 +182,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=valid_port, default=8000, help="loopback port (default: 8000)")
     parser.add_argument("--local-platform-config", type=Path, help="Private local-test config; only loopback API URLs are accepted")
+    parser.add_argument("--owner-publishing", action="store_true", help="Enable M1 only with the isolated local-platform config")
     args = parser.parse_args()
+    if args.owner_publishing and not args.local_platform_config:
+        parser.error("Owner publishing preview requires an isolated local-platform config")
 
     server = PreviewHTTPServer((LOOPBACK_HOST, args.port), PreviewRequestHandler)
     if args.local_platform_config:
@@ -192,6 +196,7 @@ def main() -> None:
         if set(config) != {"url", "publishableKey", "requestsEnabled", "table"} or config["requestsEnabled"] is not False:
             parser.error("Local test config must preserve disabled sourcing and contain public configuration only")
         server.platform_config = config
+        server.owner_publishing = args.owner_publishing
     print(f"Arvena preview: http://{LOOPBACK_HOST}:{args.port}/")
     print("Only allowlisted public runtime files are available. Press Ctrl-C to stop.")
     try:

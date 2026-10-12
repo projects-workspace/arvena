@@ -4,6 +4,12 @@ Team handoff · 25 September 2026 · v1.0
 
 This is the internal guide requested as “Как передать исследование для публикации”. It is not a public submission form, import file or research dossier. Keep approved public text separate from private working material. Never send private contacts, correspondence or restricted knowledge as website content.
 
+The owner-publishing MVP now has a simpler, separately gated listing workflow;
+see [Simple owner publishing](OWNER_PUBLISHING.md). Ordinary listings do not require
+a research dossier or claim ledger. The detailed offer contract and review steps
+below describe the preserved legacy publisher, not additional requirements for the
+simple owner form. Research and preparation of articles happen outside the platform.
+
 ## One route from research to publication
 
 Research team → actual human approval → versioned public package → Arvena project task → implementation and verification → separately authorized release.
