@@ -84,6 +84,15 @@ After verification, stop only the isolated Arvena stack and its preview servers.
 
 ### Browser evidence modes
 
+For Chrome browser-control uploads, use the supported file-input chooser flow:
+capture the filechooser event before clicking the page's file input, then call
+FileChooser.setFiles with an absolute path. A separate locator.setInputFiles
+method is not exposed by these tools. If a workspace-path transfer fails image
+decoding, select a byte-identical temporary copy through the same API and verify
+the served upload matches the source. Preserve image validation and the signed-in
+session, and respect explicit permission denials. Prefer this supported page API
+before native picker automation. Current production evidence is in PROJECT_STATE.md.
+
 The owner browser suite normally obtains sessions from local Auth and exercises
 the actual local API and Storage. ARVENA_FIXTURE_SESSIONS=1 instead uses signed
 synthetic local sessions and verifies their editor/buyer permissions through the
