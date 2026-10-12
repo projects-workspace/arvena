@@ -44,8 +44,9 @@ erase an already-public image.
 
 ## Activation boundary
 
-**ARVENA_OWNER_PUBLISHING_ENABLED** defaults to false in the shared configuration.
-Before enabling it in a real environment:
+**ARVENA_OWNER_PUBLISHING_ENABLED** gates the owner interface independently of
+email onboarding and sourcing. Current activation and release evidence is in
+PROJECT_STATE.md. Before enabling it in another environment:
 
 - Verify the exact Arvena project and reconcile its existing marketplace schema.
 - Apply only the additive **20261012095731_simple_owner_publishing.sql** migration

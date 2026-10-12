@@ -49,12 +49,16 @@ const row=async(name,id)=>(await get(t(editor,name).select('*').eq('id',id)))[0]
  await get(command(editor,'publish_provider',{id:d.id,revision:2,confirmed:true}));
  const storage=editor.storage.from('arvena-public-media'),path=crypto.randomUUID()+'.jpg';
  const bytes=fs.readFileSync('assets/arvena-material-study.jpg');
- await denied(buyer.storage.from('arvena-public-media').upload(crypto.randomUUID()+'.jpg',bytes,{contentType:'image/jpeg'}),'buyer image upload denied');
- await denied(provider.storage.from('arvena-public-media').upload(crypto.randomUUID()+'.jpg',bytes,{contentType:'image/jpeg'}),'provider image upload denied');
+ // Exercise RLS with a bounded body. The local Storage gateway can stall while
+ // rejecting a large streamed upload; successful uploads below still use the
+ // complete image, and infrastructure errors never count as access denials.
+ const permissionProbe=bytes.subarray(0,1024);
+ await denied(buyer.storage.from('arvena-public-media').upload(crypto.randomUUID()+'.jpg',permissionProbe,{contentType:'image/jpeg'}),'buyer image upload denied');
+ await denied(provider.storage.from('arvena-public-media').upload(crypto.randomUUID()+'.jpg',permissionProbe,{contentType:'image/jpeg'}),'provider image upload denied');
  await denied(storage.upload(crypto.randomUUID()+'.svg',Buffer.from('<svg/>'),{contentType:'image/svg+xml'}),'SVG upload denied');
  await denied(storage.upload('private-notes.txt',Buffer.from('PRIVATE'),{contentType:'text/plain'}),'private document upload denied');
  await get(storage.upload(path,bytes,{contentType:'image/jpeg',upsert:false}));
- await denied(storage.upload(path,bytes,{contentType:'image/jpeg',upsert:true}),'published image overwrite denied');
+ await denied(storage.upload(path,permissionProbe,{contentType:'image/jpeg',upsert:true}),'published image overwrite denied');
  await denied(buyer.storage.from('arvena-public-media').remove([path]),'buyer cannot delete public image');
  console.log('M1 image permission checks');
  const image={path,alt:'Synthetic fixture: material study',rights:'Existing Arvena image used for local testing only'};
