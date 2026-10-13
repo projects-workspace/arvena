@@ -25,6 +25,7 @@ PUBLIC_ROOT_FILES = frozenset(
         "arvena-data.js",
         "knowledge-data.js",
         "knowledge.js",
+        "discovery.js",
         "script.js",
         "platform.js",
         "platform-config.js",

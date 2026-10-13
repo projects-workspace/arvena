@@ -53,10 +53,10 @@ const offer=(slug,status,domain='water')=>({id:slug,slug,status,title:'FIXTURE '
  ok(await page.locator('#published-offers article').count()===1,'filter survives refresh');
  await goto('/offers?class=point-of-use-filtration');ok(await page.locator('#published-offers article').count()===1,'class filter');
  await goto('/offers?topic=invalid');ok((await page.locator('#offer-catalogue-status').innerText()).includes('Unknown catalogue filter'),'invalid filter does not show all offers');
- await goto('/explore');await page.locator('#explore-type-filter').selectOption('offer');
+ await goto('/explore');
  ok(await page.locator('#explore-results article').count()===2,'offer-only search');
  await page.locator('#explore-search').fill('published');ok(await page.locator('#explore-results article').count()===1,'existing text search works');
- await page.getByRole('button',{name:'Clear filters',exact:true}).first().click();await page.locator('#explore-search').fill('clothing');
+ await page.getByRole('button',{name:'Clear filters',exact:true}).first().click();await page.locator('.discovery-views:visible').getByRole('link',{name:'Knowledge',exact:true}).click();await page.locator('#explore-search').fill('clothing');
  ok((await page.locator('#explore-results').innerText()).includes('Clothing, footwear and textiles'),'contexts searchable');
  // One offer can be explicitly linked to several contexts without a new record.
  await page.evaluate(()=>{window.ARVENA_KNOWLEDGE.offerLinks['clothing-footwear-textiles']=['published'];window.ARVENA_KNOWLEDGE.offerLinks['sleep-and-rest']=['published'];});
@@ -91,7 +91,7 @@ const offer=(slug,status,domain='water')=>({id:slug,slug,status,title:'FIXTURE '
  for(const [width,route,name,theme] of [[1440,'/how-we-select','methodology','light'],[1440,'/solutions/homes-buildings-and-land-systems','home','light'],[390,'/contexts/clothing-footwear-textiles','clothing','light'],[320,'/contexts/electronics-fields-measurement','fields-dark','dark']]){
   await page.setViewportSize({width,height:950});await goto(route);await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);await page.waitForFunction(()=>getComputedStyle(document.body).color===getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim() || document.getAnimations().filter(a=>a.playState==='running').length===0);await page.screenshot({path:'/private/tmp/arvena-knowledge-review/'+name+'.png',fullPage:true});
  }
- ok(requests.every(p=>/\/rest\/v1\/arvena_(offers|providers)$/.test(p)),'no private tables requested anonymously');
+ ok(requests.every(p=>/\/rest\/v1\/arvena_(offers|providers|solution_classes)$/.test(p)),'no private tables requested anonymously');
  for(const path of ['/docs/RESEARCH_PUBLICATION_HANDOFF.md','/PROJECT_STATE.md','/supabase/migrations/20260923073824_marketplace_platform.sql','/.git/config','/scripts/test_knowledge_browser.cjs']){
   const r=await page.request.get(base+path);ok(r.status()===404,'private path denied '+path);
  }

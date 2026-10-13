@@ -194,6 +194,17 @@
             };
             populate();cls.value=copy.solution_class_slug||'';
             domain.addEventListener('change',populate);controls.set('solution_class_slug',cls);
+            const placementDetails=el('details',null,{class:'publishing-more'});placementDetails.append(el('summary','Related areas and contexts (optional)'));form.append(placementDetails);
+            const placements=group(placementDetails,'Where this offer appears','Choose only relevant associations. Each placement points to this one canonical offer. Changes remain private until the saved copy is published.');
+            const domainGroup=el('fieldset');domainGroup.append(el('legend','Additional solution areas'));
+            const contextGroup=el('fieldset');contextGroup.append(el('legend','Everyday contexts'));
+            const associationChecks={domain_slugs:[],context_ids:[]};
+            const choices=(target,key,values)=>values.forEach(([value,title])=>{const label=el('label',null,{class:'platform-check'}),input=el('input',null,{type:'checkbox',name:key,value});input.checked=(copy[key]||[]).includes(value);label.append(input,document.createTextNode(title));target.append(label);associationChecks[key].push(input);});
+            choices(domainGroup,'domain_slugs',lookups.domains.map(d=>[d.slug,d.title]));
+            choices(contextGroup,'context_ids',window.ARVENA_KNOWLEDGE.contexts.map(c=>[c.id,c.title]));
+            placements.append(domainGroup,contextGroup);
+            form.readAssociations=()=>Object.fromEntries(Object.entries(associationChecks).map(([key,inputs])=>[key,inputs.filter(i=>i.checked).map(i=>i.value)]));
+
         }
         const content=group(form,'Description');
         const descriptionKey=isOffer?'need':'summary';
@@ -244,7 +255,7 @@
                 if(keepLegacyImage&&!keepLegacyImage.checked){delete publicCopy.media;delete publicCopy.media_rights;}
                 if(keepLegacyClaims&&!keepLegacyClaims.checked)publicCopy.claims=[];
                 publicCopy.images=media.read();
-                if(isOffer)publicCopy.sources=sources();
+                if(isOffer){publicCopy.sources=sources();Object.assign(publicCopy,form.readAssociations());}
                 const saved=await command('save_'+kind,{id:current?.id,revision:current?.revision,public_copy:publicCopy});
                 current=(await result(table(isOffer?'research_packages':'provider_drafts').select(isOffer?'id,title,offer_id,public_copy,status,revision':'*').eq('id',saved.id)))[0];
                 if(!current)throw new Error('The draft was saved, but could not be reloaded. Reload this page before publishing.');
@@ -265,6 +276,7 @@
             surface.append(el('h3',p[titleKey]));
             if(isOffer){
                 surface.append(el('p',p.need||'Description not yet supplied.',{class:'platform-lead'}));
+                const associations=el('p',[...(p.domain_slugs||[]).map(s=>lookups.domains.find(d=>d.slug===s)?.title||s),...(p.context_ids||[]).map(id=>window.ARVENA_KNOWLEDGE.contexts.find(c=>c.id===id)?.title||id)].join(' · '));if(associations.textContent)surface.append(associations);
                 const provider=lookups.providers.find(x=>x.id===p.provider_id);
                 surface.append(el('p',provider?.name||'Provider not yet selected.'));
                 if(A.safeURL(p.access_url)){const a=link('External access: '+p.access_url,A.safeURL(p.access_url));a.target='_blank';a.rel='noopener noreferrer';surface.append(a);}
@@ -279,7 +291,7 @@
                 try {
                     if(dirty||!check.checked)throw new Error('Save and approve the current preview before publishing.');
                     await command('publish_'+kind,{id:current.id,revision:current.revision,confirmed:true});
-                    dirty=false;await A.loadCatalogue();await A.render('/editorial/'+(isOffer?'packages':'providers'));status('Published. The saved copy is now public.');
+                    dirty=false;await A.loadCatalogue({force:true});await A.render('/editorial/'+(isOffer?'packages':'providers'));status('Published. The saved copy is now public.');
                     window.scrollTo({top:0,left:0,behavior:'auto'});document.getElementById('platform-title').focus({preventScroll:true});
                 } catch(error) {publicationFeedback.textContent=error.message;publicationFeedback.focus();throw error;}
             });
@@ -295,7 +307,7 @@
                 published.append(button('Unpublish '+kind,async()=>{
                     if(dirty)throw new Error('Save your draft or reload it before unpublishing.');
                     await command('unpublish_'+kind,{id:current.id,revision:current.revision});
-                    await A.loadCatalogue();await A.render('/editorial/'+(isOffer?'packages':'providers'));status('Unpublished. The draft and history are retained.');
+                    await A.loadCatalogue({force:true});await A.render('/editorial/'+(isOffer?'packages':'providers'));status('Unpublished. The draft and history are retained.');
                     window.scrollTo({top:0,left:0,behavior:'auto'});document.getElementById('platform-title').focus({preventScroll:true});
                 }));root.append(published);
             }

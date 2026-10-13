@@ -1,0 +1,90 @@
+/* M2 isolated HTTP-fixture browser checks. Loopback only; no service/RLS claim.
+   ARVENA_BROWSER_MODULES=/existing/node_modules node scripts/test_discovery_browser.cjs */
+const {chromium}=require(process.env.ARVENA_BROWSER_MODULES+'/playwright');
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const base=process.env.ARVENA_PREVIEW_URL||'http://127.0.0.1:8002';assert.equal(new URL(base).hostname,'127.0.0.1');
+const maker={id:'maker',slug:'north-workshop',name:'LOCAL North Workshop',summary:'Synthetic maker, not a real supplier.',status:'published',relationship:'Independent technical fixture; no partnership.',website:'https://example.com'};
+const lab={...maker,id:'lab',slug:'local-lab',name:'LOCAL Analysis Lab'};
+const classes=[{slug:'point-of-use-filtration',title:'Point-of-use filtration',domain_slug:'water',need:'Fixture class only.'},{slug:'laboratory-analysis',title:'Laboratory analysis',domain_slug:'water',need:'Define the measured parameter before interpreting results.'}];
+function offer(id,extra={}){return {id,slug:id,title:'LOCAL Countertop filter',status:'published',provider_id:maker.id,domain_slug:'water',solution_class_slug:'point-of-use-filtration',offer_type:'product',published_at:'2026-10-01T12:00:00Z',publication:{need:'Synthetic household filtration fixture.',materials:'Coconut carbon',geography:'EU',commercial_disclosure:'No sale or recommendation. Local test.',domain_slugs:['household-materials'],context_ids:['home-as-a-system','kitchen-and-storage'],mechanism:'Fixture mechanism',strengths:'Fixture strength',limitations:'Fixture limitation',specifications:'Fixture specifications',sources:[{title:'Fixture source',url:'https://example.com'}]},...extra};}
+const water=offer('local-water'),service=offer('local-analysis',{title:'LOCAL Water analysis',offer_type:'service',provider_id:lab.id,solution_class_slug:'laboratory-analysis',publication:{need:'Synthetic water testing.',geography:'Czechia',commercial_disclosure:'No sale.',context_ids:['kitchen-and-storage']}}),air=offer('local-air',{title:'LOCAL Air instrument',domain_slug:'air-and-indoor-environment',solution_class_slug:null,offer_type:'technology',publication:{need:'Synthetic indoor measurement.',geography:'EU',commercial_disclosure:'No sale.',domain_slugs:['environmental-monitoring'],context_ids:['sleep-and-rest','home-as-a-system']}});
+(async()=>{let checks=0,inventory=[water,water,service,air,offer('private-draft',{status:'draft',title:'PRIVATE draft marker'}),offer('private-withdrawn',{status:'hidden',title:'PRIVATE withdrawal marker'})],providers=[maker,lab,{...maker,id:'private-provider',slug:'private-provider',status:'hidden',name:'PRIVATE provider marker'}],fail=false,hold=false,release;
+ const ok=(value,label)=>{assert.ok(value,label);checks++;};
+ const browser=await chromium.launch({channel:'chrome',headless:true});
+ try{const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+ await context.route(/https:\/\/(fonts.googleapis.com|fonts.gstatic.com)\//,r=>r.abort());
+ await context.route('https://*.supabase.co/**',async route=>{const url=new URL(route.request().url());const name=url.pathname.split('/').pop();
+  // Aggregate measurement is a separate best-effort operation, never a listing write.
+  if(name==='arvena_record_event')return route.fulfill({status:200,contentType:'application/json',body:'null'});
+  assert.equal(route.request().method(),'GET','Public fixture journeys do not mutate listings');
+  if(hold&&name==='arvena_offers')await new Promise(resolve=>release=resolve);
+  const body=name==='arvena_offers'?inventory:name==='arvena_providers'?providers:name==='arvena_solution_classes'?classes:[];
+  await route.fulfill({status:fail?503:200,contentType:'application/json',body:JSON.stringify(fail?{message:'Injected fixture outage'}:body)});
+ });
+ const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const goto=async path=>{if(page.url()===base+'/#'+path)await page.reload();else await page.goto(base+'/#'+path);await page.waitForFunction(()=>!!window.ArvenaPlatform&&window.ArvenaPlatform.catalogueState!=='loading');};
+ const cards=()=>page.locator('.screen:not([hidden]) .offer-card');
+ const count=async n=>{await page.waitForFunction(n=>document.querySelectorAll('.screen:not([hidden]) .offer-card').length===n,n);ok(await cards().count()===n,'offer count '+n);};
+ await goto('/explore');await count(3);
+ ok(await page.locator('#explore-result-count').innerText()==='3 published offers','Published count deduplicates records');
+ ok(!(await page.locator('#screen-explore').innerText()).includes('PRIVATE'),'No private rows in catalogue');
+ await page.locator('#explore-search').fill('North workshop');await count(2);ok(page.url().includes('q=North+workshop'),'Search is shareable');
+ await page.locator('#explore-search').fill('coconut');await count(1);ok(await page.locator('#explore-search').evaluate(n=>document.activeElement===n),'Typing keeps focus');
+ await page.getByRole('button',{name:'Remove Search: coconut',exact:true}).click();await count(3);
+ await page.locator('#explore-domain-filter').selectOption('household-materials');await count(1);
+ await page.locator('#screen-explore .catalogue-more summary').click();
+ await page.locator('#explore-context-filter').selectOption('kitchen-and-storage');await count(1);
+ await page.locator('#explore-format-filter').selectOption('product');await count(1);
+ await page.locator('#explore-provider-filter').selectOption('maker');await count(1);
+ await page.locator('#explore-region-filter').selectOption('EU');await count(1);
+ await page.locator('#explore-class-filter').selectOption('point-of-use-filtration');await count(1);
+ ok(await page.locator('.catalogue-active:visible button').count()===6,'Every active filter is visible and removable');
+ const shared=page.url();await page.reload();await page.waitForFunction(()=>window.ArvenaPlatform.catalogueState==='ready');await count(1);ok(page.url()===shared,'Combined filters survive reload');
+ await page.locator('#explore-clear').click();await count(3);ok(!page.url().includes('?'),'Clear resets shared filters');
+ await page.locator('#screen-explore .catalogue-more summary').click();await page.locator('#explore-class-filter').selectOption('laboratory-analysis');await count(1);
+ ok((await cards().innerText()).includes('LOCAL Water analysis'),'Actual non-static solution class works');
+ await goto('/offers?domain=water&context=kitchen-and-storage&format=service');await count(1);
+ await goto('/offers?domain=environmental-monitoring');await count(1);ok((await cards().innerText()).includes('LOCAL Air instrument'),'Secondary domain uses same offer');
+ await goto('/offers?context=home-as-a-system');await count(2);
+ await goto('/offers?topic=kitchen-and-storage');await count(2);
+ await goto('/explore?q=impossible');await count(0);ok((await page.locator('#explore-empty').innerText()).includes('No matches'),'Filtered empty differs from zero inventory');
+ await page.getByRole('button',{name:'Clear filters',exact:true}).last().click();await count(3);
+ await goto('/offers?topic=does-not-exist');await count(0);ok((await page.locator('#offer-catalogue-status').innerText()).includes('Unknown catalogue filter'),'Unknown topic never broadens results');
+ await goto('/explore?q=coconut&domain=household-materials');await page.locator('#screen-explore .offer-card h3 a').click();await page.getByRole('heading',{name:'LOCAL Countertop filter',exact:true}).waitFor();ok((await page.getByRole('link',{name:'Back to offers',exact:true}).getAttribute('href')).includes('q=coconut'),'Back-to-offers action retains discovery filters');
+ ok(await page.locator('.offer-connections a[href="#/solutions/household-materials"]').count()===1,'Offer links secondary domain');
+ ok(await page.locator('.offer-connections a[href="#/solutions/food-kitchen-and-preservation"]').count()===1,'Offer links explicit context');
+ ok(await page.locator('.public-offer .related-reason').count()===2,'Related offers derive from explicit relationships');
+ ok((await page.locator('.public-offer').innerText()).includes('Fixture limitation'),'Limits remain visible');
+ ok(!(await page.locator('.public-offer').innerText()).includes('Fixture specifications'),'Technical details are collapsed');
+ await page.getByText('Specifications, care and implementation',{exact:true}).click();ok((await page.locator('.public-offer').innerText()).includes('Fixture specifications'),'Technical details remain accessible');
+ await page.getByText('Sources, claims and what remains unknown',{exact:true}).click();ok(await page.getByRole('link',{name:'Fixture source',exact:true}).count()===1,'Approved sources remain available');
+ await page.locator('.offer-connections a[href="#/solution-classes/point-of-use-filtration"]').click();await page.locator('#screen-solution-class').waitFor({state:'visible'});
+ await goto('/solution-classes/laboratory-analysis');await page.getByRole('heading',{name:'Laboratory analysis',exact:true}).waitFor();ok((await page.locator('#knowledge-content').innerText()).includes('LOCAL Water analysis'),'Dynamic class connects public offers');
+ await page.reload();await page.getByRole('heading',{name:'Laboratory analysis',exact:true}).waitFor();ok((await page.locator('#knowledge-description').innerText()).includes('measured parameter'),'Dynamic class direct reload');
+ await goto('/solution-classes/not-real');ok((await page.locator('#knowledge-content').innerText()).includes('Browse knowledge'),'Unknown class recovers through knowledge');
+ await goto('/solutions/household-materials');ok(await page.locator('#knowledge-content a[href="#/offers/local-water"]').count()===1,'Secondary domain contains canonical record');
+ await goto('/contexts/sleep-and-rest');ok(await page.locator('#knowledge-content a[href="#/offers/local-air"]').count()===1,'Context contains canonical record');
+ await goto('/providers/north-workshop');await page.getByRole('heading',{name:maker.name,exact:true}).waitFor();await count(2);ok((await page.locator('.public-provider').innerText()).includes('does not imply a partnership'),'Provider relationship is explicit');
+ await goto('/providers/private-provider');ok((await page.locator('#platform-content').innerText()).includes('not currently published'),'Hidden provider unavailable');
+ await goto('/offers/private-draft');ok((await page.locator('#platform-content').innerText()).includes('not currently published'),'Draft direct access blocked');
+ await goto('/explore');await page.locator('#explore-domain-filter').selectOption('water');await count(2);await page.locator('#explore-domain-filter').selectOption('environmental-monitoring');await count(1);await page.goBack();await count(2);ok(await page.locator('#explore-domain-filter').inputValue()==='water','Browser back restores filter');await page.goForward();await count(1);ok(await page.locator('#explore-domain-filter').inputValue()==='environmental-monitoring','Browser forward restores filter');
+ hold=true;await page.goto(base+'/#/explore');await page.locator('#explore-result-count').filter({hasText:'Loading published offers…'}).waitFor();ok(!await page.locator('#explore-empty').isVisible(),'Loading never appears as empty');hold=false;release();await page.waitForFunction(()=>window.ArvenaPlatform.catalogueState==='ready');await count(3);
+ fail=true;await goto('/explore');await page.locator('#explore-result-count').filter({hasText:'Catalogue unavailable'}).waitFor();ok((await page.locator('#screen-explore').innerText()).includes('Catalogue unavailable'),'Service error is explicit');ok(!await page.locator('#explore-empty').isVisible(),'Outage is not zero products');await page.locator('.discovery-views:visible').getByRole('link',{name:'Knowledge',exact:true}).click();ok(await page.locator('#explore-results .knowledge-card').count()>0,'Knowledge survives service failure');await page.evaluate(()=>window.ArvenaPlatform.loadCatalogue());await page.waitForFunction(()=>window.ArvenaPlatform.catalogueState==='unavailable');fail=false;await page.locator('#screen-explore').getByRole('button',{name:'Retry catalogue',exact:true}).click();await page.waitForFunction(()=>window.ArvenaPlatform.catalogueState==='ready');
+ await page.locator('#explore-search').fill('clothing');ok((await page.locator('#explore-results').innerText()).includes('Clothing, footwear and textiles')&&await page.locator('#explore-results .offer-card').count()===0,'Knowledge search stays separate and useful');
+ await page.locator('#explore-search').fill('');await page.locator('#explore-type-filter').selectOption('solution-class');ok(await page.locator('#explore-results .knowledge-card').count()===2,'Knowledge type filter includes actual classes');
+ await goto('/offers/local-water');inventory=inventory.filter(o=>o.id!==water.id);await page.evaluate(()=>window.ArvenaPlatform.loadCatalogue());await page.getByText('This offer is not currently published.',{exact:true}).waitFor();ok(!await page.locator('.public-offer').count(),'Withdrawal clears open detail after refresh');await goto('/explore');await count(2);await goto('/solutions/household-materials');ok(await page.locator('#knowledge-content a[href="#/offers/local-water"]').count()===0,'Withdrawal removes knowledge association');
+ inventory=[];await goto('/explore');ok((await page.locator('#explore-empty').innerText()).includes('No offers are currently published'),'Real zero state is useful');ok(!await page.locator('#screen-explore .catalogue-more').isVisible(),'Zero catalogue has no decorative filters');
+ inventory=[{...water,publication:{...water.publication,media:'/assets/not-found.jpg'}},service,air];
+ const dir='/private/tmp/arvena-m2-review';fs.mkdirSync(dir,{recursive:true});
+ for(const width of [1440,390,320]){
+  await page.setViewportSize({width,height:950});await goto('/explore');await count(3);ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Catalogue fits '+width);await page.screenshot({path:dir+'/catalogue-'+width+'.png',fullPage:true});
+  await page.locator('#explore-search').focus();await page.keyboard.type('coconut');await count(1);await page.keyboard.press('Tab');ok(await page.evaluate(()=>document.activeElement.tagName==='SELECT'),'Keyboard reaches filter '+width);
+  await goto('/offers/local-water');await page.locator('.public-offer').getByText('Image unavailable',{exact:true}).waitFor();ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Offer fits '+width);await page.screenshot({path:dir+'/offer-'+width+'.png',fullPage:true});
+  await goto('/providers/north-workshop');ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Provider fits '+width);
+  if(width<700){await page.locator('.menu-toggle').click();ok(await page.locator('.menu-toggle').getAttribute('aria-expanded')==='true','Mobile navigation opens '+width);await page.keyboard.press('Escape');ok(await page.locator('.menu-toggle').getAttribute('aria-expanded')==='false','Mobile navigation closes '+width);}
+ }
+ await page.setViewportSize({width:390,height:950});await page.locator('.theme-toggle').click();await goto('/explore');await page.screenshot({path:dir+'/catalogue-dark-390.png',fullPage:true});ok(await page.locator('html').getAttribute('data-theme')==='dark','Dark theme retained');
+ inventory=Array.from({length:40},(_,i)=>offer('fixture-'+i,{title:'LOCAL fixture '+String(i).padStart(2,'0')}));await goto('/explore');await count(24);await page.getByRole('button',{name:'Next page',exact:true}).click();await count(16);ok(page.url().includes('page=2'),'Pagination state is shareable');await page.reload();await page.waitForFunction(()=>window.ArvenaPlatform.catalogueState==='ready');await count(16);await page.getByRole('button',{name:'Previous page',exact:true}).click();await count(24);
+ ok(errors.length===0,'No runtime errors: '+errors.join('\n'));console.log('PASS: '+checks+' M2 isolated browser assertions. No remote/RLS evidence.');
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

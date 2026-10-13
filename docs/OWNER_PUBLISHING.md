@@ -105,3 +105,11 @@ mode verifies browser behaviour and request contracts only, not database, RLS, A
 or Storage. It does not require a responsive Docker stack. Keep it separate from
 the service-suite result in every report. Both modes still use the allowlisted
 local preview and private loopback configuration described above.
+
+## Catalogue placement
+
+M2 keeps the existing primary Category and optional Solution class. Open **Related areas and contexts (optional)** to assign additional areas and explicit everyday contexts. All placements use the same canonical offer. Saved edits remain private until the saved preview is approved and republished. Removing a placement does not create or delete an offer. Do not assign contexts from keyword similarity or unsupported claims.
+
+This form extension requires `20261013090000_catalogue_associations.sql` after the M1 migration. Check the canonical `PROJECT_STATE.md` for actual remote application and release evidence. Applying the validator does not change publishing roles, RLS, image permissions or publication history.
+
+Focused local checks: `scripts/test_catalogue_associations.cjs` tests the actual local Data API; `scripts/test_discovery_owner_browser.cjs` tests placements through the owner interface. The M1 browser suite retains every acceptance assertion; `scripts/wait_local_auth.cjs` only waits for the exact real local Auth session to be accepted by the Data API when a newly issued token hits the local clock boundary. It refuses remote targets and never changes JWTs or Auth configuration.

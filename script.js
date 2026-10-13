@@ -192,116 +192,7 @@
         });
     }
 
-    function createDiscoveryCard(record, domainBySlug) {
-        const article = document.createElement('article');
-        article.className = 'discovery-card';
-
-        const meta = document.createElement('div');
-        meta.className = 'discovery-card-meta';
-
-        const type = document.createElement('span');
-        type.className = 'discovery-card-type';
-        type.textContent = recordTypeLabel(record.recordType);
-
-        const status = document.createElement('span');
-        status.className = 'status-badge';
-        status.textContent = record.publicationLabel || (record.publicationStatus === 'published' ? 'Published' : 'Developing');
-        meta.append(type, status);
-
-        const title = document.createElement('h3');
-        title.textContent = record.title;
-
-        const domain = document.createElement('p');
-        domain.className = 'discovery-card-domain';
-        domain.textContent = domainBySlug.get(record.domainSlug)?.title || '';
-
-        const summary = document.createElement('p');
-        summary.className = 'discovery-card-copy';
-        summary.textContent = record.description || record.problem || '';
-
-        const link = document.createElement('a');
-        link.className = 'text-link';
-        link.href = recordRoute(record);
-        link.textContent = record.recordType === 'offer' ? 'View offer' : record.recordType === 'solution-class' ? 'Explore solution class' : record.route ? 'Read topic' : 'Read guide';
-
-        article.append(meta, title, domain, summary, link);
-        return article;
-    }
-
-    function searchableRecordText(record) {
-        const approachText = Array.isArray(record.approaches)
-            ? record.approaches.map((approach) => `${approach.name} ${approach.usefulFor} ${approach.limitation}`).join(' ')
-            : '';
-        return [record.title, record.problem, record.description, record.whyIncluded, record.searchTerms, approachText]
-            .filter(Boolean)
-            .join(' ')
-            .toLocaleLowerCase('en');
-    }
-
-    function renderExploreResults() {
-        if (!exploreResults) return;
-
-        const data = getData();
-        const query = (exploreSearch?.value || '').trim().toLocaleLowerCase('en');
-        const domainValue = exploreDomainFilter?.value || '';
-        const typeValue = exploreTypeFilter?.value || '';
-        const domainBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
-        const matchingRecords = data.discoveryRecords.filter((record) => (
-            (!query || searchableRecordText(record).includes(query))
-            && (!domainValue || record.domainSlug === domainValue || record.domainSlugs?.includes(domainValue))
-            && (!typeValue || record.recordType === typeValue)
-        ));
-
-        exploreResults.replaceChildren(...matchingRecords.map((record) => createDiscoveryCard(record, domainBySlug)));
-
-        if (exploreResultCount) {
-            const offerCount = matchingRecords.filter(r => r.recordType === 'offer').length;
-            exploreResultCount.textContent = `${matchingRecords.length - offerCount} knowledge records · ${window.ArvenaPlatform?.catalogueState === 'ready' ? offerCount + ' offers' : 'offer availability not confirmed'}`;
-        }
-        if (exploreEmpty) exploreEmpty.hidden = matchingRecords.length > 0;
-    }
-
-    function setupExplore() {
-        const data = getData();
-        const domainBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
-        const domainSlugs = [...new Set(data.discoveryRecords.map((record) => record.domainSlug))];
-        const recordTypes = [...new Set([...data.discoveryRecords.map((record) => record.recordType), 'offer'])];
-
-        populateFilter(
-            exploreDomainFilter,
-            domainSlugs.map((slug) => ({ value: slug, label: domainBySlug.get(slug)?.title || slug })),
-            'All published domains'
-        );
-        populateFilter(
-            exploreTypeFilter,
-            recordTypes.map((recordType) => ({ value: recordType, label: recordTypeLabel(recordType) })),
-            'All record types'
-        );
-
-        [exploreSearch, exploreDomainFilter, exploreTypeFilter].forEach((control) => {
-            if (!control) return;
-            control.addEventListener(control === exploreSearch ? 'input' : 'change', renderExploreResults);
-        });
-        if (exploreForm) {
-            exploreForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-                renderExploreResults();
-            });
-        }
-        const clearControls = [exploreClear, ...document.querySelectorAll('[data-explore-clear]')]
-            .filter((control, index, controls) => control && controls.indexOf(control) === index);
-        clearControls.forEach((control) => {
-            control.addEventListener('click', () => {
-                if (exploreSearch) exploreSearch.value = '';
-                if (exploreDomainFilter) exploreDomainFilter.value = '';
-                if (exploreTypeFilter) exploreTypeFilter.value = '';
-                renderExploreResults();
-                if (exploreSearch) exploreSearch.focus();
-            });
-        });
-
-        renderExploreResults();
-    }
+    function setupExplore() { window.ArvenaDiscovery.init(); }
 
     function createEvidenceItem(evidence) {
         const article = document.createElement('article');
@@ -555,7 +446,8 @@
         lastRouteHash = location.hash;
         let routePath = normaliseRoute();
         const topic = window.ArvenaKnowledge?.atRoute(routePath);
-        let route = ROUTES[routePath] || (topic ? { screen: 'knowledge', nav: 'solutions', title: topic.title + ' | Arvena' } : null) || (window.ArvenaPlatform?.matches(routePath) ? { screen: 'platform', nav: '', title: 'Arvena' } : null) || { screen: 'not-found', nav: '', title: 'Page not found | Arvena' };
+        const classRoute = /^\/solution-classes\/[a-z0-9-]+$/.test(routePath) && routePath !== '/solution-classes/point-of-use-filtration';
+        let route = ROUTES[routePath] || (topic || classRoute ? { screen: 'knowledge', nav: 'solutions', title: (topic?.title || 'Solution class') + ' | Arvena' } : null) || (window.ArvenaPlatform?.matches(routePath) ? { screen: 'platform', nav: '', title: 'Arvena' } : null) || { screen: 'not-found', nav: '', title: 'Page not found | Arvena' };
 
         if (route.screen === 'result' && (!requestsAreEnabled() || !sessionStorage.getItem(CONFIRMATION_KEY))) {
             routePath = '/request';
@@ -587,8 +479,8 @@
             }
         });
 
-        if (topic) window.ArvenaKnowledge.render(routePath);
-        if (route.screen === 'offers') window.ArvenaKnowledge.renderCatalogue();
+        if (topic || classRoute) window.ArvenaKnowledge.render(routePath);
+        if (['offers','explore'].includes(route.screen)) window.ArvenaDiscovery.render();
         if (['offers', 'providers', 'knowledge', 'craft', 'explore', 'clean-water', 'solution-class', 'platform'].includes(route.screen)) window.ArvenaPlatform.loadCatalogue();
         document.title = route.title;
         if (route.screen === 'platform') window.ArvenaPlatform.render(routePath);
@@ -811,14 +703,6 @@
     syncNavigationAccessibility(false);
     showRoute({ moveFocus: false });
 
-    window.addEventListener('arvena:catalogue', () => {
-        const values = [exploreDomainFilter.value, exploreTypeFilter.value];
-        const data = getData();
-        populateFilter(exploreDomainFilter, [...new Set(data.discoveryRecords.map(r => r.domainSlug))].map(value => ({value, label: data.domains.find(d => d.slug === value)?.title || value})), 'All published domains');
-        populateFilter(exploreTypeFilter, [...new Set([...data.discoveryRecords.map(r => r.recordType), 'offer'])].map(value => ({value, label: recordTypeLabel(value)})), 'All record types');
-        [exploreDomainFilter, exploreTypeFilter].forEach((e,i) => { e.value=values[i]; });
-        renderExploreResults();
-    });
     window.addEventListener('hashchange', () => showRoute());
     if (skipLink) skipLink.addEventListener('click', skipToMainContent);
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);

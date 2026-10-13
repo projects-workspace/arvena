@@ -4,7 +4,7 @@
     const client = window.ArvenaSupabase.createClient(config.url, config.publishableKey, {
         auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' }
     });
-    let user = null, offers = [], providers = [], ready = false, generation = 0, catalogueState = 'loading', catalogueRequest = null;
+    let user = null, offers = [], providers = [], classes = [], ready = false, generation = 0, catalogueState = 'loading', catalogueRequest = null;
     const el = (tag, text, attrs = {}) => {
         const node = document.createElement(tag);
         if (text !== undefined && text !== null) node.textContent = String(text);
@@ -59,10 +59,25 @@
     async function result(query) { const {data,error}=await query; if(error) throw new Error(error.message); return data; }
     const table = name => client.from('arvena_'+name);
     function safeURL(value) { try { const url=new URL(value); return url.protocol==='https:' && !url.username && !url.password ? url.href : null; } catch { return null; } }
+    function publicImage(url,alt,className='') {
+        const frame=el('figure',null,{class:'public-media '+className});
+        const image=el('img',null,{src:url,alt,loading:'lazy',decoding:'async',class:className==='offer-card-image'?'':'platform-offer-image'});
+        image.addEventListener('error',()=>{image.hidden=true;frame.append(el('figcaption','Image unavailable'));},{once:true});
+        frame.append(image);return frame;
+    }
     function offerCard(o) {
-        const card=el('article',null,{class:'discovery-card'});
-        card.append(el('p',o.offer_type.replaceAll('-',' '),{class:'discovery-card-type'}),el('h3',o.title),el('p',o.publication.need),link('View offer','#/offers/'+o.slug));
-        return card;
+        const p=o.publication||{}, provider=providers.find(v=>v.id===o.provider_id);
+        const card=el('article',null,{class:'discovery-card offer-card','data-offer-id':o.id});
+        const image=(p.images||[]).find(i=>mediaURL(i.path)), url=image?mediaURL(image.path):/^\/assets\/[\w.-]+$/.test(p.media||'')?p.media:null;
+        if(url)card.append(publicImage(url,image?.alt||o.title,'offer-card-image'));
+        const body=el('div',null,{class:'offer-card-body'}),title=el('h3');title.append(link(o.title,'#/offers/'+o.slug));
+        body.append(el('p',window.ArvenaDiscovery?.typeNames[o.offer_type]||o.offer_type.replaceAll('-',' '),{class:'discovery-card-type'}),title);
+        if(provider){const by=el('p',null,{class:'offer-card-provider'});by.append(link(provider.name,'#/providers/'+provider.slug));body.append(by);}
+        body.append(el('p',p.need||'',{class:'discovery-card-copy'}));
+        const area=window.ARVENA_DATA.domains.find(d=>d.slug===o.domain_slug)?.title;const context=window.ARVENA_KNOWLEDGE?.contexts.find(c=>window.ArvenaDiscovery?.contextIds(o).includes(c.id));if(area||context)body.append(el('p',[area,context?.title].filter(Boolean).join(' · '),{class:'discovery-card-note'}));
+        if(p.strengths||p.materials)body.append(el('p',p.strengths||p.materials,{class:'offer-card-key-detail'}));
+        if(p.geography)body.append(el('p',p.geography,{class:'offer-card-availability'}));
+        body.append(el('p',safeURL(p.access_url)?'External access':'Information listing · access not specified',{class:'discovery-card-note'}),link('View offer','#/offers/'+o.slug));card.append(body);return card;
     }
     function notifyCatalogue() {
         window.dispatchEvent(new Event('arvena:catalogue'));
@@ -79,23 +94,32 @@
             const n=el('article',null,{class:'discovery-card'}); n.append(el('h3',p.name),el('p',p.summary),link('View provider','#/providers/'+p.slug)); return n;
         }));
     }
-    function loadCatalogue() {
-        if (catalogueRequest) return catalogueRequest;
-        offers=[]; providers=[]; ready=false;
+    async function publicRows(name,columns,order) {
+        const rows=[],size=500;
+        for(let offset=0;;offset+=size){
+            let query=table(name).select(columns).order(order).range(offset,offset+size-1);
+            if(name!=='solution_classes')query=query.eq('status','published');
+            const page=await result(query);rows.push(...page);if(page.length<size)return rows;
+        }
+    }
+    function loadCatalogue({force=false}={}) {
+        if (catalogueRequest) return force?catalogueRequest.then(()=>loadCatalogue()):catalogueRequest;
+        offers=[]; providers=[]; classes=[]; ready=false;
         catalogueState=window.ARVENA_PLATFORM_ENABLED === true ? 'loading' : 'unavailable';
         notifyCatalogue();
         if (window.ARVENA_PLATFORM_ENABLED !== true) return Promise.resolve();
         catalogueRequest=(async () => {
             try {
-                const [nextOffers,nextProviders]=await Promise.all([
-                    result(table('offers').select('*').eq('status','published').order('title')),
-                    result(table('providers').select('*').eq('status','published').order('name'))
+                const [nextOffers,nextProviders,nextClasses]=await Promise.all([
+                    publicRows('offers','id,slug,title,domain_slug,solution_class_slug,offer_type,provider_id,publication,status,published_at,updated_at','id'),
+                    publicRows('providers','id,slug,name,summary,website,relationship,images,status','id'),
+                    publicRows('solution_classes','slug,title,need,domain_slug','slug')
                 ]);
-                // Defence in depth; RLS remains the authority for access.
-                offers=nextOffers.filter(o=>o.status==='published');
-                providers=nextProviders.filter(p=>p.status==='published');
-                ready=true; catalogueState='ready';
-            } catch { offers=[];providers=[];ready=false;catalogueState='unavailable'; }
+                // RLS is the authority. Also exclude hidden providers and duplicate IDs.
+                providers=[...new Map(nextProviders.filter(p=>p.status==='published').map(p=>[p.id,p])).values()].sort((a,b)=>a.name.localeCompare(b.name));
+                offers=[...new Map(nextOffers.filter(o=>o.status==='published'&&providers.some(p=>p.id===o.provider_id)).map(o=>[o.id,o])).values()].sort((a,b)=>a.title.localeCompare(b.title));
+                classes=nextClasses;ready=true; catalogueState='ready';
+            } catch { offers=[];providers=[];classes=[];ready=false;catalogueState='unavailable'; }
             finally { catalogueRequest=null;notifyCatalogue(); }
         })();
         return catalogueRequest;
@@ -109,7 +133,7 @@
     function matches(path) { return /^\/(cabinet(?:\/(interests|account))?|login|provider-space|editorial(?:\/.*)?|offers\/[a-z0-9-]+|providers\/[a-z0-9-]+)$/.test(path); }
     async function render(path) {
         const epoch=++generation, root=document.getElementById('platform-content'), heading=document.getElementById('platform-title');
-        root.replaceChildren(); status('Loading…');
+        root.replaceChildren(); root.className=''; status('Loading…');
         document.querySelector('[data-editor-link]').hidden=true;
         document.querySelector('[data-provider-link]').hidden=true;
         await init;
@@ -198,43 +222,75 @@
     }
     function appendImages(root,images,title,legacy) {
         const gallery=el('div',null,{class:'publication-images'});
-        (Array.isArray(images)?images:[]).forEach(item=>{const url=mediaURL(item.path);if(url)gallery.append(el('img',null,{src:url,alt:item.alt||title,loading:'lazy',class:'platform-offer-image'}));});
-        if(!gallery.children.length && /^\/assets\/[\w.-]+$/.test(legacy||''))gallery.append(el('img',null,{src:legacy,alt:title,class:'platform-offer-image'}));
+        (Array.isArray(images)?images:[]).forEach(item=>{const url=mediaURL(item.path);if(url)gallery.append(publicImage(url,item.alt||title));});
+        if(!gallery.children.length && /^\/assets\/[\w.-]+$/.test(legacy||''))gallery.append(publicImage(legacy,title));
         if(gallery.children.length)root.append(gallery);
     }
     function appendProviderDetails(root,p) {
         root.append(el('p',p.summary||'',{class:'platform-lead'}));appendImages(root,p.images,p.name);
-        root.append(el('h2','Relationship with Arvena'),el('p',p.relationship||''));
-        if(safeURL(p.website)){const a=link('Provider website',safeURL(p.website));a.rel='noopener noreferrer';a.target='_blank';root.append(a);}
+        root.append(el('h2','Relationship with Arvena'),el('p',p.relationship||'No relationship information supplied.'),el('p','An independent listing does not imply a partnership or endorsement of every product from this provider.',{class:'public-disclosure'}));
+        if(safeURL(p.website)){const a=link('Visit provider website',safeURL(p.website));a.rel='noopener noreferrer';a.target='_blank';root.append(a);}
     }
     function appendOfferDetails(root,p,title) {
         appendImages(root,p.images,title,p.media);
-        const labels={suitability:'Suitability',selection_rationale:'Why Arvena selected it',mechanism:'How it works',specifications:'Specifications',manufacturer_claims:'Manufacturer statements',editorial_conclusion:'Arvena editorial conclusion',unknowns:'What remains unknown',strengths:'Strengths',limitations:'Limitations',safety:'Safety',materials:'Materials',environment:'Environmental considerations',lifetime:'Lifetime',maintenance:'Maintenance',alternatives:'Alternatives',geography:'Availability and geography',price:'Price',implementation:'Implementation requirements',commercial_disclosure:'Commercial disclosure',last_review_date:'Last editorial review'};
-        Object.entries(labels).forEach(([key,label])=>{if(p[key]){const section=el('section',null,{class:'platform-detail'});section.append(el('h2',label),el('p',typeof p[key]==='string'?p[key]:JSON.stringify(p[key])));root.append(section);}});
-        if(p.claims?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Claims and sources'));
-            p.claims.forEach(c=>{const article=el('article',null,{class:'platform-row'});article.append(el('h3',c.claim),el('p','Source type: '+c.source_type),el('p','Conditions: '+c.conditions),el('p','Checked: '+c.checked_on),el('p','Limitations: '+c.limitations),el('p','Arvena conclusion: '+c.editorial_conclusion));const url=safeURL(c.source);if(url){const a=link('Read source',url);a.rel='noopener noreferrer';a.target='_blank';article.append(a);}section.append(article);});root.append(section);}
-        if(p.sources?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Sources and reading'));p.sources.forEach(source=>{const url=safeURL(source.url);if(url){const a=link(source.title,url);a.target='_blank';a.rel='noopener noreferrer';const row=el('p');row.append(a);section.append(row);}});root.append(section);}
+        const sections=(target,labels)=>Object.entries(labels).forEach(([key,label])=>{if(p[key]){const section=el('section',null,{class:'platform-detail'});section.append(el('h2',label),el('p',typeof p[key]==='string'?p[key]:JSON.stringify(p[key])));target.append(section);}});
+        sections(root,{selection_rationale:'Why it is here',suitability:'What it is suited to',mechanism:'How it works',strengths:'Strengths',limitations:'Limitations',safety:'Before you choose'});
+        const practical={specifications:'Specifications',materials:'Materials',environment:'Environmental considerations',lifetime:'Lifetime',maintenance:'Care and maintenance',implementation:'Installation and implementation'};
+        if(Object.keys(practical).some(k=>p[k])){const details=el('details',null,{class:'offer-details'});details.append(el('summary','Specifications, care and implementation'));sections(details,practical);root.append(details);}
+        const evidence={manufacturer_claims:'Manufacturer statements',editorial_conclusion:'Arvena editorial conclusion',unknowns:'What remains unknown'};
+        if(Object.keys(evidence).some(k=>p[k])||p.claims?.length||p.sources?.length){
+            const area=el('details',null,{class:'offer-details'});area.append(el('summary','Sources, claims and what remains unknown'));sections(area,evidence);
+            if(p.claims?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Claims and sources'));
+                p.claims.forEach(c=>{const article=el('article',null,{class:'platform-row'});article.append(el('h3',c.claim),el('p','Source type: '+c.source_type),el('p','Conditions: '+c.conditions),el('p','Checked: '+c.checked_on),el('p','Limitations: '+c.limitations),el('p','Arvena conclusion: '+c.editorial_conclusion));const url=safeURL(c.source);if(url){const a=link('Read source',url);a.rel='noopener noreferrer';a.target='_blank';article.append(a);}section.append(article);});area.append(section);}
+            if(p.sources?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Sources and reading'));p.sources.forEach(source=>{const url=safeURL(source.url);if(url){const a=link(source.title,url);a.target='_blank';a.rel='noopener noreferrer';const row=el('p');row.append(a);section.append(row);}});area.append(section);}
+            root.append(area);
+        }
+        sections(root,{alternatives:'Alternatives considered',geography:'Availability and geography',price:'Price information',commercial_disclosure:'Commercial disclosure',last_review_date:'Last editorial review'});
+    }
+    function appendOfferConnections(root,offer) {
+        const D=window.ArvenaDiscovery,section=el('section',null,{class:'platform-detail offer-connections'});
+        section.append(el('h2','Understand the context'));
+        const links=el('ul',null,{class:'knowledge-links'}),add=(text,url)=>{const li=el('li');li.append(link(text,url));links.append(li);};
+        if(offer.solution_class_slug)add(D.className(offer.solution_class_slug)||'Understand this solution class','#/solution-classes/'+offer.solution_class_slug);
+        D.domainSlugs(offer).forEach(s=>add(window.ARVENA_DATA.domains.find(d=>d.slug===s).title,'#/solutions/'+s));
+        D.contextIds(offer).forEach(id=>{const c=window.ARVENA_KNOWLEDGE.contexts.find(c=>c.id===id);add(c.title,c.route.startsWith('#')?c.route:'#'+c.route);});
+        add('How Arvena selects offers','#/how-we-select');section.append(links);root.append(section);
+        const related=offers.filter(o=>o.id!==offer.id).map(o=>{
+            const sameClass=offer.solution_class_slug&&o.solution_class_slug===offer.solution_class_slug;
+            const sameContext=D.contextIds(o).some(id=>D.contextIds(offer).includes(id));
+            const sameDomain=D.domainSlugs(o).some(id=>D.domainSlugs(offer).includes(id));
+            return {offer:o,score:sameClass?4:sameContext?3:sameDomain?2:o.provider_id===offer.provider_id?1:0,reason:sameClass?'Same solution class':sameContext?'Shared everyday context':sameDomain?'Shared solution area':'Same provider'};
+        }).filter(r=>r.score).sort((a,b)=>b.score-a.score||a.offer.title.localeCompare(b.offer.title)).slice(0,4);
+        const alternatives=el('section',null,{class:'platform-detail'});alternatives.append(el('h2','Related offers'),el('p','These listings share the relationship shown below. That alone does not make them interchangeable or an editorially recommended alternative.'));
+        if(related.length){const grid=el('div',null,{class:'catalogue-grid'});related.forEach(r=>{const card=offerCard(r.offer);card.append(el('p',r.reason,{class:'related-reason'}));grid.append(card);});alternatives.append(grid);}
+        else alternatives.append(el('p','No other related offers are currently published. Knowledge can help you compare approaches.'));
+        const navigation=el('nav',null,{class:'knowledge-actions','aria-label':'Explore other options'});navigation.append(link('Explore more offers','#/offers?domain='+encodeURIComponent(offer.domain_slug)),link('Compare approaches in knowledge','#/explore?view=knowledge&domain='+encodeURIComponent(offer.domain_slug)));alternatives.append(navigation);root.append(alternatives);
     }
     async function renderOffer(root,slug) {
+        const renderEpoch=generation;
         const offer=offers.find(o=>o.slug===slug);if(!offer){document.getElementById('platform-title').textContent='Offer not found';return root.append(el('p','This offer is not currently published.'),link('Explore','#/explore'));}
+        root.className='public-offer';
         document.getElementById('platform-title').textContent=offer.title;document.title=offer.title+' | Arvena';
         const p=offer.publication,provider=providers.find(x=>x.id===offer.provider_id);
-        root.append(el('p',p.need,{class:'platform-lead'}));if(provider)root.append(link(provider.name,'#/providers/'+provider.slug));
+        root.append(link('Back to offers',window.ArvenaDiscovery.returnURL()),el('p',window.ArvenaDiscovery.typeNames[offer.offer_type]||offer.offer_type,{class:'offer-type'}),el('p',p.need,{class:'platform-lead'}));if(provider)root.append(link(provider.name,'#/providers/'+provider.slug));
         const actions=el('div',null,{class:'button-row'});
         if(!user) actions.append(link('Sign in to save','#/cabinet'));
         else {
-            const saves=await result(table('saved_offers').select('offer_id').eq('offer_id',offer.id));let saved=saves.length>0;
+            const saves=await result(table('saved_offers').select('offer_id').eq('offer_id',offer.id));if(renderEpoch!==generation)return;let saved=saves.length>0;
             const save=button(saved?'Remove save':'Save offer',async()=>{
                 if(saved)await result(table('saved_offers').delete().eq('user_id',user.id).eq('offer_id',offer.id));
                 else await result(table('saved_offers').upsert({user_id:user.id,offer_id:offer.id},{onConflict:'user_id,offer_id',ignoreDuplicates:true}));
                 saved=!saved;save.textContent=saved?'Remove save':'Save offer';status(saved?'Saved privately.':'Save removed.');
             });actions.append(save);
         }
-        const access=safeURL(p.access_url);if(access){const a=link('Visit provider / access offer',access);a.rel='noopener noreferrer';a.target='_blank';a.addEventListener('click',()=>event(offer,'outbound'));actions.append(a);}root.append(actions);
+        const access=safeURL(p.access_url);if(access){const a=link('View external offer',access);a.rel='noopener noreferrer';a.target='_blank';a.addEventListener('click',()=>event(offer,'outbound'));actions.append(a);}root.append(actions);
+        root.append(el('p',access?'Access is through an external website. Check its current availability, price and terms.':'This is an information listing. An access destination has not been supplied.',{class:'public-disclosure'}));
         appendOfferDetails(root,p,offer.title);
-        await renderDiscussion(root,offer);void event(offer,'view');
+        if(!p.last_review_date)root.append(el('p','Editorial review date not supplied.'+(offer.published_at?' Published '+new Date(offer.published_at).toLocaleDateString('en',{year:'numeric',month:'long',day:'numeric'})+'. Publication is not an evidence-check date.':''),{class:'public-disclosure'}));
+        appendOfferConnections(root,offer);
+        await renderDiscussion(root,offer,renderEpoch);void event(offer,'view');
     }
-    async function renderDiscussion(root,offer) {
+    async function renderDiscussion(root,offer,renderEpoch) {
         const area=el('section',null,{class:'platform-detail'});area.append(el('h2','Questions and perspectives'),el('p','Moderated contributions provide context. They are not scientific evidence or a certification.'));
         const items=await result(table('public_contributions').select('*').eq('offer_id',offer.id).order('published_at'));
         if(!items.length)area.append(el('p','No contributions have been published.'));
@@ -252,13 +308,13 @@
             const own=await result(table('contributions').select('kind,body,status').eq('user_id',user.id).eq('offer_id',offer.id));
             if(own.length){area.append(el('h3','Your submissions'));own.forEach(i=>area.append(el('p',i.status.replaceAll('_',' ')+': '+i.body)));}
         }else area.append(el('p','Approved contributors can sign in to submit for review.'));
-        root.append(area);
+        if(renderEpoch===generation)root.append(area);
     }
     function renderProvider(root,slug) {
-        const provider=providers.find(p=>p.slug===slug);if(!provider)return root.append(el('p','This provider is not currently published.'));
-        document.getElementById('platform-title').textContent=provider.name;
+        const provider=providers.find(p=>p.slug===slug);if(!provider){document.getElementById('platform-title').textContent='Provider unavailable';return root.append(el('p','This provider is not currently published.'),link('Browse providers','#/providers'),link('Explore offers','#/explore'));}
+        root.className='public-provider';document.getElementById('platform-title').textContent=provider.name;document.title=provider.name+' | Arvena';root.append(link('All providers','#/providers'));
         appendProviderDetails(root,provider);
-        root.append(el('h2','Published offers'));offers.filter(o=>o.provider_id===provider.id).forEach(o=>root.append(offerCard(o)));
+        root.append(el('h2','Published offers'));const own=offers.filter(o=>o.provider_id===provider.id);if(!own.length)root.append(el('p','No offers from this provider are currently published.'),link('Explore offers','#/explore'));const grid=el('div',null,{class:'catalogue-grid'});own.forEach(o=>grid.append(offerCard(o)));root.append(grid);
     }
     async function renderProviderSpace(root,members) {
         if(!members.length)return root.append(el('p','No approved provider association is assigned to this account. Registration does not establish provider ownership.'));
@@ -272,9 +328,12 @@
         if(own.length){const form=el('form',null,{class:'platform-form'});form.append(el('h2','Submit a correction'));select(form,'Listing','offer_id',own.map(o=>[o.id,o.title]),own[0].id);const body=field(form,'Correction or updated information','body','textarea');body.minLength=10;body.maxLength=10000;field(form,'Documentation URL (optional, HTTPS)','url','url','',false);submit(form,'Send for editorial review',async data=>{const url=data.get('url');if(url&&!safeURL(url))throw new Error('Use an HTTPS documentation URL.');await result(table('corrections').insert({offer_id:data.get('offer_id'),body:data.get('body'),documentation_url:url||null}));await render('/provider-space');status('Correction submitted.');});root.append(form);}
         root.append(el('h2','Your correction submissions'));if(!corrections.length)root.append(el('p','No corrections submitted.'));corrections.forEach(c=>root.append(el('article',c.status+': '+c.body+(c.editorial_note?' · '+c.editorial_note:''),{class:'platform-row'})));
     }
+    window.addEventListener('arvena:catalogue',()=>{const path=location.hash.slice(1).split('?')[0];if(catalogueState!=='loading'&&/^\/(offers|providers)\/[a-z0-9-]+$/.test(path)&&!document.getElementById('screen-platform').hidden)void render(path);});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void loadCatalogue();});
+    window.addEventListener('pageshow',e=>{if(e.persisted)void loadCatalogue();});
     window.ArvenaPlatform={client,table,result,el,link,button,field,select,submit,status,safeURL,render,matches,loadCatalogue,offerCard,
         mediaURL,appendOfferDetails,appendProviderDetails,
-        get catalogueState(){return catalogueState;},
+        get catalogueState(){return catalogueState;},get classes(){return classes;},
         get user(){return user;},get offers(){return offers;},get providers(){return providers;},
-        discoveryRecords:()=>offers.map(o=>({recordType:'offer',slug:o.slug,title:o.title,domainSlug:o.domain_slug,publicationStatus:'published',description:o.publication.need}))};
+        discoveryRecords:()=>offers.map(o=>({recordType:'offer',slug:o.slug,title:o.title,domainSlug:o.domain_slug,domainSlugs:window.ArvenaDiscovery?.domainSlugs(o)||[o.domain_slug],publicationStatus:'published',description:o.publication.need,searchTerms:window.ArvenaDiscovery?.searchText(o)||''}))};
 })();

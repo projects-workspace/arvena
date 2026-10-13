@@ -17,7 +17,7 @@ QUIET = "--quiet" in sys.argv[1:]
 UNKNOWN_ARGS = [arg for arg in sys.argv[1:] if arg != "--quiet"]
 PROBLEMS = []
 
-PUBLIC_JS = ("supabase-config.js", "arvena-data.js", "knowledge-data.js", "knowledge.js", "script.js", "platform.js", "platform-config.js", "editorial.js", "publishing.js", "supabase-client.js")
+PUBLIC_JS = ("supabase-config.js", "arvena-data.js", "knowledge-data.js", "knowledge.js", "discovery.js", "script.js", "platform.js", "platform-config.js", "editorial.js", "publishing.js", "supabase-client.js")
 ACTIVE_PUBLIC_FILES = ("index.html", "style.css", *PUBLIC_JS, "vercel.json")
 REQUIRED_ROUTES = (
     "/cabinet",
@@ -291,7 +291,7 @@ for required_text in (
     "solution classes",
     "specific offers",
     "integrated solutions",
-    "scope is not inventory",
+    "guides and solution classes explain approaches independently of brands",
     "no specific offer",
     "future direction",
     "not an existing certification",

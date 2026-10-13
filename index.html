@@ -13,16 +13,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&amp;family=Raleway:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=24">
+    <link rel="stylesheet" href="style.css?v=25">
     <script src="supabase-config.js?v=23" defer></script>
     <script src="arvena-data.js?v=23" defer></script>
     <script src="platform-config.js?v=3" defer></script>
     <script src="supabase-client.js?v=1" defer></script>
-    <script src="platform.js?v=3" defer></script>
+    <script src="platform.js?v=4" defer></script>
     <script src="knowledge-data.js?v=1" defer></script>
-    <script src="knowledge.js?v=1" defer></script>
-    <script src="script.js?v=26" defer></script>
-    <script src="publishing.js?v=1" defer></script>
+    <script src="knowledge.js?v=2" defer></script>
+    <script src="discovery.js?v=1" defer></script>
+    <script src="script.js?v=27" defer></script>
+    <script src="publishing.js?v=2" defer></script>
     <script src="editorial.js?v=2" defer></script>
 </head>
 <body>
@@ -70,7 +71,7 @@
                         <h1 id="home-title">Better living starts with a better way to choose.</h1>
                         <p class="hero-lead">Arvena connects real needs with carefully understood products, technologies, systems and services.</p>
                         <div class="button-row">
-                            <a class="button button-primary" href="#/explore">Explore what is published</a>
+                            <a class="button button-primary" href="#/explore">Explore the catalogue</a>
                             <a class="button button-secondary" href="#/solutions">Browse solution areas</a>
                         </div>
                     </div>
@@ -133,14 +134,14 @@
             <div class="screen-inner screen-inner-wide marketplace-stage">
                 <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><span>Explore</span></nav>
                 <header class="page-heading marketplace-heading">
-                    <p class="eyebrow">Marketplace discovery</p>
-                    <h1 id="explore-title">Explore what Arvena has actually published</h1>
-                    <p>Search topic maps, context overviews, guides, solution classes and published offers. Specific offers and providers appear only after an exact publication package is ready.</p>
+
+                    <h1 id="explore-title">Find a useful next step</h1>
+                    <p>Browse selected products, technologies and services. Use Knowledge to understand the approaches and conditions before choosing.</p>
                 </header>
 
                 <form class="catalogue-controls" role="search" aria-label="Filter published Arvena records">
                     <div class="field catalogue-search-field">
-                        <label for="explore-search">Search published material</label>
+                        <label for="explore-search">Search offers</label>
                         <input id="explore-search" type="search" name="search" autocomplete="off" placeholder="Try water, filtration or maintenance">
                     </div>
                     <div class="field">
@@ -168,9 +169,9 @@
 
                 <aside class="inventory-ledger" aria-labelledby="inventory-ledger-title">
                     <div>
-                        <p class="eyebrow">Inventory boundary</p>
-                        <h2 id="inventory-ledger-title">Published knowledge is not the same as a published offer</h2>
-                        <p><strong>Scope is not inventory.</strong> Knowledge includes topic maps, context overviews and the Clean Water material. Offer availability comes from the live catalogue and is shown separately.</p>
+
+                        <h2 id="inventory-ledger-title">Understand before choosing</h2>
+                        <p>Guides and solution classes explain approaches independently of brands. Each published offer has its own description, limitations and disclosure.</p>
                     </div>
                     <nav aria-label="Marketplace record types"><a href="#/offers">Specific offers</a><a href="#/providers">Providers</a><a href="#/how-we-select">Selection method</a></nav>
                 </aside>
@@ -296,27 +297,14 @@
         <section class="screen" id="screen-offers" data-screen="offers" aria-labelledby="offers-title" hidden>
             <div class="screen-inner screen-inner-wide">
                 <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#/home">Home</a><span aria-hidden="true">/</span><a href="#/explore">Explore</a><span aria-hidden="true">/</span><span>Offers</span></nav>
-                <header class="page-heading offers-heading"><p class="eyebrow">Specific offers</p><h1 id="offers-title">Exact products and services belong here only when their publication record is ready</h1><p>A solution class can explain a useful approach without implying that Arvena has selected a particular model, installer or seller.</p></header>
-
-                <section class="empty-state offer-empty-state" aria-labelledby="offer-empty-title">
-                    <div class="empty-state-count" aria-label="Published specific offers"><strong id="offer-count">0</strong><span>published specific offers</span></div>
-                    <div><h2 id="offer-empty-title">No specific offer is currently published</h2><p>Arvena will not use fictional products, generic placeholders or unverified claims to populate this marketplace.</p><div class="button-row"><a class="button button-primary" href="#/explore">Explore current material</a><a class="button button-secondary" href="#/solution-classes/point-of-use-filtration">View a solution class</a></div></div>
-                </section>
-
-                <div id="offer-catalogue-status" class="knowledge-section" role="status" aria-live="polite"></div>
-                <div id="published-offers" class="catalogue-grid"></div>
-                <section class="offer-publication-map" aria-labelledby="offer-publication-title">
-                    <div class="section-heading"><p class="eyebrow">Reusable offer profile</p><h2 id="offer-publication-title">What a published offer can make clear</h2><p>Optional sections appear only when relevant and supported. Unknown price or availability remains visibly unknown.</p></div>
-                    <dl class="publication-structure">
-                        <div><dt>Identity and provider</dt><dd>The exact product, service or system and the organisation behind it.</dd></div>
-                        <div><dt>Suitability</dt><dd>The need addressed, suitable contexts and required implementation.</dd></div>
-                        <div><dt>Selection basis</dt><dd>Why Arvena selected it, with claims tied to their evidence sources.</dd></div>
-                        <div><dt>Practical reality</dt><dd>Specifications, materials, safety, maintenance, lifetime, geography and access.</dd></div>
-                        <div><dt>Boundaries</dt><dd>Limitations, alternatives, unknowns and distinctions between producer statements and editorial conclusions.</dd></div>
-                        <div><dt>Trust record</dt><dd>Commercial disclosure, latest review date and a route for corrections.</dd></div>
-                        <div><dt>Account actions</dt><dd>Saving and controlled discussion appear only when the required account and contribution permissions are operating.</dd></div>
-                    </dl>
-                </section>
+                <header class="page-heading offers-heading"><h1 id="offers-title">Explore offers</h1><p>Selected products, technologies and services, with their providers and practical limits made clear.</p></header>
+                <div id="offer-browser">
+                    <p id="offer-catalogue-status" role="status" aria-live="polite"></p>
+                    <span id="offer-count" class="sr-only">Unknown</span>
+                    <div id="published-offers" class="catalogue-grid"></div>
+                    <section class="empty-state offer-empty-state" aria-labelledby="offer-empty-title" hidden><h2 id="offer-empty-title">No offers are currently published</h2></section>
+                </div>
+                <aside class="inventory-ledger" aria-labelledby="offer-publication-title"><h2 id="offer-publication-title">A considered choice</h2><p>Arvena explains why an offer belongs here. Listing a provider does not imply a partnership. Access is external where a destination is supplied.</p><a href="#/how-we-select">How we select</a></aside>
             </div>
         </section>
 

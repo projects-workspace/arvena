@@ -1,0 +1,40 @@
+/* M2 real local Auth/Data API/RLS. Uses only the existing named loopback stack.
+   Run after test_platform.cjs; ARVENA_TEST_MODULES points to pinned local dependencies. */
+const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
+const {createClient}=require(process.env.ARVENA_TEST_MODULES+'/@supabase/supabase-js');
+const cfg=JSON.parse(fs.readFileSync('/private/tmp/arvena-local-config.json','utf8'));assert.equal(new URL(cfg.url).hostname,'127.0.0.1');
+const fixture=JSON.parse(fs.readFileSync('/private/tmp/arvena-browser-fixtures.json','utf8'));
+const client=()=>createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:false,autoRefreshToken:false}});
+const owner=client(),buyer=client(),provider=client(),anon=client();let checks=0;
+const ok=(truth,label)=>{assert.ok(truth,label);checks++;};const get=async q=>{const r=await q;if(r.error)throw r.error;return r.data;};
+const cmd=(c,action,payload)=>c.rpc('arvena_owner_command',{action,payload});
+const denied=async(q,label)=>{const r=await q;assert.ok(r.error&&['42501','P0001'].includes(r.error.code),label+': permission/validation denial required, not infrastructure failure');checks++;};
+(async()=>{
+ for(const [c,name]of [[owner,'editor'],[buyer,'a'],[provider,'providerA']])await get(c.auth.signInWithPassword(fixture.credentials[name]));
+ const stamp=crypto.randomUUID().slice(0,8);
+ let pd=await get(cmd(owner,'save_provider',{public_copy:{name:'LOCAL M2 association provider '+stamp,slug:'local-m2-provider-'+stamp,summary:'Synthetic local fixture.',relationship:'No partnership.'}}));
+ const published=await get(cmd(owner,'publish_provider',{id:pd.id,revision:pd.revision,confirmed:true}));
+ const base={title:'LOCAL M2 canonical offer '+stamp,slug:'local-m2-offer-'+stamp,provider_id:published.entity_id,offer_type:'product',domain_slug:'water',need:'Synthetic local test, not a recommendation.',commercial_disclosure:'Local fixture.',domain_slugs:['household-materials','homes-buildings-and-land-systems'],context_ids:['home-as-a-system','kitchen-and-storage']};
+ await denied(cmd(anon,'save_offer',{public_copy:base}),'Anonymous owner action denied');
+ await denied(cmd(buyer,'save_offer',{public_copy:base}),'Buyer cannot assign placements');
+ await denied(cmd(provider,'save_offer',{public_copy:base}),'Representative cannot assign placements');
+ for(const [field,value]of [['domain_slugs','water'],['domain_slugs',['not-real']],['domain_slugs',['water','water']],['domain_slugs',[null]],['domain_slugs',Array(11).fill('water')],['context_ids',null],['context_ids',['not-real']],['context_ids',['sleep-and-rest','sleep-and-rest']],['context_ids',[{id:'sleep-and-rest'}]]])await denied(cmd(owner,'save_offer',{public_copy:{...base,[field]:value}}),'Invalid '+field+' rejected');
+ await denied(cmd(owner,'save_offer',{public_copy:{...base,dossier:'PRIVATE forbidden field'}}),'Private field excluded from public copy');
+ await denied(cmd(owner,'save_provider',{public_copy:{name:'x',domain_slugs:['water']}}),'Offer fields not accepted on providers');
+ let draft=await get(cmd(owner,'save_offer',{public_copy:base}));
+ ok((await get(anon.from('arvena_offers').select('*').eq('slug',base.slug))).length===0,'Draft placements are private');
+ await denied(cmd(owner,'publish_offer',{id:draft.id,revision:draft.revision}),'Explicit publication remains required');
+ const offer=await get(cmd(owner,'publish_offer',{id:draft.id,revision:draft.revision,confirmed:true}));
+ let rows=await get(anon.from('arvena_offers').select('*').eq('slug',base.slug));ok(rows.length===1,'One canonical public record');
+ ok(rows[0].id===offer.entity_id&&rows[0].publication.context_ids.length===2&&rows[0].publication.domain_slugs.length===2,'Approved associations round-trip');
+ draft=await get(cmd(owner,'save_offer',{id:draft.id,revision:draft.revision,public_copy:{...base,context_ids:['sleep-and-rest']}}));
+ rows=await get(anon.from('arvena_offers').select('*').eq('id',offer.entity_id));ok(rows[0].publication.context_ids.includes('kitchen-and-storage'),'Saved association edits remain private');
+ await denied(cmd(owner,'publish_offer',{id:draft.id,revision:1,confirmed:true}),'Stale revision denied');
+ await get(cmd(owner,'publish_offer',{id:draft.id,revision:draft.revision,confirmed:true}));
+ rows=await get(anon.from('arvena_offers').select('*').eq('slug',base.slug));ok(rows.length===1&&rows[0].id===offer.entity_id&&rows[0].publication.context_ids[0]==='sleep-and-rest','Republication updates same canonical record');
+ const withdrawn=await get(cmd(owner,'unpublish_offer',{id:draft.id,revision:draft.revision}));
+ ok((await get(anon.from('arvena_offers').select('*').eq('id',offer.entity_id))).length===0,'Withdrawal hides all public placements');
+ const retained=await get(owner.from('arvena_research_packages').select('public_copy,revision').eq('id',draft.id));ok(retained[0].public_copy.context_ids[0]==='sleep-and-rest'&&retained[0].revision===withdrawn.revision,'Private association draft persists');
+ await denied(cmd(owner,'save_offer',{public_copy:{...base,slug:'mismatch-'+stamp,solution_class_slug:'point-of-use-filtration',domain_slug:'household-materials'}}).then(async r=>{if(r.error)return r;return cmd(owner,'publish_offer',{id:r.data.id,revision:r.data.revision,confirmed:true});}),'Primary class/domain validation retained');
+ console.log('PASS: '+checks+' M2 local Auth/Data API association and privacy assertions.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

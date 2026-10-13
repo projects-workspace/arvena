@@ -31,6 +31,7 @@ const ok=(v,name)=>{assert.ok(v,name);checks++;};
   }else{
    const c=createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:false,autoRefreshToken:false}});
    const {data,error}=await c.auth.signInWithPassword(fixtures.credentials[name]);if(error)throw error;sessions[name]=data.session;
+   await require('./wait_local_auth.cjs')(c,cfg.url);
   }
  }
  console.log(httpFixtures?'HTTP FIXTURES: no live Auth, database or Storage evidence.':process.env.ARVENA_FIXTURE_SESSIONS==='1'?'SESSION SETUP: signed local fixtures; real database and Storage RLS; not an Auth login test.':'SESSION SETUP: real local Auth sign-in.');
