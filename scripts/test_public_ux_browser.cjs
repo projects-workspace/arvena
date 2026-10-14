@@ -12,6 +12,7 @@ const offer={id:'m3-offer',slug:'local-m3-offer',title:'LOCAL M3 product',status
  try {
   const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
   await context.route(/https:\/\/(fonts.googleapis.com|fonts.gstatic.com)\//,r=>r.abort());
+  await context.route('https://example.com/**',r=>r.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>LOCAL external destination</title><h1>LOCAL external verification destination</h1>'}));
   await context.route('https://*.supabase.co/**',async r=>{
    const table=new URL(r.request().url()).pathname.split('/').pop();
    if(table==='arvena_record_event')return r.fulfill({status:200,contentType:'application/json',body:'null'});
@@ -70,6 +71,13 @@ const offer={id:'m3-offer',slug:'local-m3-offer',title:'LOCAL M3 product',status
     await page.getByRole('heading',{name:offer.title,exact:true}).waitFor();
     const access=page.getByRole('link',{name:'View external offer (opens in a new tab)',exact:true});
     ok(await access.getAttribute('href')==='https://example.com/'&&await access.getAttribute('target')==='_blank','External access without registration');
+    if(theme==='light'&&width===1440) {
+     const [destination]=await Promise.all([context.waitForEvent('page'),access.click()]);
+     await destination.getByRole('heading',{name:'LOCAL external verification destination',exact:true}).waitFor();
+     ok(destination.url()==='https://example.com/','External action actually reaches its destination without sign-in');
+     ok(await destination.evaluate(()=>window.opener===null),'External destination cannot control the Arvena tab');
+     await destination.close();
+    }
     ok((await page.locator('.public-offer').innerText()).includes('Fixture limitation'),'Visible limitations retained');
     await page.getByText('Sources, claims and what remains unknown',{exact:true}).click();
     ok(await page.getByRole('link',{name:'Fixture reference (opens in a new tab)',exact:true}).count()===1,'Source announces new tab');
