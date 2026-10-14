@@ -229,7 +229,7 @@
     function appendProviderDetails(root,p) {
         root.append(el('p',p.summary||'',{class:'platform-lead'}));appendImages(root,p.images,p.name);
         root.append(el('h2','Relationship with Arvena'),el('p',p.relationship||'No relationship information supplied.'),el('p','An independent listing does not imply a partnership or endorsement of every product from this provider.',{class:'public-disclosure'}));
-        if(safeURL(p.website)){const a=link('Visit provider website',safeURL(p.website));a.rel='noopener noreferrer';a.target='_blank';root.append(a);}
+        if(safeURL(p.website)){const a=link('Visit provider website',safeURL(p.website));a.rel='noopener noreferrer';a.target='_blank';a.append(el('span',' (opens in a new tab)',{class:'external-note'}));root.append(a);}
     }
     function appendOfferDetails(root,p,title) {
         appendImages(root,p.images,title,p.media);
@@ -241,8 +241,8 @@
         if(Object.keys(evidence).some(k=>p[k])||p.claims?.length||p.sources?.length){
             const area=el('details',null,{class:'offer-details'});area.append(el('summary','Sources, claims and what remains unknown'));sections(area,evidence);
             if(p.claims?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Claims and sources'));
-                p.claims.forEach(c=>{const article=el('article',null,{class:'platform-row'});article.append(el('h3',c.claim),el('p','Source type: '+c.source_type),el('p','Conditions: '+c.conditions),el('p','Checked: '+c.checked_on),el('p','Limitations: '+c.limitations),el('p','Arvena conclusion: '+c.editorial_conclusion));const url=safeURL(c.source);if(url){const a=link('Read source',url);a.rel='noopener noreferrer';a.target='_blank';article.append(a);}section.append(article);});area.append(section);}
-            if(p.sources?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Sources and reading'));p.sources.forEach(source=>{const url=safeURL(source.url);if(url){const a=link(source.title,url);a.target='_blank';a.rel='noopener noreferrer';const row=el('p');row.append(a);section.append(row);}});area.append(section);}
+                p.claims.forEach(c=>{const article=el('article',null,{class:'platform-row'});article.append(el('h3',c.claim),el('p','Source type: '+c.source_type),el('p','Conditions: '+c.conditions),el('p','Checked: '+c.checked_on),el('p','Limitations: '+c.limitations),el('p','Arvena conclusion: '+c.editorial_conclusion));const url=safeURL(c.source);if(url){const a=link('Read source',url);a.append(el('span',' (opens in a new tab)',{class:'external-note'}));a.rel='noopener noreferrer';a.target='_blank';article.append(a);}section.append(article);});area.append(section);}
+            if(p.sources?.length){const section=el('section',null,{class:'platform-detail'});section.append(el('h2','Sources and reading'));p.sources.forEach(source=>{const url=safeURL(source.url);if(url){const a=link(source.title,url);a.append(el('span',' (opens in a new tab)',{class:'external-note'}));a.target='_blank';a.rel='noopener noreferrer';const row=el('p');row.append(a);section.append(row);}});area.append(section);}
             root.append(area);
         }
         sections(root,{alternatives:'Alternatives considered',geography:'Availability and geography',price:'Price information',commercial_disclosure:'Commercial disclosure',last_review_date:'Last editorial review'});
@@ -283,7 +283,7 @@
                 saved=!saved;save.textContent=saved?'Remove save':'Save offer';status(saved?'Saved privately.':'Save removed.');
             });actions.append(save);
         }
-        const access=safeURL(p.access_url);if(access){const a=link('View external offer',access);a.rel='noopener noreferrer';a.target='_blank';a.addEventListener('click',()=>event(offer,'outbound'));actions.append(a);}root.append(actions);
+        const access=safeURL(p.access_url);if(access){const a=link('View external offer',access);a.className='button button-primary';a.append(el('span',' (opens in a new tab)',{class:'external-note'}));a.rel='noopener noreferrer';a.target='_blank';a.addEventListener('click',()=>event(offer,'outbound'));actions.append(a);}root.append(actions);
         root.append(el('p',access?'Access is through an external website. Check its current availability, price and terms.':'This is an information listing. An access destination has not been supplied.',{class:'public-disclosure'}));
         appendOfferDetails(root,p,offer.title);
         if(!p.last_review_date)root.append(el('p','Editorial review date not supplied.'+(offer.published_at?' Published '+new Date(offer.published_at).toLocaleDateString('en',{year:'numeric',month:'long',day:'numeric'})+'. Publication is not an evidence-check date.':''),{class:'public-disclosure'}));

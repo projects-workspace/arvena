@@ -57,7 +57,7 @@ const water=offer('local-water'),service=offer('local-analysis',{title:'LOCAL Wa
  ok((await page.locator('.public-offer').innerText()).includes('Fixture limitation'),'Limits remain visible');
  ok(!(await page.locator('.public-offer').innerText()).includes('Fixture specifications'),'Technical details are collapsed');
  await page.getByText('Specifications, care and implementation',{exact:true}).click();ok((await page.locator('.public-offer').innerText()).includes('Fixture specifications'),'Technical details remain accessible');
- await page.getByText('Sources, claims and what remains unknown',{exact:true}).click();ok(await page.getByRole('link',{name:'Fixture source',exact:true}).count()===1,'Approved sources remain available');
+ await page.getByText('Sources, claims and what remains unknown',{exact:true}).click();ok(await page.getByRole('link',{name:'Fixture source (opens in a new tab)',exact:true}).count()===1,'Approved sources remain available');
  await page.locator('.offer-connections a[href="#/solution-classes/point-of-use-filtration"]').click();await page.locator('#screen-solution-class').waitFor({state:'visible'});
  await goto('/solution-classes/laboratory-analysis');await page.getByRole('heading',{name:'Laboratory analysis',exact:true}).waitFor();ok((await page.locator('#knowledge-content').innerText()).includes('LOCAL Water analysis'),'Dynamic class connects public offers');
  await page.reload();await page.getByRole('heading',{name:'Laboratory analysis',exact:true}).waitFor();ok((await page.locator('#knowledge-description').innerText()).includes('measured parameter'),'Dynamic class direct reload');

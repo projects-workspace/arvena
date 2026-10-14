@@ -157,7 +157,7 @@
         const developingList = document.getElementById('developing-domain-list');
 
         if (homePreview) {
-            homePreview.replaceChildren(...domains.map((domain) => createDomainCard(domain, true)));
+            homePreview.replaceChildren(...domains.slice(0, 4).map((domain) => createDomainCard(domain, true)));
         }
         if (solutionGrid) {
             solutionGrid.replaceChildren(...domains.map((domain) => createDomainCard(domain)));
@@ -372,6 +372,21 @@
         setFormStatus('');
     }
 
+    // Keep the page behind an open mobile menu out of pointer and keyboard navigation.
+    const menuBackgroundState = new Map();
+    function syncMenuBackground(isOpen) {
+        if (isOpen && mobileNavigationQuery.matches) {
+            [mainContent, document.querySelector('.site-footer'), document.querySelector('.brand'),
+                document.querySelector('.account-link'), themeToggle].filter(Boolean).forEach(element => {
+                if (!menuBackgroundState.has(element)) menuBackgroundState.set(element, element.inert);
+                element.inert = true;
+            });
+        } else {
+            menuBackgroundState.forEach((wasInert, element) => { element.inert = wasInert; });
+            menuBackgroundState.clear();
+        }
+    }
+
     function syncNavigationAccessibility(isOpen = primaryNav?.classList.contains('is-open') || false) {
         if (!primaryNav) return;
         const isClosedOnMobile = mobileNavigationQuery.matches && !isOpen;
@@ -407,6 +422,7 @@
         if (menuLabel) menuLabel.textContent = 'Open navigation';
         document.body.classList.remove('nav-open');
         syncNavigationAccessibility(false);
+        syncMenuBackground(false);
     }
 
     function screenNameCandidates(screenName) {
@@ -528,6 +544,7 @@
         primaryNav.classList.toggle('is-open', !open);
         document.body.classList.toggle('nav-open', !open);
         syncNavigationAccessibility(!open);
+        syncMenuBackground(!open);
         if (!open) {
             const firstLink = primaryNav.querySelector('a');
             if (firstLink) firstLink.focus();
@@ -695,6 +712,17 @@
         }
     }
 
+    const homeContexts = document.getElementById('home-context-index');
+    if (homeContexts) {
+        homeContexts.replaceChildren(...window.ARVENA_KNOWLEDGE.contexts.map(context => {
+            const item = document.createElement('li');
+            const link = document.createElement('a');
+            link.textContent = context.title;
+            link.href = '#' + context.route;
+            item.append(link);
+            return item;
+        }));
+    }
     window.ArvenaKnowledge.init();
     renderStructuredContent();
     setupExplore();
@@ -711,11 +739,25 @@
         if (event.target.closest('a')) closeMenu();
     });
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && primaryNav?.classList.contains('is-open')) {
+        if (!mobileNavigationQuery.matches || !primaryNav?.classList.contains('is-open')) return;
+        if (event.key === 'Escape') {
+            event.preventDefault();
             closeMenu({ restoreFocus: true });
+        } else if (event.key === 'Tab') {
+            const items = [menuToggle, ...primaryNav.querySelectorAll('a[href]')];
+            const first = items[0], last = items[items.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault(); last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault(); first.focus();
+            }
         }
     });
-    mobileNavigationQuery.addEventListener('change', () => closeMenu());
+    mobileNavigationQuery.addEventListener('change', () => {
+        const toggleWillDisappear = !mobileNavigationQuery.matches && document.activeElement === menuToggle;
+        closeMenu();
+        if (toggleWillDisappear) primaryNav.querySelector('a[href]')?.focus();
+    });
     if (notesField) notesField.addEventListener('input', () => {
         if (notesCount) notesCount.textContent = String(notesField.value.length);
     });
