@@ -28,7 +28,9 @@ const offer={id:'m3-offer',slug:'local-m3-offer',title:'LOCAL M3 product',status
   };
   const dir='/private/tmp/arvena-m3-review';fs.mkdirSync(dir,{recursive:true});
   for(const theme of ['light','dark']) {
-   await goto('/home');await page.evaluate(t=>localStorage.setItem('arvena-theme',t),theme);
+   await goto('/home');
+   if(await page.locator('html').getAttribute('data-theme')!==theme) await page.locator('.theme-toggle').click();
+   ok(await page.locator('html').getAttribute('data-theme')===theme,'Rendered '+theme+' theme');
    for(const [width,height] of [[1440,900],[390,844],[320,740]]) {
     await page.setViewportSize({width,height});await goto('/home');
     ok(await page.locator('#home-context-index a').count()===8,'Eight existing contexts '+theme+width);
@@ -43,7 +45,10 @@ const offer={id:'m3-offer',slug:'local-m3-offer',title:'LOCAL M3 product',status
     ok(!page.url().endsWith('/home'),'Context entry opens real page');
     await goto('/solutions');ok(await page.locator('#solutions-domain-grid article').count()===10,'All ten areas retained');
     ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Solutions fits '+theme+width);
-    ok(!await page.locator('#developing-domain-list').isVisible(),'Map development is progressively disclosed');
+    if(theme==='light'&&width===1440) ok(!await page.locator('#developing-domain-list').isVisible(),'Map notes start collapsed');
+    // Native disclosure state is retained across hash routes; isolate each toggle check.
+    if(await page.locator('.map-notes').getAttribute('open')!==null) await page.getByText('How these topic maps develop',{exact:true}).click();
+    ok(!await page.locator('#developing-domain-list').isVisible(),'Map notes can collapse');
     await page.getByText('How these topic maps develop',{exact:true}).click();ok(await page.locator('#developing-domain-list').isVisible(),'Map notes accessible');
     if(width<=900) {
      await page.locator('.menu-toggle').click();
@@ -57,6 +62,8 @@ const offer={id:'m3-offer',slug:'local-m3-offer',title:'LOCAL M3 product',status
      await page.keyboard.press('Escape');
      ok(await page.evaluate(()=>!document.querySelector('#main-content').inert&&document.activeElement===document.querySelector('.menu-toggle')),'Escape restores page and toggle focus');
      await page.locator('.menu-toggle').click();await page.getByRole('navigation',{name:'Primary navigation',exact:true}).getByRole('link',{name:'About',exact:true}).click();
+     await page.locator('#screen-about').waitFor({state:'visible'});
+     await page.waitForFunction(()=>document.activeElement.tagName==='H1');
      ok(await page.evaluate(()=>!document.querySelector('#main-content').inert&&document.activeElement.tagName==='H1'),'Route selection closes menu and focuses heading');
     }
     await goto('/offers/local-m3-offer');
@@ -73,10 +80,11 @@ const offer={id:'m3-offer',slug:'local-m3-offer',title:'LOCAL M3 product',status
     ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Provider fits '+theme+width);
    }
   }
-  await page.setViewportSize({width:390,height:400});await goto('/home');await page.locator('.menu-toggle').click();
+  await page.setViewportSize({width:390,height:280});await goto('/home');await page.locator('.menu-toggle').click();
   ok(await page.locator('#primary-navigation').evaluate(n=>n.scrollHeight>n.clientHeight&&getComputedStyle(n).overflowY==='auto'),'Short viewport menu scrolls');
   await page.locator('#primary-navigation a').last().press('Tab');
   await page.setViewportSize({width:1440,height:900});
+  await page.waitForFunction(()=>document.activeElement===document.querySelector('#primary-navigation a'));
   ok(await page.evaluate(()=>document.activeElement===document.querySelector('#primary-navigation a')),'Resize transfers focus from disappearing toggle');
   ok(await page.evaluate(()=>!document.querySelector('#main-content').inert&&!document.body.classList.contains('nav-open')),'Desktop resize restores page');
   ok(errors.length===0,'No browser runtime errors: '+errors.join('\n'));

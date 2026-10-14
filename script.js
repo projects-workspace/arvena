@@ -56,6 +56,7 @@
     const notesCount = document.getElementById('notes-count');
     const confirmationReference = document.getElementById('confirmation-reference');
     let hasHandledInitialRoute = false;
+    let mobileToggleHadFocus = false;
     let lastRouteHash = location.hash;
 
     const exploreSearch = document.getElementById('explore-search');
@@ -735,6 +736,13 @@
     if (skipLink) skipLink.addEventListener('click', skipToMainContent);
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
     if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+    if (menuToggle) {
+        menuToggle.addEventListener('focus', () => { mobileToggleHadFocus = mobileNavigationQuery.matches; });
+        // CSS can hide and blur the toggle before the media-query change event runs.
+        menuToggle.addEventListener('blur', () => {
+            if (mobileNavigationQuery.matches) mobileToggleHadFocus = false;
+        });
+    }
     if (primaryNav) primaryNav.addEventListener('click', (event) => {
         if (event.target.closest('a')) closeMenu();
     });
@@ -754,9 +762,10 @@
         }
     });
     mobileNavigationQuery.addEventListener('change', () => {
-        const toggleWillDisappear = !mobileNavigationQuery.matches && document.activeElement === menuToggle;
+        const toggleWillDisappear = !mobileNavigationQuery.matches && (document.activeElement === menuToggle || mobileToggleHadFocus);
         closeMenu();
         if (toggleWillDisappear) primaryNav.querySelector('a[href]')?.focus();
+        mobileToggleHadFocus = false;
     });
     if (notesField) notesField.addEventListener('input', () => {
         if (notesCount) notesCount.textContent = String(notesField.value.length);
